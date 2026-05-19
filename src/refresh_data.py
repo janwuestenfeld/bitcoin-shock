@@ -70,24 +70,28 @@ def fetch_fred(series_id: str) -> pd.Series:
     return series.dropna()
 
 
-def fetch_btc_yfinance(start_date: str) -> pd.Series:
-    """BTC daily close from yfinance (BTC-USD ticker). Replaces CoinMetrics
-    which started requiring a free API key."""
-    try:
-        import yfinance as yf
-    except ImportError:
-        raise RuntimeError("yfinance not installed")
-    df = yf.download("BTC-USD", start=start_date, progress=False, auto_adjust=False)
-    if df.empty:
-        raise RuntimeError("yfinance returned no BTC-USD data")
-    if isinstance(df.columns, pd.MultiIndex):
-        col = df["Close"]["BTC-USD"] if ("Close", "BTC-USD") in df.columns else df["Close"].iloc[:, 0]
-    else:
-        col = df["Close"]
-    s = col.copy()
-    s.index = pd.to_datetime(s.index).tz_localize(None)
+def fetch_btc_coinmetrics(start_date: str) -> pd.Series:
+    """BTC daily close from CoinMetrics Community API (free, no key required).
+
+    Note: the correct endpoint is `community-api.coinmetrics.io` (with the
+    `community-api` subdomain). `api.coinmetrics.io` requires authentication.
+    """
+    url = (
+        "https://community-api.coinmetrics.io/v4/timeseries/asset-metrics"
+        f"?assets=btc&metrics=PriceUSD&start_time={start_date}"
+        "&frequency=1d&page_size=10000"
+    )
+    r = requests.get(url, timeout=30)
+    r.raise_for_status()
+    data = r.json().get("data", [])
+    if not data:
+        raise RuntimeError("CoinMetrics returned no data")
+    df = pd.DataFrame(data)
+    df["time"] = pd.to_datetime(df["time"]).dt.tz_localize(None).dt.normalize()
+    df["PriceUSD"] = pd.to_numeric(df["PriceUSD"], errors="coerce")
+    s = df.set_index("time")["PriceUSD"].sort_index().dropna()
     s.name = "btc"
-    return s.dropna()
+    return s
 
 
 def fetch_spy_yfinance(start_date: str) -> pd.Series:
@@ -159,7 +163,7 @@ def rebuild_panel(panel_existing: pd.DataFrame) -> pd.DataFrame:
             log(f"  FAILED FRED {name}: {e}")
 
     try:
-        new_data["btc"] = fetch_btc_yfinance(start)
+        new_data["btc"] = fetch_btc_coinmetrics(start)
         log(f"BTC (CoinMetrics): {len(new_data['btc'])} new obs, latest {new_data['btc'].index.max().date()}")
     except Exception as e:
         log(f"  FAILED BTC: {e}")
@@ -235,7 +239,7 @@ def rebuild_btc_calendar(btc_cal_existing: pd.DataFrame) -> pd.DataFrame:
     """Extend the 24/7 BTC calendar series."""
     start = (btc_cal_existing.index.max() - pd.Timedelta(days=10)).strftime("%Y-%m-%d")
     try:
-        s = fetch_btc_yfinance(start)
+        s = fetch_btc_coinmetrics(start)
     except Exception as e:
         log(f"  FAILED BTC calendar refresh: {e}")
         return btc_cal_existing

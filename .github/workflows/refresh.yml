@@ -2,9 +2,10 @@ name: Daily data refresh
 
 on:
   schedule:
-    # 03:00 UTC daily = 23:00 ET, well after NYSE close + BTC daily close at 00:00 UTC.
-    # FRED daily series are typically posted by 22:00 UTC (varies by series).
-    - cron: '0 3 * * *'
+    # 06:05 UTC daily — same slot as the PRESS model refresh. Late enough that
+    # FRED daily series + CoinMetrics BTC daily + Caldara-Iacoviello GPR-threat
+    # have all posted by then.
+    - cron: '5 6 * * *'
   workflow_dispatch: {}  # also allow manual trigger from the Actions tab
 
 permissions:
