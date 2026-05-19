@@ -10,42 +10,69 @@
     :root{--bg:#fff;--sf:#f8f9fa;--bd:#e1e4e8;--tx:#1a1a2e;--dim:#666;--ac:#f7931a;--bl:#0f3460;--gn:#2e7d32;--rd:#c62828;--am:#e67e22}
     body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);line-height:1.55}
     .c{max-width:1200px;margin:0 auto;padding:20px}
-    header{text-align:center;padding:30px 0 20px;border-bottom:3px solid var(--ac);margin-bottom:30px}
-    header h1{font-size:2.2em;font-weight:700}
+    header{text-align:center;padding:24px 0 18px;border-bottom:3px solid var(--ac);margin-bottom:25px}
+    header h1{font-size:2.1em;font-weight:700}
     header h1 span{color:var(--ac)}
-    header p{color:var(--dim);font-size:1.1em;margin-top:8px}
-    header .author{margin-top:6px;font-size:0.95em}
+    header p{color:var(--dim);font-size:1.05em;margin-top:6px}
+    header .author{margin-top:5px;font-size:0.92em}
     header .author a{color:var(--ac);text-decoration:none;font-weight:600}
-    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:30px}
-    .card{background:var(--sf);border:1px solid var(--bd);border-radius:4px;padding:16px 18px;text-align:center}
-    .card .l{font-size:.78em;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;font-weight:500}
-    .card .v{font-size:1.7em;font-weight:700;margin-top:4px}
-    .card .v.sm{font-size:1.15em}
-    .card .s{font-size:.8em;color:var(--dim);margin-top:3px}
-    .pos{color:var(--gn)}
-    .neg{color:var(--rd)}
-    .neut{color:var(--dim)}
-    .warn{color:var(--am)}
-    section{margin-bottom:40px}
-    section h2{font-size:1.4em;margin-bottom:15px;padding-bottom:8px;border-bottom:2px solid var(--ac);display:inline-block}
-    .bx{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:15px;margin-bottom:20px}
-    .bx.note{padding:24px 28px}
-    .bx.note p{margin-bottom:14px}
-    .bx.note ul{margin:6px 0 14px 20px}
-    .bx.note li{margin-bottom:5px}
+
+    /* HERO call card */
+    .hero{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:30px}
+    @media(max-width:768px){.hero{grid-template-columns:1fr}}
+    .hero .panel{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:22px 24px}
+    .hero .panel h3{font-size:0.78em;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;font-weight:500;margin-bottom:8px}
+    .hero .panel .big{font-size:2.4em;font-weight:700;line-height:1.1}
+    .hero .panel .sub{color:var(--dim);font-size:0.95em;margin-top:6px}
+    .hero .call-bull{background:linear-gradient(135deg,rgba(46,125,50,0.08),rgba(46,125,50,0.02));border-color:rgba(46,125,50,0.3)}
+    .hero .call-bear{background:linear-gradient(135deg,rgba(198,40,40,0.08),rgba(198,40,40,0.02));border-color:rgba(198,40,40,0.3)}
+    .hero .call-neut{background:linear-gradient(135deg,rgba(102,102,102,0.06),rgba(102,102,102,0.02))}
+
+    /* Shock state grid */
+    .shocks{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:30px}
+    @media(max-width:900px){.shocks{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:500px){.shocks{grid-template-columns:1fr}}
+    .shock-card{background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:14px;display:flex;flex-direction:column}
+    .shock-card.fire{border-color:var(--rd);background:rgba(198,40,40,0.04)}
+    .shock-card .name{font-size:0.85em;color:var(--dim);text-transform:uppercase;letter-spacing:.4px;font-weight:600}
+    .shock-card .desc{font-size:0.72em;color:var(--dim);margin-top:2px}
+    .shock-card .val{font-size:1.5em;font-weight:700;margin-top:8px}
+    .shock-card .cutoff{font-size:0.78em;color:var(--dim);margin-top:2px}
+    .shock-card .badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:0.7em;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-top:8px;align-self:flex-start}
+    .shock-card .badge.on{background:var(--rd);color:#fff}
+    .shock-card .badge.off{background:var(--bd);color:var(--dim)}
+    .shock-card .pct{font-size:0.85em;margin-top:4px;font-weight:600}
+    .shock-card .pct.above{color:var(--rd)}
+    .shock-card .pct.below{color:var(--gn)}
+    .shock-card .spark{margin-top:10px}
+
+    section{margin-bottom:36px}
+    section h2{font-size:1.35em;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid var(--ac);display:inline-block}
+    section .blurb{color:var(--dim);margin-bottom:14px;font-size:0.95em}
+    .bx{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:15px;margin-bottom:16px}
+
+    .reading{background:var(--sf);border:1px solid var(--bd);border-left:4px solid var(--ac);border-radius:6px;padding:18px 22px;margin-bottom:20px}
+    .reading h3{font-size:1.05em;margin-bottom:8px}
+    .reading p{margin-bottom:8px}
+    .reading b.b{color:var(--gn)}
+    .reading b.r{color:var(--rd)}
+
     .ft{width:100%;border-collapse:collapse;margin-top:10px}
-    .ft th,.ft td{padding:10px 14px;text-align:center;border-bottom:1px solid var(--bd)}
-    .ft th{background:var(--sf);color:var(--dim);font-size:.85em;text-transform:uppercase}
+    .ft th,.ft td{padding:9px 12px;text-align:center;border-bottom:1px solid var(--bd);font-size:0.92em}
+    .ft th{background:var(--sf);color:var(--dim);font-size:.78em;text-transform:uppercase;letter-spacing:.4px}
     .ft td.label{text-align:left;font-weight:500}
-    footer{text-align:center;padding:30px 0;color:var(--dim);font-size:.85em;border-top:1px solid var(--bd);margin-top:40px}
-    footer a{color:var(--ac);text-decoration:none}
-    .g2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-    @media(max-width:768px){.g2{grid-template-columns:1fr}}
-    .meth{font-family:-apple-system,monospace,monospace}
-    .badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:0.75em;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+
+    .pos{color:var(--gn)}.neg{color:var(--rd)}.neut{color:var(--dim)}.warn{color:var(--am)}
+    .badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:0.72em;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
     .badge.keep{background:rgba(46,125,50,0.12);color:var(--gn)}
     .badge.border{background:rgba(230,126,34,0.12);color:var(--am)}
-    .heatmap-cell{font-size:0.78em}
+
+    details{margin-top:14px}
+    details summary{cursor:pointer;color:var(--ac);font-weight:600;font-size:0.95em;padding:4px 0}
+    details summary:hover{text-decoration:underline}
+
+    footer{text-align:center;padding:25px 0;color:var(--dim);font-size:.85em;border-top:1px solid var(--bd);margin-top:30px}
+    footer a{color:var(--ac);text-decoration:none}
   </style>
   <script data-goatcounter="https://shock.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
@@ -55,77 +82,70 @@
 
 <header>
   <h1>Bitcoin Conditional <span>SHOCK</span> Regime Classifier</h1>
-  <p>Walk-forward cell-conditional bias for BTC vs SPY relative performance</p>
-  <p class="author">Developed by <a href="https://www.linkedin.com/in/dr-jan-wuestenfeld">Dr. Jan Wuestenfeld</a></p>
+  <p>Where the macro shocks are today &mdash; and what that historically meant for BTC vs SPY</p>
+  <p class="author">Developed by <a href="https://www.linkedin.com/in/dr-jan-wuestenfeld">Dr. Jan Wuestenfeld</a> &mdash; <span id="date-tag"></span></p>
 </header>
 
-<div class="cards" id="cards"></div>
+<!-- HERO: The call -->
+<div class="hero" id="hero"></div>
 
+<!-- SECTION 1: Where the shocks are now -->
 <section>
-  <div class="bx note">
-    <p style="margin-bottom:14px;">The Bitcoin Conditional Shock Regime Classifier maps today's
-    <b>(VIX, active macro-shock indicators, era)</b> into one of 84 historical cells and reports
-    the cell's <b>share-positive</b> outperformance distribution at h = 5 / 20 / 60 / 90 calendar
-    days. It is a probabilistic regime classifier, not a point forecaster.
-    Full technical details in
-    <a href="https://github.com/janwuestenfeld/bitcoin-shock" target="_blank">the companion paper &amp; methodology repo</a>.</p>
-
-    <p><b>What this does</b></p>
-    <ul>
-      <li><b>Classifies today's regime:</b> reads VIX and five top-decile macro shocks (oil, dollar, 10Y rate, banking stress, GPR-threat) under era-conditional walk-forward cutoffs with prior-era q99 tail fallback &mdash; the methodologically clean no-look-ahead identification.</li>
-      <li><b>Looks up the historical cell:</b> matches today's regime against 84 era&times;VIX&times;shock-type cells from 2014-2025 and reports the cell's historical share of 60-day BTC outperformance over SPY.</li>
-      <li><b>Reports horizon distribution:</b> share-positive at h = 5, 20, 60, 90 calendar days, with cell sample size for confidence calibration.</li>
-    </ul>
-
-    <p><b>How to read the prediction</b></p>
-    <ul>
-      <li><b style="color:var(--gn)">Share-positive &ge; 60%:</b> bullish cell &mdash; majority of historical analogues delivered BTC outperformance.</li>
-      <li><b style="color:var(--rd)">Share-positive &le; 40%:</b> bearish cell &mdash; majority of historical analogues delivered BTC underperformance.</li>
-      <li><b>Near 50%:</b> coin-flip cell &mdash; the framework offers no edge here.</li>
-      <li><b>n &lt; 10 analogues:</b> low-confidence prediction; the cell uses fallback aggregation.</li>
-    </ul>
-
-    <p><b>What this does <em>not</em> do</b></p>
-    <ul>
-      <li><b>Not a price forecaster:</b> reports directional bias and probability, not target prices.</li>
-      <li><b>Not a same-day &beta; predictor:</b> &beta; is a 60-day rolling object; "today's shock &rarr; tomorrow's &beta;" is not the question this answers.</li>
-      <li><b>Not a shield against novel regimes:</b> at era boundaries the classifier goes silent (~60-day warmup); during ongoing eras the cutoff is fully stable.</li>
-    </ul>
-
-    <p style="margin-top:10px;color:var(--dim);font-size:0.88em;"><b>Disclaimer:</b> Not financial advice. Past cell-conditional performance does not guarantee future results; historical regimes may not persist.</p>
-  </div>
+  <h2>Where the macro shocks are now</h2>
+  <p class="blurb">Five top-decile macro shock indicators, each with a walk-forward cutoff that
+  catches the most extreme 10% of within-era observations. A shock is <b>ACTIVE</b> when today's
+  raw measure exceeds the cutoff. The cutoff updates daily as new data arrives &mdash; no
+  look-ahead.</p>
+  <div class="shocks" id="shocks"></div>
 </section>
 
+<!-- SECTION 2: How shocks relate to VIX -->
 <section>
-  <h2>Methodology Convergence: Four Cutoff Variants</h2>
-  <p style="color:var(--dim);margin-bottom:12px;">
-  The shock-classifier converged on the walk-forward cutoff with prior-era q99 tail fallback as
-  the methodologically defensible no-look-ahead identification. The table shows the OOS R&sup2;
-  contribution from shock-type-conditional cells (M3 over M2 baseline) under each cutoff. Walk-forward
-  delivers the strongest signal precisely because the shock labels are aligned with the information
-  set contemporaneous investors actually had &mdash; future observations cannot influence past investor
-  behavior, so they should not influence the model's shock classifications either.</p>
-  <table class="ft" id="meth-table"></table>
+  <h2>How shocks relate to VIX</h2>
+  <p class="blurb">VIX (last ~2 years) with active shock-firing days overlaid. Banking-stress is
+  the most VIX-co-moving shock (&rho; &asymp; 0.6); the others fire more independently.</p>
+  <div class="bx" id="chart-vix-shocks" style="height:380px;"></div>
+  <table class="ft" id="comovement-table"></table>
 </section>
 
+<!-- SECTION 3: What this means -->
 <section>
-  <h2>Historical Cell Map (84 cells, h = 60d share-positive)</h2>
-  <p style="color:var(--dim);margin-bottom:12px;">Each cell is a (shock-type &times; VIX-bin &times; era) combination.
-  Green cells delivered BTC outperformance &ge; 60% of the time at h=60 days; red cells delivered
-  underperformance &ge; 60% of the time. Cells with n &lt; 10 (small-sample) are dimmed.</p>
-  <div class="bx" id="chart-heatmap" style="height:780px;"></div>
+  <h2>What this means today</h2>
+  <div class="reading" id="reading"></div>
+  <table class="ft" id="horizon-table"></table>
+  <details>
+    <summary>Closest historical analogues</summary>
+    <div id="analogues" style="margin-top:12px;font-size:0.93em;color:var(--dim);"></div>
+  </details>
 </section>
 
+<!-- SECTION 4: 84-cell heatmap (collapsed reference) -->
 <section>
-  <h2>VIX Regime History (last 2 years)</h2>
-  <p style="color:var(--dim);margin-bottom:12px;">VIX with regime band shading
-  (calm &lt; 14.5; low-stress 14.5-20; mid-stress 20-30; extreme-stress &ge; 30).</p>
-  <div class="bx" id="chart-vix" style="height:380px;"></div>
+  <h2>Historical cell reference</h2>
+  <p class="blurb">The 84-cell historical reference is collapsed by default. Open to see how
+  every (era &times; VIX-bin &times; shock-type) combination behaved historically.</p>
+  <details>
+    <summary>Show 84-cell heatmap (h = 60d share-positive)</summary>
+    <div class="bx" id="chart-heatmap" style="height:780px;margin-top:12px;"></div>
+  </details>
+</section>
+
+<!-- SECTION 5: Methodology (at bottom) -->
+<section>
+  <h2>Methodology &mdash; how the classifier was built</h2>
+  <p class="blurb">The shock-cutoff methodology iterated through four variants before converging
+  on the walk-forward basis. Walk-forward is the methodologically correct choice because shock labels
+  should reflect what contemporaneous investors actually saw &mdash; future observations cannot
+  drive past investor decisions, so they should not be used to define which past days were shocks.</p>
+  <details>
+    <summary>Show methodology comparison table</summary>
+    <table class="ft" id="meth-table" style="margin-top:12px"></table>
+  </details>
 </section>
 
 <footer>
   <p><b>Bitcoin Conditional Shock Regime Classifier</b> by <a href="https://www.linkedin.com/in/dr-jan-wuestenfeld">Dr. Jan Wuestenfeld</a></p>
-  <p>Data: FRED (VIXCLS, DCOILWTICO, DTWEXBGS, DGS10, STLFSI4), CoinMetrics (BTC), yfinance (SPY), Caldara-Iacoviello (GPR-threat) | Updated daily</p>
+  <p>Data: FRED (VIX, WTI, USD broad, 10Y, STLFSI4), CoinMetrics (BTC), yfinance (SPY), Caldara-Iacoviello (GPR-threat) | Updated daily</p>
   <p>Source &amp; methodology: <a href="https://github.com/janwuestenfeld/bitcoin-shock" target="_blank">github.com/janwuestenfeld/bitcoin-shock</a></p>
   <p id="ts"></p>
 </footer>
@@ -135,165 +155,260 @@
 <script>
 const A='#f7931a',B='#0f3460',G='#2e7d32',R='#c62828',GR='#999',AM='#e67e22';
 const LF={family:'-apple-system,sans-serif',size:13,color:'#1a1a2e'};
+const SLF={family:'-apple-system,sans-serif',size:10,color:'#666'};
 const L={paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'#fafafa',font:LF,
-  margin:{l:65,r:25,t:45,b:45},
+  margin:{l:55,r:20,t:35,b:40},
   xaxis:{gridcolor:'#e8e8e8',hoverformat:'%Y-%m-%d'},
   yaxis:{gridcolor:'#e8e8e8'}};
+const SHOCKS=["oil_shock","dollar_shock","rate_shock","banking_shock","gprd_threat_shock"];
+const VIX_LABEL={calm:"Calm",low_stress:"Low-Stress",mid_stress:"Mid-Stress",extreme_stress:"Extreme-Stress"};
+const ERA_LABEL={pre_covid:"Pre-COVID",post_covid_pre_etf:"Post-COVID / Pre-ETF",post_etf:"Post-ETF"};
+const VIX_BINS=["calm","low_stress","mid_stress","extreme_stress"];
+const ERAS=["pre_covid","post_covid_pre_etf","post_etf"];
 
-const SHOCKS = ["oil_shock","dollar_shock","rate_shock","banking_shock","gprd_threat_shock"];
-const SHOCK_LABELS = {
-  oil_shock:"Oil", dollar_shock:"Dollar", rate_shock:"Rates",
-  banking_shock:"Banking", gprd_threat_shock:"GPR-Threat"
-};
-const VIX_BINS = ["calm","low_stress","mid_stress","extreme_stress"];
-const VIX_LABELS = {calm:"Calm",low_stress:"Low-Stress",mid_stress:"Mid-Stress",extreme_stress:"Extreme-Stress"};
-const ERAS = ["pre_covid","post_covid_pre_etf","post_etf"];
-const ERA_LABELS = {pre_covid:"Pre-COVID",post_covid_pre_etf:"Post-COVID/Pre-ETF",post_etf:"Post-ETF"};
-
-function shareClass(s){if(s==null)return'neut';if(s>=0.60)return'pos';if(s<=0.40)return'neg';return'neut'}
-function shareLabel(s){if(s==null)return'-';return (s*100).toFixed(0)+'%'}
-function ppLabel(v){if(v==null)return'-';const s=v>=0?'+':'';return `${s}${(v*100).toFixed(1)}pp`}
+function fmt(v,d=2){return v==null||isNaN(v)?'-':v.toFixed(d)}
+function fmtPP(v){return v==null?'-':(v>=0?'+':'')+(v*100).toFixed(1)+'pp'}
+function fmtPct(v,d=0){return v==null?'-':(v*100).toFixed(d)+'%'}
+function biasClass(s){if(s==null)return'neut';if(s>=0.60)return'pos';if(s<=0.40)return'neg';return'neut'}
+function biasLabel(s){if(s==null)return'NO MATCH';if(s>=0.60)return'BULLISH';if(s<=0.40)return'BEARISH';return'NEUTRAL'}
 
 async function main(){
   const d = await fetch('data/dashboard_output.json?t='+Date.now()).then(r=>r.json());
+  document.getElementById('date-tag').textContent = 'as of ' + d.current_date;
 
-  // ===== KPI cards =====
-  const active = Object.entries(d.active_shocks).filter(([k,v])=>v).map(([k])=>SHOCK_LABELS[k]);
-  const activeLabel = active.length ? active.join(', ') : 'None';
-  const h60 = d.horizons['60'];
-  const sp60 = h60.share_positive;
-  const spClass = shareClass(sp60);
-  const ttl = sp60 == null ? 'n/a' : (sp60 >= 0.60 ? 'BULLISH bias' : (sp60 <= 0.40 ? 'BEARISH bias' : 'NEUTRAL'));
-  const ttlClass = sp60 == null ? 'neut' : spClass;
+  // ===== HERO =====
+  const sp60 = d.horizons['60'].share_positive;
+  const mu60 = d.horizons['60'].mean_outperf;
+  const biasC = biasClass(sp60);
+  const biasL = biasLabel(sp60);
+  const heroCallClass = biasC === 'pos' ? 'call-bull' : (biasC === 'neg' ? 'call-bear' : 'call-neut');
 
-  document.getElementById('cards').innerHTML = `
-    <div class="card"><div class="l">VIX (today)</div><div class="v">${d.current_vix.toFixed(2)}</div><div class="s">${VIX_LABELS[d.vix_bin]} regime</div></div>
-    <div class="card"><div class="l">Era</div><div class="v sm">${ERA_LABELS[d.current_era]}</div><div class="s">${d.current_date}</div></div>
-    <div class="card"><div class="l">Active Shocks</div><div class="v sm">${activeLabel}</div><div class="s">${active.length} of 5 firing</div></div>
-    <div class="card"><div class="l">Cell n analogues</div><div class="v">${d.cell_n}</div><div class="s">tier: ${d.cell_tier_used}</div></div>
-    <div class="card"><div class="l">Share-positive 60d</div><div class="v ${spClass}">${shareLabel(sp60)}</div><div class="s ${ttlClass}">${ttl}</div></div>
-    <div class="card"><div class="l">Cell mean outperf 60d</div><div class="v ${(h60.mean_outperf||0)>=0?'pos':'neg'}">${ppLabel(h60.mean_outperf)}</div><div class="s">vs SPY at h=60</div></div>
+  const active = Object.entries(d.active_shocks).filter(([k,v])=>v).map(([k])=>d.per_shock_state[k].display.label);
+  const activeLabel = active.length ? active.join(' + ') : 'none';
+
+  document.getElementById('hero').innerHTML = `
+    <div class="panel">
+      <h3>Today's regime</h3>
+      <div class="big">VIX ${d.current_vix.toFixed(1)}</div>
+      <div class="sub">${VIX_LABEL[d.vix_bin]} regime · ${ERA_LABEL[d.current_era]}</div>
+      <div style="margin-top:14px;font-size:0.92em">
+        <b>Active shocks:</b> ${activeLabel}<br>
+        <b>Cell match:</b> <code>${d.cell_key}</code> (n=${d.cell_n}, tier: ${d.cell_tier_used})
+      </div>
+    </div>
+    <div class="panel ${heroCallClass}">
+      <h3>Cell-conditional bias (h=60d)</h3>
+      <div class="big ${biasC}">${biasL}</div>
+      <div class="sub" style="margin-top:8px">
+        <b>${fmtPct(sp60)} of historical analogues</b> outperformed at h=60d<br>
+        Mean outperformance vs SPY: <b class="${(mu60||0)>=0?'pos':'neg'}">${fmtPP(mu60)}</b> &nbsp; <span style="color:var(--dim)">(n=${d.cell_n})</span>
+      </div>
+    </div>
   `;
 
-  // ===== Methodology table =====
-  const m = d.methodology;
-  const rows = [
-    {key:'full_sample', meta:m.full_sample, n_loss:'(baseline)'},
-    {key:'ewma_126', meta:m.ewma_126, n_loss:'(rolling)'},
-    {key:'era_conditional', meta:m.era_conditional, n_loss:'(look-ahead in x)'},
-    {key:'walkforward', meta:m.walkforward, n_loss:'(no look-ahead, COVID via q99)'},
-  ];
-  let t = '<thead><tr><th>Cutoff</th><th>Panel n</th><th>&Delta;R&sup2; M2&rarr;M3 (pp)</th><th>Perm <i>p</i></th><th>Banking M4 (pp)</th><th>Verdict</th></tr></thead><tbody>';
-  rows.forEach(r=>{
-    const me = r.meta || {};
-    const verdict = me.verdict || '-';
-    const vClass = verdict.includes('KEEP') ? 'badge keep' : (verdict.includes('BORDER') ? 'badge border' : '');
-    const dr = me.dr2_m3_pp;
-    const drClass = dr > 2 ? 'pos' : (dr < 1 ? 'neut' : 'warn');
-    const bankClass = (me.banking_m4_pp || 0) >= 0 ? 'pos' : 'neg';
-    const isWf = r.key === 'walkforward';
-    t += `<tr${isWf?' style="background:rgba(247,147,26,0.04);font-weight:500"':''}><td class="label">${me.label}${isWf?' &larr;':''}</td>`
-       + `<td>${me.n_obs || '-'}</td>`
-       + `<td class="${drClass}">${dr==null?'-':(dr>=0?'+':'')+dr.toFixed(2)}</td>`
-       + `<td>${me.p_value==null?'-':me.p_value.toFixed(3)}</td>`
-       + `<td class="${bankClass}">${me.banking_m4_pp==null?'-':(me.banking_m4_pp>=0?'+':'')+me.banking_m4_pp.toFixed(2)}</td>`
-       + `<td><span class="${vClass}">${verdict}</span></td></tr>`;
+  // ===== Per-shock cards with sparklines =====
+  const shocksEl = document.getElementById('shocks');
+  shocksEl.innerHTML = '';
+  SHOCKS.forEach((s, i) => {
+    const st = d.per_shock_state[s];
+    const disp = st.display;
+    const fire = st.active;
+    const pct = st.pct_of_cutoff;
+    const dist = st.distance_from_cutoff_pp;
+    const pctClass = pct == null ? 'neut' : (pct >= 100 ? 'above' : 'below');
+    const div = document.createElement('div');
+    div.className = 'shock-card' + (fire ? ' fire' : '');
+    div.innerHTML = `
+      <div class="name">${disp.label}</div>
+      <div class="desc">${disp.raw_desc}</div>
+      <div class="val">${st.raw_current == null ? '-' : st.raw_current.toFixed(4)}</div>
+      <div class="cutoff">cutoff: ${st.cutoff_current == null ? '-' : st.cutoff_current.toFixed(4)}</div>
+      <div class="pct ${pctClass}">${pct == null ? '' : (pct >= 100 ? '+' : '') + dist.toFixed(0) + '% vs cutoff'}</div>
+      <span class="badge ${fire?'on':'off'}">${fire ? 'ACTIVE' : 'inactive'}</span>
+      <div class="spark" id="spark-${s}" style="height:80px"></div>
+    `;
+    shocksEl.appendChild(div);
+
+    // Sparkline plot
+    const h = d.shock_history[s];
+    if (h && h.length) {
+      const xs = h.map(p => p.date);
+      const raws = h.map(p => p.raw);
+      const cuts = h.map(p => p.cutoff);
+      const fires = h.map(p => p.active === 1);
+      Plotly.newPlot('spark-' + s, [
+        {x: xs, y: raws, mode:'lines', line:{color:B, width:1}, name:'raw', hoverinfo:'skip'},
+        {x: xs, y: cuts, mode:'lines', line:{color:R, width:1, dash:'dash'}, name:'cutoff', hoverinfo:'skip'},
+        // Fire markers
+        {x: xs.filter((x,i)=>fires[i]), y: raws.filter((x,i)=>fires[i]),
+         mode:'markers', marker:{color:R, size:3, opacity:0.5}, name:'fired', hoverinfo:'skip'},
+      ], {
+        paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:SLF,
+        margin:{l:30, r:5, t:5, b:18},
+        xaxis:{visible:false, showgrid:false},
+        yaxis:{showgrid:false, tickfont:{size:8}, nticks:3},
+        showlegend:false,
+      }, {responsive:true, displayModeBar:false});
+    }
   });
-  t += '</tbody>';
-  document.getElementById('meth-table').innerHTML = t;
 
-  // ===== Cell heatmap: 7 shock-types × 4 VIX bins × 3 eras =====
-  // We display three sub-heatmaps (one per era), each 7 rows × 4 cols.
-  // Cell value: share_positive_60d. Annotation: "X% (n=Y)".
+  // ===== VIX + shock-firing overlay chart =====
+  const vh = d.vix_history;
+  const vxs = vh.map(p => p.date);
+  const vys = vh.map(p => p.vix);
+  const traces = [
+    {x: vxs, y: vys, name:'VIX', line:{color:B, width:1.5}, mode:'lines'},
+  ];
+  // Add shock-fire markers as scatter overlays on top of VIX
+  const shockColors = {oil_shock:'#f7931a', dollar_shock:'#2e7d32', rate_shock:'#e67e22',
+                       banking_shock:'#c62828', gprd_threat_shock:'#7b2cbf'};
+  SHOCKS.forEach(s => {
+    const h = d.shock_history[s];
+    if (!h) return;
+    const fireMap = {};
+    h.forEach(p => { if (p.active === 1) fireMap[p.date] = true; });
+    const xs = vxs.filter(x => fireMap[x]);
+    const ys = vxs.map((x,i) => fireMap[x] ? vys[i] : null).filter(v => v != null);
+    if (xs.length === 0) return;
+    traces.push({
+      x: xs, y: ys, mode:'markers',
+      marker:{color: shockColors[s], size: 5, opacity: 0.75, line:{color:'#fff', width:0.4}},
+      name: d.per_shock_state[s].display.label + ' fired',
+    });
+  });
+  Plotly.newPlot('chart-vix-shocks', traces, {
+    ...L,
+    title:{text:'VIX with shock-fire days overlaid',font:{size:14}},
+    yaxis:{...L.yaxis, title:'VIX'},
+    legend:{x:0.01, y:0.99, bgcolor:'rgba(255,255,255,0.85)', font:{size:11}},
+    shapes:[
+      {type:'line', y0:14.5, y1:14.5, x0:vxs[0], x1:vxs[vxs.length-1], line:{color:G, width:1, dash:'dot'}},
+      {type:'line', y0:20, y1:20, x0:vxs[0], x1:vxs[vxs.length-1], line:{color:AM, width:1, dash:'dot'}},
+      {type:'line', y0:30, y1:30, x0:vxs[0], x1:vxs[vxs.length-1], line:{color:R, width:1, dash:'dot'}},
+    ],
+  }, {responsive:true});
+
+  // Co-movement table
+  let ct = '<thead><tr><th>Shock</th><th>ρ with VIX</th><th>Interpretation</th></tr></thead><tbody>';
+  SHOCKS.forEach(s => {
+    const c = d.comovement[s].correlation_with_vix;
+    const interp = c == null ? '-' : (Math.abs(c) >= 0.4 ? 'strong VIX co-mover' : (Math.abs(c) >= 0.2 ? 'mild co-movement' : 'fires semi-independently'));
+    ct += `<tr><td class="label">${d.per_shock_state[s].display.label} (${d.per_shock_state[s].display.raw_desc})</td><td>${fmt(c, 2)}</td><td>${interp}</td></tr>`;
+  });
+  ct += '</tbody>';
+  document.getElementById('comovement-table').innerHTML = ct;
+
+  // ===== Reading section =====
+  const era_L = ERA_LABEL[d.current_era];
+  const vix_L = VIX_LABEL[d.vix_bin];
+  let readingHtml = `<h3>Plain-language read</h3>`;
+  readingHtml += `<p>Today is a <b>${era_L}</b> era day with VIX at <b>${d.current_vix.toFixed(1)}</b> (<b>${vix_L}</b> regime). `;
+  if (active.length === 0) {
+    readingHtml += `No macro shocks are firing &mdash; this is a baseline-regime day.</p>`;
+  } else {
+    readingHtml += `Active shock(s): <b>${activeLabel}</b>.</p>`;
+  }
+  readingHtml += `<p><b>Historical cell match:</b> <code>${d.cell_key}</code> with <b>n=${d.cell_n}</b> historical analogues. `;
+  if (sp60 != null) {
+    if (sp60 >= 0.6) {
+      readingHtml += `In these conditions, BTC has historically outperformed SPY at h=60d in <b class="b">${fmtPct(sp60)}</b> of cases &mdash; <b class="b">BULLISH bias</b>.</p>`;
+    } else if (sp60 <= 0.4) {
+      readingHtml += `In these conditions, BTC has historically outperformed SPY at h=60d in only <b class="r">${fmtPct(sp60)}</b> of cases &mdash; <b class="r">BEARISH bias</b>.</p>`;
+    } else {
+      readingHtml += `In these conditions, BTC has historically outperformed SPY at h=60d in <b>${fmtPct(sp60)}</b> of cases &mdash; <b>NO STRONG BIAS</b>; the framework offers no edge here.</p>`;
+    }
+  } else {
+    readingHtml += `Cell has insufficient historical analogues to call.</p>`;
+  }
+  if (d.cell_n < 10) {
+    readingHtml += `<p style="color:var(--am);font-size:0.92em"><b>Confidence:</b> low (n=${d.cell_n}) &mdash; the cell uses fallback aggregation.</p>`;
+  }
+  document.getElementById('reading').innerHTML = readingHtml;
+
+  // Horizon table
+  let ht = '<thead><tr><th>Horizon</th><th>Share-positive</th><th>Mean outperf</th><th>n</th></tr></thead><tbody>';
+  ['5','20','60','90'].forEach(h => {
+    const hd = d.horizons[h];
+    const c = biasClass(hd.share_positive);
+    ht += `<tr><td class="label">${h} calendar days</td><td class="${c}">${fmtPct(hd.share_positive)}</td><td class="${(hd.mean_outperf||0)>=0?'pos':'neg'}">${fmtPP(hd.mean_outperf)}</td><td>${hd.n}</td></tr>`;
+  });
+  ht += '</tbody>';
+  document.getElementById('horizon-table').innerHTML = ht;
+
+  // Analogues
+  const an = document.getElementById('analogues');
+  if (d.closest_analogues && d.closest_analogues.length) {
+    an.innerHTML = d.closest_analogues.map(e =>
+      `<div style="margin-bottom:8px"><b>${e.event_name || e.label || e.date}</b> &mdash; ${e.shock_overlap?.length ? 'shared shocks: '+e.shock_overlap.join(', ') : 'same era + VIX bin'}</div>`
+    ).join('');
+  } else {
+    an.innerHTML = '<i>No close BlackRock-style analogues with the same shock profile in the regime.</i>';
+  }
+
+  // ===== 84-cell heatmap (collapsed by default) =====
   const shockOrder = ['none','any','oil_shock','dollar_shock','rate_shock','banking_shock','gprd_threat_shock'];
-  const shockShortLabel = {none:'None',any:'Any',oil_shock:'Oil',dollar_shock:'Dollar',rate_shock:'Rates',banking_shock:'Banking',gprd_threat_shock:'GPR-Threat'};
-
-  // Build a map: era -> shock -> vix_bin -> {share, mean, n}
+  const shockShort = {none:'None',any:'Any',oil_shock:'Oil',dollar_shock:'Dollar',rate_shock:'Rates',banking_shock:'Banking',gprd_threat_shock:'GPR'};
   const cellMap = {};
   d.cells.forEach(c => {
     if (!cellMap[c.era]) cellMap[c.era] = {};
     if (!cellMap[c.era][c.shock]) cellMap[c.era][c.shock] = {};
     cellMap[c.era][c.shock][c.vix_bin] = c;
   });
-
-  const traces = [];
-  const annotations = [];
-  const yLabels = [];
-  const zMatrix = [];
-  const textMatrix = [];
-
-  // Build row labels and z values: rows iterate era-then-shock, cols iterate vix_bin
-  ERAS.forEach((era, eIdx) => {
-    shockOrder.forEach((shock) => {
-      const label = `${ERA_LABELS[era].split('/')[0].substring(0,9)} | ${shockShortLabel[shock]}`;
-      yLabels.push(label);
-      const row = [];
-      const txtRow = [];
-      VIX_BINS.forEach((vb) => {
+  const yLabels=[], zMat=[], txtMat=[];
+  ERAS.forEach(era => {
+    shockOrder.forEach(shock => {
+      yLabels.push(`${ERA_LABEL[era].split('/')[0].substring(0,9)} | ${shockShort[shock]}`);
+      const row=[], txt=[];
+      VIX_BINS.forEach(vb => {
         const c = cellMap[era]?.[shock]?.[vb];
         if (c && c.share_positive_60d != null) {
           row.push(c.share_positive_60d);
-          const dim = c.n < 10 ? ' style="opacity:0.5"' : '';
-          txtRow.push(`${(c.share_positive_60d*100).toFixed(0)}%<br>n=${c.n}`);
-        } else {
-          row.push(null);
-          txtRow.push('-');
-        }
+          txt.push(`${(c.share_positive_60d*100).toFixed(0)}%<br>n=${c.n}`);
+        } else { row.push(null); txt.push('-'); }
       });
-      zMatrix.push(row);
-      textMatrix.push(txtRow);
+      zMat.push(row); txtMat.push(txt);
     });
   });
-
-  const xLabels = VIX_BINS.map(vb => VIX_LABELS[vb]);
   Plotly.newPlot('chart-heatmap', [{
-    z: zMatrix,
-    x: xLabels,
-    y: yLabels,
-    text: textMatrix,
-    texttemplate: '%{text}',
-    textfont: {size:10},
-    colorscale: [[0,'#c62828'],[0.4,'#f5b7b1'],[0.5,'#f8f9fa'],[0.6,'#a9d4a9'],[1,'#2e7d32']],
-    zmin:0.2, zmax:0.8,
-    showscale:true,
-    colorbar:{title:'Share-positive 60d',thickness:14},
+    z:zMat, x:VIX_BINS.map(v=>VIX_LABEL[v]), y:yLabels, text:txtMat, texttemplate:'%{text}',
+    textfont:{size:10},
+    colorscale:[[0,'#c62828'],[0.4,'#f5b7b1'],[0.5,'#f8f9fa'],[0.6,'#a9d4a9'],[1,'#2e7d32']],
+    zmin:0.2, zmax:0.8, showscale:true, colorbar:{title:'Share-positive 60d',thickness:14},
     hovertemplate:'%{y} × %{x}<br>%{text}<extra></extra>',
-  }],{
-    ...L,
-    title:{text:'Cell-conditional share-positive 60d BTC-SPY outperformance',font:{size:15}},
-    xaxis:{...L.xaxis,title:'VIX bin',type:'category'},
+  }],{...L, xaxis:{...L.xaxis,title:'VIX bin',type:'category'},
     yaxis:{...L.yaxis,title:'Era | Shock-type',type:'category',autorange:'reversed',tickfont:{size:10}},
-    margin:{l:160,r:80,t:60,b:50},
-    height:780,
+    margin:{l:160,r:80,t:30,b:50}, height:780,
   },{responsive:true});
 
-  // ===== VIX history =====
-  const vh = d.vix_history;
-  const xs = vh.map(p=>p.date);
-  const ys = vh.map(p=>p.vix);
-  Plotly.newPlot('chart-vix', [
-    {x:xs,y:ys,name:'VIX',line:{color:B,width:1.5},mode:'lines'},
-  ],{
-    ...L,
-    title:{text:'VIX (last ~750 trading days)',font:{size:15}},
-    yaxis:{...L.yaxis,title:'VIX'},
-    shapes:[
-      {type:'line',y0:14.5,y1:14.5,x0:xs[0],x1:xs[xs.length-1],line:{color:G,width:1,dash:'dash'}},
-      {type:'line',y0:20,y1:20,x0:xs[0],x1:xs[xs.length-1],line:{color:AM,width:1,dash:'dash'}},
-      {type:'line',y0:30,y1:30,x0:xs[0],x1:xs[xs.length-1],line:{color:R,width:1,dash:'dash'}},
-    ],
-    annotations:[
-      {x:xs[xs.length-1],y:14.5,text:'calm/low boundary (14.5)',showarrow:false,xanchor:'right',font:{color:G,size:10},yshift:8},
-      {x:xs[xs.length-1],y:20,text:'low/mid boundary (20)',showarrow:false,xanchor:'right',font:{color:AM,size:10},yshift:8},
-      {x:xs[xs.length-1],y:30,text:'mid/extreme boundary (30)',showarrow:false,xanchor:'right',font:{color:R,size:10},yshift:8},
-    ],
-    margin:{...L.margin,r:60},
-  },{responsive:true});
+  // ===== Methodology table =====
+  const m = d.methodology;
+  const rows = [
+    {key:'full_sample', meta:m.full_sample},
+    {key:'ewma_126', meta:m.ewma_126},
+    {key:'era_conditional', meta:m.era_conditional},
+    {key:'walkforward', meta:m.walkforward},
+  ];
+  let mt = '<thead><tr><th>Cutoff</th><th>n</th><th>ΔR² M2→M3 (pp)</th><th>p</th><th>Banking M4 (pp)</th><th>Verdict</th></tr></thead><tbody>';
+  rows.forEach(r => {
+    const me = r.meta || {};
+    const v = me.verdict || '-';
+    const vC = v.includes('KEEP') ? 'badge keep' : (v.includes('BORDER') ? 'badge border' : '');
+    const dr = me.dr2_m3_pp;
+    const isWf = r.key === 'walkforward';
+    mt += `<tr${isWf?' style="background:rgba(247,147,26,0.04);font-weight:500"':''}><td class="label">${me.label}${isWf?' ←':''}</td>`
+       + `<td>${me.n_obs||'-'}</td>`
+       + `<td class="${dr>2?'pos':(dr<1?'neut':'warn')}">${dr==null?'-':(dr>=0?'+':'')+dr.toFixed(2)}</td>`
+       + `<td>${me.p_value==null?'-':me.p_value.toFixed(3)}</td>`
+       + `<td class="${(me.banking_m4_pp||0)>=0?'pos':'neg'}">${me.banking_m4_pp==null?'-':(me.banking_m4_pp>=0?'+':'')+me.banking_m4_pp.toFixed(2)}</td>`
+       + `<td><span class="${vC}">${v}</span></td></tr>`;
+  });
+  mt += '</tbody>';
+  document.getElementById('meth-table').innerHTML = mt;
 
   document.getElementById('ts').textContent = 'Last updated: ' + d.updated;
 }
 main().catch(e => {
-  document.getElementById('cards').innerHTML = '<div class="card"><div class="l">Error</div><div class="v sm warn">Failed to load dashboard_output.json</div><div class="s">'+e.message+'</div></div>';
+  document.getElementById('hero').innerHTML = '<div class="panel" style="grid-column:1/-1"><h3>Error</h3><div class="big warn">Failed to load dashboard data</div><div class="sub">'+e.message+'</div></div>';
   console.error(e);
 });
 </script>
