@@ -154,6 +154,17 @@
     footer{text-align:center;padding:22px 0;color:var(--dim);font-size:.82em;border-top:1px solid var(--bd);margin-top:25px}
     footer a{color:var(--ac);text-decoration:none}
 
+    /* Today's read bridge — maps active shocks + prior direction to taxonomy mode */
+    .today-bridge{background:linear-gradient(135deg,rgba(247,147,26,0.10),rgba(247,147,26,0.02));border:1px solid rgba(247,147,26,0.35);border-left:4px solid var(--ac);border-radius:6px;padding:14px 20px;margin-bottom:22px;font-size:0.95em;line-height:1.6}
+    .today-bridge .lbl{font-size:0.72em;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;font-weight:700;margin-bottom:6px;display:block}
+    .today-bridge .mtag{display:inline-block;font-weight:700;text-transform:uppercase;padding:3px 10px;border-radius:3px;font-size:0.82em;letter-spacing:.4px;margin-right:6px;color:#fff;vertical-align:baseline}
+    .today-bridge .mtag-rev{background:var(--gn)}
+    .today-bridge .mtag-tk{background:var(--rd)}
+    .today-bridge .mtag-dr{background:var(--am)}
+    .today-bridge .mtag-base{background:var(--dim)}
+    .today-bridge .read-line{margin-bottom:6px}
+    .today-bridge .read-line:last-child{margin-bottom:0}
+
     /* Persistent thesis strip (3-mode taxonomy) */
     .thesis{margin:0 0 22px 0}
     .thesis .ts-lead{font-size:0.92em;color:var(--tx);margin-bottom:10px;line-height:1.55}
@@ -209,8 +220,8 @@
       <div class="mode">🔄 Reversal catalyst</div>
       <div class="shocks">Banking stress</div>
       <div class="nums">
-        <div><span class="lbl">When BTC was falling:</span> <span class="n pos">+7.8pp</span></div>
-        <div><span class="lbl">When BTC was rising:</span> <span class="n neg">−16.6pp</span></div>
+        <div><span class="lbl">If BTC was in downtrend (prior 60d):</span> <span class="n pos">+7.8pp</span></div>
+        <div><span class="lbl">If BTC was in uptrend (prior 60d):</span> <span class="n neg">−16.6pp</span></div>
       </div>
       <div class="story">Opposite-signed by prior trend. Banking-stress catalyses safe-haven flow into BTC during drawdowns and terminates uptrends — it <em>changes</em> the trajectory.</div>
     </div>
@@ -219,8 +230,8 @@
       <div class="mode">⛔ Trend killer</div>
       <div class="shocks">Oil · Dollar · Rates</div>
       <div class="nums">
-        <div><span class="lbl">When BTC was rising:</span> <span class="n neg">−11 to −18pp</span></div>
-        <div><span class="lbl">When BTC was falling:</span> <span class="n neut">≈0pp</span></div>
+        <div><span class="lbl">If BTC was in uptrend (prior 60d):</span> <span class="n neg">−11 to −18pp</span></div>
+        <div><span class="lbl">If BTC was in downtrend (prior 60d):</span> <span class="n neut">≈0pp</span></div>
       </div>
       <div class="story">Asymmetric in prior direction. Terminates BTC rallies; near-zero marginal effect when BTC is already trending down. Risk-asset behaviour under tightening macro.</div>
     </div>
@@ -229,8 +240,8 @@
       <div class="mode">📉 Drag</div>
       <div class="shocks">GPR threat (geopolitical)</div>
       <div class="nums">
-        <div><span class="lbl">When BTC was rising:</span> <span class="n neg">−5.0pp</span></div>
-        <div><span class="lbl">When BTC was falling:</span> <span class="n neg">−6.3pp</span></div>
+        <div><span class="lbl">If BTC was in uptrend (prior 60d):</span> <span class="n neg">−5.0pp</span></div>
+        <div><span class="lbl">If BTC was in downtrend (prior 60d):</span> <span class="n neg">−6.3pp</span></div>
       </div>
       <div class="story">Symmetric mild headwind. Geopolitical threat dampens BTC outperformance regardless of prior trend — it doesn't change direction.</div>
     </div>
@@ -242,6 +253,9 @@
     distribution &mdash; not a price target, not a trade recommendation.
   </p>
 </div>
+
+<!-- Today's read: which mode (if any) is firing now -->
+<div class="today-bridge" id="today-bridge"></div>
 
 <!-- HERO -->
 <div class="hero" id="hero"></div>
@@ -457,6 +471,39 @@ async function main(){
   // Compute active shocks list (used by hero / decision tree downstream)
   const active = Object.entries(d.active_shocks).filter(([k,v])=>v).map(([k])=>d.per_shock_state[k].display.label);
   const activeStr = active.length ? active.join(' + ') : 'none';
+
+  // ===== Today's read bridge — maps active shocks + BTC prior direction to taxonomy mode =====
+  const tbDir = d.btc_prior_direction;  // 'up' or 'down'
+  const tbDirWord = tbDir === 'up' ? 'an uptrend' : 'a downtrend';
+  const tbSh = d.active_shocks;
+  const tbBanking = tbSh.banking_shock;
+  const tbTKList = ['oil_shock','dollar_shock','rate_shock'].filter(s => tbSh[s]);
+  const tbDrag = tbSh.gprd_threat_shock;
+  const tbModeLines = [];
+  if (tbBanking) {
+    const eff = tbDir === 'up' ? '−16.6pp' : '+7.8pp';
+    const eClass = tbDir === 'up' ? 'neg' : 'pos';
+    const verb = tbDir === 'up' ? 'killing rallies' : 'catalysing reversals';
+    tbModeLines.push(`<span class="mtag mtag-rev">🔄 Reversal</span> Banking-stress is active and BTC was in ${tbDirWord} the prior 60d. Historical analogues for this combination delivered <b class="${eClass}">${eff}</b> BTC vs SPY over the next 60d (${verb}).`);
+  }
+  if (tbTKList.length) {
+    const eff = tbDir === 'up' ? '−11 to −18pp' : '≈0pp';
+    const eClass = tbDir === 'up' ? 'neg' : 'neut';
+    const names = tbTKList.map(s => d.per_shock_state[s].display.label).join(', ');
+    const note = tbDir === 'up' ? 'killing the rally' : 'no marginal effect on a falling trend';
+    tbModeLines.push(`<span class="mtag mtag-tk">⛔ Trend killer</span> ${names} active and BTC was in ${tbDirWord} the prior 60d. Historical analogues delivered <b class="${eClass}">${eff}</b> marginal effect (${note}).`);
+  }
+  if (tbDrag) {
+    const eff = tbDir === 'up' ? '−5.0pp' : '−6.3pp';
+    tbModeLines.push(`<span class="mtag mtag-dr">📉 Drag</span> GPR-threat is active. Historical analogues delivered <b class="neg">${eff}</b> drag, roughly symmetric across prior direction.`);
+  }
+  let tbHtml = `<span class="lbl">Today's read — ${d.current_date}</span>`;
+  if (tbModeLines.length === 0) {
+    tbHtml += `<div class="read-line"><span class="mtag mtag-base">Baseline</span> No macro shocks are firing. BTC was in ${tbDirWord} the prior 60d. The framework adds no edge over the unconditional VIX × era baseline today.</div>`;
+  } else {
+    tbHtml += tbModeLines.map(l => `<div class="read-line">${l}</div>`).join('');
+  }
+  document.getElementById('today-bridge').innerHTML = tbHtml;
 
   // ===== What changed today =====
   const ch = document.getElementById('changed');
