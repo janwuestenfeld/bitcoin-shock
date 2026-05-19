@@ -204,20 +204,23 @@ def rebuild_panel(panel_existing: pd.DataFrame) -> pd.DataFrame:
     new_rows = pd.DataFrame(index=new_nyse_days)
     for col in panel_existing.columns:
         new_rows[col] = np.nan
-    # Map series to columns
+    # Map series to columns. Forward-fill ALL series onto NYSE dates: if a
+    # source is one day lagged (e.g., FRED WTI posts T+1), use the prior
+    # day's value. This is the standard practitioner convention — "today's
+    # WTI" is yesterday's print until the new print arrives.
     for col, src in [("vix", "vix"), ("wti", "wti"), ("usd_broad", "usd_broad"),
                      ("y10_fred", "y10_fred"), ("stlfsi", "stlfsi"),
                      ("btc", "btc"), ("spy", "spy"), ("gprd_threat", "gprd_threat")]:
         if src in new_data and col in panel_existing.columns:
             s = new_data[src]
-            # For weekly series (STLFSI4): forward-fill onto daily NYSE
-            if src == "stlfsi":
-                s_daily = s.reindex(new_nyse_days, method="ffill")
-            elif src == "gprd_threat":
-                s_daily = s.reindex(new_nyse_days, method="ffill")
-            else:
-                s_daily = s.reindex(new_nyse_days)
-            new_rows[col] = s_daily.values
+            # Need prior-day value too for forward-fill to bridge the panel
+            # boundary, so include some history before reindex+ffill.
+            s_extended = pd.concat([
+                panel_existing[col].dropna().tail(5),  # last 5 valid prior values
+                s
+            ])
+            s_extended = s_extended[~s_extended.index.duplicated(keep="last")].sort_index()
+            new_rows[col] = s_extended.reindex(new_nyse_days, method="ffill").values
 
     # Forward-fill from existing panel's last row for any column that's still NaN
     # (e.g., GPR-threat if source failed today)
