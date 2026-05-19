@@ -37,12 +37,10 @@ os.environ.setdefault("GLOG_minloglevel", "3")
 np.random.seed(42)
 
 ROOT = Path(__file__).resolve().parent.parent
-PANEL_PATH = ROOT / "output" / "seed" / "paper1_context" / "panel_with_shocks.parquet"
-AUX_DIR = ROOT / "data" / "aux"
-AUX_DIR.mkdir(parents=True, exist_ok=True)
-OUT_PARQUET = AUX_DIR / "era_conditional_walkforward_shocks_panel.parquet"
+PANEL_PATH = ROOT / "data" / "panel_with_shocks.parquet"
+OUT_PARQUET = ROOT / "data" / "era_conditional_walkforward_shocks_panel.parquet"
 
-RESULTS_DIR = ROOT / "output" / "stage3a" / "results"
+RESULTS_DIR = ROOT / "output"
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 OUT_INCIDENCE_JSON = RESULTS_DIR / "era_conditional_walkforward_shock_incidence.json"
 

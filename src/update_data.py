@@ -110,6 +110,92 @@ def confidence_for_n(n: int) -> str:
     return "high"
 
 
+def classify_regime(vix_bin, era, active_shocks, btc_prior_60d):
+    """Deterministic 5-regime classifier from synthesis of agent outputs.
+
+    Decision tree (order matters):
+      1. Banking firing AND BTC prior ≤ -10%        → REVERSAL_PRIMED
+      2. BTC prior ≥ 0 AND (oil|dollar|rates|banking firing) → TREND_KILL
+      3. Calm VIX AND post-ETF AND BTC prior ≥ 0 AND no trend-killer
+                                                     → HIGH_BETA_BULL
+      4. GPR-threat firing alone (no other shock)   → DRAG
+      5. else                                        → BASELINE
+    """
+    trend_killers = {"oil_shock", "dollar_shock", "rate_shock", "banking_shock"}
+    active = set(s for s, on in active_shocks.items() if on)
+    bp = btc_prior_60d if btc_prior_60d is not None else 0.0
+
+    if "banking_shock" in active and bp <= -0.10:
+        return {
+            "label": "REVERSAL_PRIMED", "display": "Reversal Primed",
+            "trigger": "Banking shock firing + BTC down ≥10% prior 60d",
+            "intuition": "Banking-stress is the only documented reversal catalyst. Historically catalyzes BTC bounces from drawdowns (+7.8pp Δ vs no-shock baseline). Highest-conviction long in the framework.",
+            "forward_60d": "+5 to +10pp outperformance vs SPY (bimodal — buy-the-catalyst, not buy-and-hold)",
+            "class": "bull",
+        }
+    if bp >= 0 and (active & trend_killers):
+        killers_active = sorted(active & trend_killers)
+        return {
+            "label": "TREND_KILL", "display": "Trend Kill",
+            "trigger": f"BTC up + tightening shock firing ({', '.join([s.replace('_shock','') for s in killers_active])})",
+            "intuition": "Oil/dollar/rates/banking shocks kill BTC uptrends (−11 to −17pp Δ when BTC prior up). Tightening pressure neutralizes the uptrend; sometimes reverses it.",
+            "forward_60d": "−10 to −15pp underperformance vs SPY (reduce or hedge)",
+            "class": "bear",
+        }
+    if vix_bin == "calm" and era == "post_etf" and bp >= 0 and not (active & trend_killers):
+        return {
+            "label": "HIGH_BETA_BULL", "display": "High-Beta Bull",
+            "trigger": "Calm VIX (<14.5) + post-ETF + BTC up + no trend-killer firing",
+            "intuition": "The paper's signature finding: post-ETF calm-regime β rises +1.02. BTC trades as leveraged SPY with no macro headwinds. Institutional flow dominates the correlation channel.",
+            "forward_60d": "+8 to +14pp outperformance vs SPY (highest-conviction long)",
+            "class": "bull",
+        }
+    if "gprd_threat_shock" in active and len(active - {"gprd_threat_shock"}) == 0:
+        return {
+            "label": "DRAG", "display": "Drag",
+            "trigger": "GPR-threat firing alone (no banking/oil/dollar/rates)",
+            "intuition": "Geopolitical-threat shocks impose a symmetric −5pp drag regardless of BTC direction. Uncertainty premium tax, not a regime-shifter. Smallest of the five shock effects.",
+            "forward_60d": "−3 to −7pp underperformance (neutral-to-mild underweight)",
+            "class": "bear",
+        }
+    return {
+        "label": "BASELINE", "display": "Baseline",
+        "trigger": "No decisive shock-trigger combination",
+        "intuition": "BTC tracks its usual β to SPY with no regime-specific edge. The framework's default state.",
+        "forward_60d": "±2pp (no actionable signal)",
+        "class": "neutral",
+    }
+
+
+def human_cell_label(shock, vix_bin, era):
+    """Translate cell_key to human-readable label."""
+    shock_lbl = {
+        "none": "No shocks", "any": "Any shock",
+        "oil_shock": "Oil shock", "dollar_shock": "Dollar shock",
+        "rate_shock": "Rates shock", "banking_shock": "Banking shock",
+        "gprd_threat_shock": "GPR-Threat shock",
+    }.get(shock, shock)
+    vix_lbl = {"calm": "Calm VIX", "low_stress": "Low-stress VIX",
+               "mid_stress": "Mid-stress VIX", "extreme_stress": "Extreme-stress VIX"}.get(vix_bin, vix_bin)
+    era_lbl = {"pre_covid": "Pre-COVID", "post_covid_pre_etf": "Post-COVID / Pre-ETF",
+               "post_etf": "Post-ETF"}.get(era, era)
+    return f"{shock_lbl} × {vix_lbl} × {era_lbl}"
+
+
+SHOCK_MECHANISM = {
+    "oil_shock": {"channel": "Real-rate / inflation pulse",
+        "story": "Large WTI moves stress macro vol and signal growth/inflation surprise. Kills BTC uptrends; neutral in drawdowns."},
+    "dollar_shock": {"channel": "Global liquidity drain",
+        "story": "Strong dollar (top-decile move) drains global liquidity; disproportionately punishes BTC uptrends."},
+    "rate_shock": {"channel": "Discount-rate transmission",
+        "story": "Top-decile 10Y yield moves reprice duration risk. Mirrors oil/dollar — kills uptrends, neutral in downtrends."},
+    "banking_shock": {"channel": "Safe-haven flight to non-sovereign asset",
+        "story": "STLFSI4 stress historically catalyzes BTC reversals (SVB 2023 pattern). Only shock with bidirectional asymmetric effect; the framework's reversal channel."},
+    "gprd_threat_shock": {"channel": "Geopolitical uncertainty premium",
+        "story": "Caldara-Iacoviello GPR-threat spikes impose a symmetric −5pp drag regardless of BTC direction. Smallest of the five effects but consistent."},
+}
+
+
 def main():
     panel = pd.read_parquet(PANEL).copy()
     panel.index = pd.to_datetime(panel.index)
@@ -271,15 +357,17 @@ def main():
         for d, v in vix_long.items()
     ]
 
-    # ===== Day-over-day "what changed today" =====
+    # ===== Day-over-day "what changed today" (with consequences, not just events) =====
     changed = []
     if prior_panel is not None:
         vix_diff = out["current_vix"] - float(prior_panel["vix"])
         prior_bin = vix_bin_of(float(prior_panel["vix"]))
         if abs(vix_diff) >= 0.05:
+            shift_txt = (f"regime shifted from {prior_bin} to {out['vix_bin']}" if prior_bin != out['vix_bin']
+                        else f"{out['vix_bin']} regime unchanged")
             changed.append({
                 "kind": "vix",
-                "text": f"VIX {out['current_vix']:.2f} ({vix_diff:+.2f} d/d){', regime shift to '+out['vix_bin'] if prior_bin != out['vix_bin'] else ', '+out['vix_bin']+' regime unchanged'}"
+                "text": f"VIX {out['current_vix']:.2f} ({vix_diff:+.2f} d/d), {shift_txt}"
             })
     if prior_wf is not None:
         for s in SHOCKS:
@@ -314,11 +402,18 @@ def main():
 
     out["primary_shock"] = primary_shock
     out["cell_key"] = headline_key
+    out["cell_human_label"] = human_cell_label(primary_shock, vb, era)
     out["cell_n"] = int(used.get("n_days", used.get("n", 0)))
     out["cell_tier_used"] = used_tier
     out["cell_regime_warning"] = used.get("regime_warning")
     out["horizons"] = {str(h): _cell_horizon(used, h) for h in HORIZONS}
     out["confidence"] = confidence_for_n(out["cell_n"])
+
+    # ===== Regime classification (deterministic 5-label taxonomy) =====
+    out["regime"] = classify_regime(vb, era, out["active_shocks"], btc_prior_today)
+
+    # ===== Shock mechanism dictionary for prose display =====
+    out["shock_mechanism"] = SHOCK_MECHANISM
 
     # ===== Momentum-conditioned cell stats (compute from raw panel) =====
     # For today's cell (era × vix-bin × primary_shock), split historical analogues by BTC prior 60d direction.

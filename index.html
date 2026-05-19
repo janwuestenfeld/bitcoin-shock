@@ -41,6 +41,31 @@
     .call-bear{background:linear-gradient(135deg,rgba(198,40,40,0.10),rgba(198,40,40,0.02));border-color:rgba(198,40,40,0.35)}
     .call-neut{background:linear-gradient(135deg,rgba(102,102,102,0.06),rgba(102,102,102,0.02))}
     .call-low{opacity:0.85}
+    .regime-trigger{font-size:0.78em;color:var(--dim);margin-top:8px;line-height:1.4;padding-top:8px;border-top:1px solid var(--bd)}
+    .regime-trigger b{color:var(--tx)}
+
+    /* "How today's call was made" decision-tree block */
+    .dtree{background:#fff;border:1px solid var(--bd);border-radius:8px;padding:16px 22px;margin-bottom:22px}
+    .dtree h3{font-size:0.78em;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin-bottom:8px}
+    .dtree ol{margin-left:22px;font-size:0.92em;line-height:1.65}
+    .dtree li b{color:var(--ac)}
+    .dtree .arrow{color:var(--ac);font-weight:700;margin:0 4px}
+    .dtree .outcome{margin-top:8px;padding-top:6px;border-top:1px dashed var(--bd);font-size:0.92em;color:var(--tx)}
+    .dtree .outcome b{font-size:1.05em}
+
+    /* Mechanism strip */
+    .mech{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:22px}
+    @media(max-width:1000px){.mech{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:520px){.mech{grid-template-columns:1fr}}
+    .mech .mc{background:#fff;border:1px solid var(--bd);border-radius:5px;padding:11px 13px}
+    .mech .mc .name{font-weight:600;font-size:0.92em;color:var(--tx)}
+    .mech .mc .channel{color:var(--ac);font-size:0.74em;text-transform:uppercase;letter-spacing:.3px;margin:2px 0 6px;font-weight:600}
+    .mech .mc .story{color:var(--dim);font-size:0.78em;line-height:1.45}
+    .mech .mc.firing{border-color:var(--rd);background:rgba(198,40,40,0.04)}
+
+    /* Behavior chip on shock cards */
+    .scard .behav{font-size:0.7em;margin-top:6px;color:var(--dim);text-transform:uppercase;letter-spacing:.3px;font-weight:600}
+    .scard .behav b{color:var(--ac);font-weight:700}
 
     /* Confidence chip */
     .conf{display:inline-block;padding:2px 8px;border-radius:3px;font-size:0.72em;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-left:6px;vertical-align:middle}
@@ -154,6 +179,18 @@
 
 <!-- HERO -->
 <div class="hero" id="hero"></div>
+
+<!-- "How today's call was made" decision-tree block -->
+<div class="dtree" id="dtree"></div>
+
+<!-- "What each shock means" mechanism strip -->
+<section>
+  <h2>What each shock means</h2>
+  <p class="blurb">One-line economic intuition per shock. A shock fires when its raw measure
+  crosses the top-decile threshold of its within-era distribution &mdash; computed
+  <b>walk-forward</b> (no look-ahead). Each shock transmits through a different macro channel.</p>
+  <div class="mech" id="mech"></div>
+</section>
 
 <!-- Shock state -->
 <section>
@@ -376,38 +413,88 @@ async function main(){
   const aggBiasC = biasClass(aggSp);
   const aggBiasL = biasLabel(aggSp, confidence_n(aggN));
 
+  // Regime label (the practitioner-readable classification)
+  const regime = d.regime;
+  const regimeClassMap = {bull:'call-bull', bear:'call-bear', neutral:'call-neut'};
+  const regimeColorClass = regimeClassMap[regime.class] || 'call-neut';
+  const regimeBigClass = regime.class === 'bull' ? 'pos' : (regime.class === 'bear' ? 'neg' : 'neut');
+
   document.getElementById('hero').innerHTML = `
     <div class="hpanel">
-      <h3>Today's regime</h3>
+      <h3>Today's regime inputs</h3>
       <div class="big">VIX ${d.current_vix.toFixed(1)}</div>
-      <div class="sub">${VIX_LBL[d.vix_bin]} regime · ${ERA_LBL[d.current_era]}</div>
+      <div class="sub" title="VIX bins: Calm <14.5; Low-Stress 14.5-20; Mid-Stress 20-30; Extreme-Stress ≥30">${VIX_LBL[d.vix_bin]} · ${ERA_LBL[d.current_era]}</div>
       <div class="mini"><b>Active shocks:</b> ${activeStr}</div>
-      <div class="mini"><b>Cell:</b> <code>${d.cell_key}</code></div>
+      <div class="mini"><b>Cell:</b> ${d.cell_human_label} <span style="color:var(--dim)">(n=${d.cell_n})</span></div>
     </div>
     <div class="hpanel">
       <h3>BTC prior 60d (momentum)</h3>
       <div class="big ${btcPriorClass}">${btcPrior != null ? (btcPrior>=0?'+':'')+(btcPrior*100).toFixed(1)+'%' : '—'}</div>
       <div class="sub">trend: <b>${btcPriorDir === 'up' ? 'rising' : 'falling'}</b></div>
-      <div class="mini" style="margin-top:10px">+1.97pp OOS R² beyond momentum is the framework's edge — this is the momentum baseline.</div>
+      <div class="mini" style="margin-top:10px" title="Backward 60d return — known at time t with no look-ahead. The framework's edge: shocks add +1.97pp OOS R² over momentum + macro regime alone.">+1.97pp OOS R² beyond momentum is the framework's edge.</div>
     </div>
     <div class="hpanel">
       <h3>BTC β₆₀ (vs SPY)</h3>
       <div class="big">${bk60.today != null ? bk60.today.toFixed(2) : '—'}</div>
       <div class="sub">${bkDirLbl ? bkDirLbl + ' over 5d' : ''}</div>
-      <div class="mini" style="margin-top:10px">60-day backward-rolling OLS &mdash; no look-ahead by construction.</div>
+      <div class="mini" style="margin-top:10px" title="60-day backward-rolling OLS β. >1 means BTC moves more than SPY; <1 means less. Backward-rolling by construction, no look-ahead.">60-day backward-rolling OLS &mdash; no look-ahead by construction.</div>
     </div>
-    <div class="hpanel ${mCallClass}">
-      <h3>Bias call (momentum-refined) <span class="conf conf-${mcConf}">${mcConf.replace('_',' ')}</span></h3>
-      <div class="big ${mBiasC}">${mBiasL}</div>
-      <div class="sub">${mcConf==='no_call' ? 'matched sub-cell n='+matchedN+' — below 5-analogue minimum' :
-        fmtPct(matchedSp) + ' of n=' + matchedN + ' analogues (BTC prior ' + btcPriorDir + ') outperformed at h=60d'}</div>
-      ${mcConf!=='no_call'?`<div class="mini">Mean outperf 60d: <b class="${(matchedMu||0)>=0?'pos':'neg'}">${fmtPP(matchedMu)}</b></div>`:''}
-      <div class="mini" style="font-size:0.78em;color:var(--dim);margin-top:8px;padding-top:6px;border-top:1px solid var(--bd)">
-        <b>Aggregate (unconditional):</b> <span class="${aggBiasC}">${aggBiasL}</span> &mdash; ${fmtPct(aggSp)} sp+, ${fmtPP(aggMu)} mean (n=${aggN})
+    <div class="hpanel ${regimeColorClass}">
+      <h3>Regime classification</h3>
+      <div class="big ${regimeBigClass}">${regime.display}</div>
+      <div class="sub" style="margin-top:4px"><b>Expected 60d:</b> ${regime.forward_60d}</div>
+      <div class="mini" style="margin-top:8px"><b>Why:</b> ${regime.intuition}</div>
+      <div class="regime-trigger"><b>Trigger:</b> ${regime.trigger}</div>
+      <div class="hstrip" style="margin-top:10px">${horizonStrip}</div>
+      <div class="mini" style="font-size:0.75em;color:var(--dim);margin-top:8px;padding-top:6px;border-top:1px solid var(--bd)">
+        Matched sub-cell call: <span class="conf conf-${mcConf}" style="font-size:0.88em">${mcConf.replace('_',' ')}</span>
+        ${mcConf!=='no_call' ? '— '+fmtPct(matchedSp)+' sp+, '+fmtPP(matchedMu)+' (n='+matchedN+', BTC prior '+btcPriorDir+')' : '— n='+matchedN+' too small'}
+        &nbsp;·&nbsp; aggregate: ${fmtPct(aggSp)} sp+, ${fmtPP(aggMu)} (n=${aggN})
       </div>
-      <div class="hstrip">${horizonStrip}</div>
     </div>
   `;
+
+  // ===== Decision-tree block ("How today's call was made") =====
+  const trendKillerActive = ['oil_shock','dollar_shock','rate_shock','banking_shock'].some(s => d.active_shocks[s]);
+  document.getElementById('dtree').innerHTML = `
+    <h3>How today's regime was classified</h3>
+    <ol>
+      <li>VIX = <b>${d.current_vix.toFixed(2)}</b> → <b>${VIX_LBL[d.vix_bin]}</b> bin
+        <span style="color:var(--dim)">(thresholds: calm &lt;14.5 · low-stress 14.5–20 · mid 20–30 · extreme ≥30)</span></li>
+      <li>Date is ${d.current_date} → <b>${ERA_LBL[d.current_era]}</b> era
+        <span style="color:var(--dim)">(post-ETF era starts 2024-01-10)</span></li>
+      <li>Active shocks today: <b>${active.length ? active.join(', ') : 'none'}</b>
+        ${trendKillerActive ? '<span style="color:var(--dim)">(includes a trend-killer — oil/dollar/rates/banking)</span>' : ''}</li>
+      <li>BTC prior 60d return: <b class="${btcPriorClass}">${btcPrior != null ? (btcPrior>=0?'+':'')+(btcPrior*100).toFixed(1)+'%' : '—'}</b> → trend ${btcPriorDir}</li>
+      <li>Decision tree: ${regime.trigger} → <b class="${regimeBigClass}">${regime.display}</b></li>
+    </ol>
+    <div class="outcome">
+      <b>Regime call:</b> <span class="${regimeBigClass}" style="font-weight:700">${regime.display}</span> &nbsp;·&nbsp;
+      Expected forward 60d outperformance vs SPY: <b>${regime.forward_60d}</b> &nbsp;·&nbsp;
+      Matched cell ${d.cell_human_label}, n=${d.cell_n} analogues.
+    </div>
+  `;
+
+  // ===== Mechanism strip ("What each shock means") =====
+  const mechEl = document.getElementById('mech');
+  const SHOCK_BEHAV = {};
+  d.effect_size_matrix.forEach(r => {
+    SHOCK_BEHAV[r.shock] = r;
+  });
+  const SHOCK_BEHAV_LBL = {reversal:'Reversal catalyst 🔄', trend_killer:'Trend killer ⛔',
+                           drag:'Drag 📉', catalyst:'Catalyst ↗️', mixed:'Mixed 🔀'};
+  mechEl.innerHTML = SHOCKS.map(s => {
+    const mech = d.shock_mechanism[s];
+    const firing = d.active_shocks[s];
+    const beh = SHOCK_BEHAV[s];
+    const behLbl = beh ? (SHOCK_BEHAV_LBL[beh.kind] || beh.kind) : '';
+    return `<div class="mc${firing?' firing':''}">
+      <div class="name">${d.per_shock_state[s].display.label}${firing?' &middot; <span style="color:var(--rd);font-size:0.78em">ACTIVE</span>':''}</div>
+      <div class="channel">${mech.channel}</div>
+      <div class="story">${mech.story}</div>
+      <div style="margin-top:6px;font-size:0.74em;color:var(--ac);font-weight:600">${behLbl}</div>
+    </div>`;
+  }).join('');
 
   // ===== Shock cards with proximity bars =====
   const shocksEl = document.getElementById('shocks');
@@ -448,6 +535,17 @@ async function main(){
       </div>`;
     }
 
+    // Behavior chip from effect-size matrix
+    const beh = (d.effect_size_matrix || []).find(r => r.shock === s);
+    const BEH_TXT = {reversal:'🔄 Reversal', trend_killer:'⛔ Trend killer',
+                     drag:'📉 Drag', catalyst:'↗️ Catalyst', mixed:'🔀 Mixed'};
+    let behHtml = '';
+    if (beh) {
+      const lbl = BEH_TXT[beh.kind] || beh.kind || '';
+      const fmtD = (x) => x == null ? '—' : (x >= 0 ? '+' : '') + x.toFixed(1) + 'pp';
+      behHtml = `<div class="behav"><b>${lbl}</b> &middot; if fires: ${fmtD(beh.prior_up_delta_pp)} (BTC↑) / ${fmtD(beh.prior_down_delta_pp)} (BTC↓)</div>`;
+    }
+
     const div = document.createElement('div');
     div.className = 'scard' + (fire ? ' fire' : '');
     div.innerHTML = `
@@ -458,6 +556,7 @@ async function main(){
       <div class="bar-wrap"><div class="bar" style="width:${Math.min(100,barPct)}%"></div></div>
       <div class="prox-lbl"><b>${proxLine}</b></div>
       <span class="badge ${fire?'on':'off'}">${fire ? 'ACTIVE' : 'inactive'}</span>
+      ${behHtml}
       ${d60Html}
       <div class="last">${lastLine} ${trendLine}</div>
       <div class="spark" id="spark-${s}"></div>

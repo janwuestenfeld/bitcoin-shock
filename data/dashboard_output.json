@@ -27978,6 +27978,7 @@
   ],
   "primary_shock": "gprd_threat_shock",
   "cell_key": "gprd_threat_shock__calm__post_etf",
+  "cell_human_label": "GPR-Threat shock \u00d7 Calm VIX \u00d7 Post-ETF",
   "cell_n": 7,
   "cell_tier_used": "primary",
   "cell_regime_warning": null,
@@ -28004,6 +28005,36 @@
     }
   },
   "confidence": "low",
+  "regime": {
+    "label": "DRAG",
+    "display": "Drag",
+    "trigger": "GPR-threat firing alone (no banking/oil/dollar/rates)",
+    "intuition": "Geopolitical-threat shocks impose a symmetric \u22125pp drag regardless of BTC direction. Uncertainty premium tax, not a regime-shifter. Smallest of the five shock effects.",
+    "forward_60d": "\u22123 to \u22127pp underperformance (neutral-to-mild underweight)",
+    "class": "bear"
+  },
+  "shock_mechanism": {
+    "oil_shock": {
+      "channel": "Real-rate / inflation pulse",
+      "story": "Large WTI moves stress macro vol and signal growth/inflation surprise. Kills BTC uptrends; neutral in drawdowns."
+    },
+    "dollar_shock": {
+      "channel": "Global liquidity drain",
+      "story": "Strong dollar (top-decile move) drains global liquidity; disproportionately punishes BTC uptrends."
+    },
+    "rate_shock": {
+      "channel": "Discount-rate transmission",
+      "story": "Top-decile 10Y yield moves reprice duration risk. Mirrors oil/dollar \u2014 kills uptrends, neutral in downtrends."
+    },
+    "banking_shock": {
+      "channel": "Safe-haven flight to non-sovereign asset",
+      "story": "STLFSI4 stress historically catalyzes BTC reversals (SVB 2023 pattern). Only shock with bidirectional asymmetric effect; the framework's reversal channel."
+    },
+    "gprd_threat_shock": {
+      "channel": "Geopolitical uncertainty premium",
+      "story": "Caldara-Iacoviello GPR-threat spikes impose a symmetric \u22125pp drag regardless of BTC direction. Smallest of the five effects but consistent."
+    }
+  },
   "momentum_conditioned": {
     "prior_up": {
       "n": 1,
@@ -29158,6 +29189,6 @@
       "m3_r2_pp": 6.544386044701933
     }
   },
-  "updated": "2026-05-19T18:27:43Z",
+  "updated": "2026-05-19T19:00:28Z",
   "panel_n_rows": 3017
 }
