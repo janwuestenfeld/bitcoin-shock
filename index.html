@@ -205,24 +205,23 @@
   <p class="author">Developed by <a href="https://www.linkedin.com/in/dr-jan-wuestenfeld">Dr. Jan Wuestenfeld</a> &mdash; <span id="date-tag"></span></p>
 </header>
 
-<!-- First-visit intro card (dismissible, persists via localStorage) -->
+<!-- Thesis card (dismissible, persists via localStorage) -->
 <div class="intro" id="intro">
-  <button class="intro-x" onclick="dismissIntro()" aria-label="Dismiss intro">&times;</button>
-  <div class="intro-title">Why this dashboard exists</div>
-  <div style="margin-bottom:12px;font-size:0.94em;line-height:1.55">
-    The conventional narrative says BTC is a "digital safe-haven" that benefits from geopolitical
-    and macro shocks. <b>The data says: it depends.</b> Banking shocks are bidirectional reversal
-    catalysts. Oil, dollar, and rates shocks <em>kill</em> BTC uptrends. Geopolitical-risk shocks
-    are a uniform drag &mdash; they neither help nor protect. Whether a shock helps or hurts BTC
-    depends on the regime, not on the shock itself.
-  </div>
-  <div class="intro-grid">
-    <div><span class="intro-n">1</span><b>The question.</b> Will BTC outperform SPY over the next 60 trading days, given today's macro state?</div>
-    <div><span class="intro-n">2</span><b>The inputs.</b> VIX, era (pre-COVID / post-COVID / post-ETF), 5 walk-forward shock indicators (oil, dollar, rates, banking, geopolitical-threat), and BTC's prior 60d return.</div>
-    <div><span class="intro-n">3</span><b>The method.</b> Map today's state into 1 of 84 historical cells, classify into 1 of 5 regimes, then report what BTC actually did vs SPY in the matched analogues.</div>
-    <div><span class="intro-n">4</span><b>The output.</b> A regime label + share-positive probability + expected forward 60d outperformance. Not a price target; not a buy/sell signal.</div>
-  </div>
-  <div class="intro-foot"><b>The empirical edge:</b> +1.97pp out-of-sample R² beyond BTC's own momentum and a vanilla macro-regime baseline. Walk-forward methodology, no look-ahead. The framework's value is showing <em>when</em> a shock carries information, and <em>what kind</em>.</div>
+  <button class="intro-x" onclick="dismissIntro()" aria-label="Dismiss">&times;</button>
+  <p style="margin-bottom:8px;font-size:0.97em;line-height:1.6">
+    The consensus view treats Bitcoin as a digital safe-haven that should benefit from macro and
+    geopolitical shocks. The historical record disagrees. <b>Banking-stress shocks are
+    bidirectional reversal catalysts</b> &mdash; they invert BTC's trajectory in both directions.
+    <b>Oil, dollar, and rates shocks terminate BTC uptrends</b> with no offsetting positive
+    effect in downtrends. <b>Geopolitical-risk shocks are a uniform −5pp drag</b>, regardless of
+    direction. The framework maps today's macro state to one of 84 historical analogue cells and
+    reports the cell's empirical 60d outperformance distribution.
+  </p>
+  <p style="margin-bottom:0;font-size:0.88em;color:var(--dim)">
+    Walk-forward identification, no look-ahead. <b>+1.97pp OOS R² beyond BTC's own momentum and a
+    macro-regime baseline.</b> n=2,818 trading days, ridge + 5-fold CV, permutation-tested. Not a
+    price target; a structured prior over the 60d return distribution.
+  </p>
 </div>
 
 <!-- Practitioner narrative -->

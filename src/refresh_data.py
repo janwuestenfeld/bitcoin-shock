@@ -204,34 +204,57 @@ def rebuild_panel(panel_existing: pd.DataFrame) -> pd.DataFrame:
     new_rows = pd.DataFrame(index=new_nyse_days)
     for col in panel_existing.columns:
         new_rows[col] = np.nan
-    # Map series to columns. Forward-fill ALL series onto NYSE dates: if a
-    # source is one day lagged (e.g., FRED WTI posts T+1), use the prior
-    # day's value. This is the standard practitioner convention — "today's
-    # WTI" is yesterday's print until the new print arrives.
+    # Map series to columns. Forward-fill MACRO indicators across short gaps
+    # (FRED daily series occasionally post T+1; carrying yesterday's value is
+    # the standard practitioner convention). DO NOT forward-fill PRICE LEVELS
+    # (btc, spy) — forward-filling prices creates zero-return rows that
+    # corrupt rolling-β and Δ-based shock measures. If btc/spy data is
+    # missing/stale, the panel will be truncated to the last day with real
+    # price data (handled below this loop).
+    PRICE_LEVEL_COLS = {"btc", "spy"}
     for col, src in [("vix", "vix"), ("wti", "wti"), ("usd_broad", "usd_broad"),
                      ("y10_fred", "y10_fred"), ("stlfsi", "stlfsi"),
                      ("btc", "btc"), ("spy", "spy"), ("gprd_threat", "gprd_threat")]:
         if src in new_data and col in panel_existing.columns:
             s = new_data[src]
-            # Need prior-day value too for forward-fill to bridge the panel
-            # boundary, so include some history before reindex+ffill.
             s_extended = pd.concat([
-                panel_existing[col].dropna().tail(5),  # last 5 valid prior values
+                panel_existing[col].dropna().tail(5),
                 s
             ])
             s_extended = s_extended[~s_extended.index.duplicated(keep="last")].sort_index()
-            new_rows[col] = s_extended.reindex(new_nyse_days, method="ffill").values
+            if col in PRICE_LEVEL_COLS:
+                # Reindex without ffill — leaves NaN for days with no real price
+                new_rows[col] = s_extended.reindex(new_nyse_days).values
+            else:
+                # Macro indicators: ffill across short FRED-lag gaps is OK
+                new_rows[col] = s_extended.reindex(new_nyse_days, method="ffill").values
 
-    # Forward-fill from existing panel's last row for any column that's still NaN
-    # (e.g., GPR-threat if source failed today)
+    # Forward-fill from existing panel's last row for any NON-price column that's still NaN
+    # (e.g., GPR-threat if source failed today). Price levels (btc, spy) are NEVER
+    # forward-filled — see PRICE_LEVEL_COLS guard above.
     last_existing = panel_existing.iloc[-1]
     for col in new_rows.columns:
+        if col in PRICE_LEVEL_COLS:
+            continue
         if new_rows[col].isna().all() and col in last_existing.index and pd.notna(last_existing[col]):
             new_rows[col] = last_existing[col]
             log(f"  {col}: forward-filled from last existing value (source failed)")
 
-    # Preserve any non-data columns (like full-sample shock flags) — set to 0 for new days
-    # The walk-forward build_era_conditional_shocks_walkforward.py will compute its own shock flags
+    # CRITICAL GUARD: truncate new_rows to the last NYSE day where BOTH btc AND
+    # spy have real (non-NaN) data. Without this, an upstream CoinMetrics or
+    # yfinance failure would extend the panel with no price data, which causes
+    # NaN propagation downstream (β collapses, shock-active flags break).
+    if "btc" in new_rows.columns and "spy" in new_rows.columns:
+        valid_price_mask = new_rows["btc"].notna() & new_rows["spy"].notna()
+        if not valid_price_mask.any():
+            log("  No new days have valid btc + spy together; panel unchanged")
+            return panel_existing
+        last_valid_price = new_rows.index[valid_price_mask].max()
+        if last_valid_price < new_rows.index.max():
+            n_dropped = (new_rows.index > last_valid_price).sum()
+            log(f"  Truncating {n_dropped} days past last valid btc+spy date ({last_valid_price.date()})")
+            new_rows = new_rows[new_rows.index <= last_valid_price]
+
     extended = pd.concat([panel_existing, new_rows])
     extended = extended[~extended.index.duplicated(keep="last")].sort_index()
     log(f"Extended panel: {len(extended)} rows, now ends {extended.index.max().date()}")
