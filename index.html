@@ -353,17 +353,30 @@
   <div class="bx" id="chart-vix" style="height:350px"></div>
 </section>
 
-<!-- 12-cell era × VIX grid -->
+<!-- 12-cell era × VIX grid, momentum-conditioned with toggle -->
 <section>
-  <h2>Era × VIX-bin baseline (today's cell highlighted)</h2>
+  <h2>Era × VIX-bin baseline (momentum-conditioned)</h2>
   <p class="blurb">The 12-cell era &times; VIX baseline carries the load-bearing predictive
   signal (M2 R&sup2; &asymp; +3.35pp). Cell shading: green &ge; 60% share-positive 60d (bullish),
-  red &le; 40% (bearish), grey near 50%. Today's cell has the orange outline. The full 84-cell
-  shock-conditional breakdown is below.</p>
+  red &le; 40% (bearish), grey near 50%. Today's cell has the orange outline.
+  <b>The view defaults to today's BTC prior direction</b> — toggle to see how cell signals change
+  when BTC was rising vs falling.</p>
+  <div id="grid12-toggle" style="margin-bottom:10px;display:flex;gap:8px;align-items:center;font-size:0.85em">
+    <span style="color:var(--dim);font-weight:600;margin-right:4px">View:</span>
+    <button class="g12-btn" data-view="today" style="background:var(--ac);color:#fff;border:1px solid var(--ac);border-radius:4px;padding:5px 10px;font-size:0.9em;cursor:pointer">Today (BTC <span id="g12-todaydir"></span>)</button>
+    <button class="g12-btn" data-view="other" style="background:#fff;border:1px solid var(--bd);border-radius:4px;padding:5px 10px;font-size:0.9em;cursor:pointer">Opposite direction</button>
+    <button class="g12-btn" data-view="agg" style="background:#fff;border:1px solid var(--bd);border-radius:4px;padding:5px 10px;font-size:0.9em;cursor:pointer">Unconditional (all days)</button>
+  </div>
   <div id="grid12-wrap"></div>
   <details>
-    <summary>Show full 84-cell shock-type breakdown (heatmap)</summary>
-    <div class="bx" id="chart-heatmap" style="height:780px;margin-top:10px"></div>
+    <summary>Show full 84-cell shock-type breakdown (heatmap, momentum-conditioned)</summary>
+    <div id="heatmap-toggle" style="margin:10px 0 6px 0;display:flex;gap:8px;align-items:center;font-size:0.85em">
+      <span style="color:var(--dim);font-weight:600;margin-right:4px">View:</span>
+      <button class="hm-btn" data-view="today" style="background:var(--ac);color:#fff;border:1px solid var(--ac);border-radius:4px;padding:5px 10px;font-size:0.9em;cursor:pointer">Today (BTC <span id="hm-todaydir"></span>)</button>
+      <button class="hm-btn" data-view="other" style="background:#fff;border:1px solid var(--bd);border-radius:4px;padding:5px 10px;font-size:0.9em;cursor:pointer">Opposite</button>
+      <button class="hm-btn" data-view="agg" style="background:#fff;border:1px solid var(--bd);border-radius:4px;padding:5px 10px;font-size:0.9em;cursor:pointer">Unconditional</button>
+    </div>
+    <div class="bx" id="chart-heatmap" style="height:780px;margin-top:6px"></div>
   </details>
 </section>
 
@@ -708,7 +721,8 @@ async function main(){
       </div>`;
     }
 
-    // Behavior chip from effect-size matrix
+    // Behavior chip from effect-size matrix — HIGHLIGHTS today's relevant Δ
+    // based on current BTC prior 60d direction
     const beh = (d.effect_size_matrix || []).find(r => r.shock === s);
     const BEH_TXT = {reversal:'🔄 Reversal', trend_killer:'⛔ Trend killer',
                      drag:'📉 Drag', catalyst:'↗️ Catalyst', mixed:'🔀 Mixed'};
@@ -716,7 +730,12 @@ async function main(){
     if (beh) {
       const lbl = BEH_TXT[beh.kind] || beh.kind || '';
       const fmtD = (x) => x == null ? '—' : (x >= 0 ? '+' : '') + x.toFixed(1) + 'pp';
-      behHtml = `<div class="behav"><b>${lbl}</b> &middot; if fires: ${fmtD(beh.prior_up_delta_pp)} (BTC↑) / ${fmtD(beh.prior_down_delta_pp)} (BTC↓)</div>`;
+      const todayD = d.btc_prior_direction === 'up' ? beh.prior_up_delta_pp : beh.prior_down_delta_pp;
+      const otherD = d.btc_prior_direction === 'up' ? beh.prior_down_delta_pp : beh.prior_up_delta_pp;
+      const todayLbl = d.btc_prior_direction === 'up' ? 'BTC↑' : 'BTC↓';
+      const otherLbl = d.btc_prior_direction === 'up' ? 'BTC↓' : 'BTC↑';
+      const todayClass = todayD == null ? 'neut' : (todayD > 0 ? 'pos' : 'neg');
+      behHtml = `<div class="behav"><b>${lbl}</b> &middot; if fires today: <b class="${todayClass}" style="font-size:1.05em">${fmtD(todayD)}</b> <span style="background:rgba(247,147,26,0.18);padding:1px 5px;border-radius:3px;color:var(--tx);font-weight:700;font-size:0.85em">${todayLbl} now</span> <span style="color:var(--dim);font-size:0.85em">(${fmtD(otherD)} if ${otherLbl})</span></div>`;
     }
 
     const div = document.createElement('div');
@@ -780,7 +799,14 @@ async function main(){
   const ICON = {reversal:'🔄', trend_killer:'⛔', drag:'📉', catalyst:'↗️', mixed:'🔀'};
   const KIND_LBL = {reversal:'Reversal', trend_killer:'Trend killer', drag:'Drag',
                     catalyst:'Catalyst', mixed:'Mixed'};
-  let esHtml = '<thead><tr><th>Shock</th><th>Prior ↑ Δ</th><th>Prior ↓ Δ</th><th>Asymmetry</th><th>n (fire)</th><th>Behavior</th></tr></thead><tbody>';
+  // Highlight today's BTC direction column (orange background on the relevant Δ)
+  const todayDir = d.btc_prior_direction;  // 'up' or 'down'
+  const upHighlight = todayDir === 'up' ? ' style="background:rgba(247,147,26,0.12);font-weight:700"' : '';
+  const dnHighlight = todayDir === 'down' ? ' style="background:rgba(247,147,26,0.12);font-weight:700"' : '';
+  let esHtml = `<thead><tr><th>Shock</th>`
+     + `<th${upHighlight}>Prior ↑ Δ${todayDir==='up'?' (today)':''}</th>`
+     + `<th${dnHighlight}>Prior ↓ Δ${todayDir==='down'?' (today)':''}</th>`
+     + `<th>Asymmetry</th><th>n (fire)</th><th>Behavior</th></tr></thead><tbody>`;
   d.effect_size_matrix.forEach(r => {
     const du = r.prior_up_delta_pp;
     const dd = r.prior_down_delta_pp;
@@ -789,12 +815,11 @@ async function main(){
     const ddnClass = dd == null ? 'neut' : (dd > 0 ? 'pos' : 'neg');
     const icon = ICON[r.kind] || '';
     const kLbl = KIND_LBL[r.kind] || (r.kind || '—');
-    // Highlight today's primary shock if active
     const isPrimary = r.shock === d.primary_shock && d.active_shocks[r.shock];
     esHtml += `<tr${isPrimary?' style="background:rgba(247,147,26,0.05);font-weight:500"':''}>`
        + `<td class="label">${r.label}${isPrimary?' ← active today':''}</td>`
-       + `<td class="${dupClass}">${du==null?'—':(du>=0?'+':'')+du.toFixed(1)+'pp'}</td>`
-       + `<td class="${ddnClass}">${dd==null?'—':(dd>=0?'+':'')+dd.toFixed(1)+'pp'}</td>`
+       + `<td class="${dupClass}"${upHighlight}>${du==null?'—':(du>=0?'+':'')+du.toFixed(1)+'pp'}</td>`
+       + `<td class="${ddnClass}"${dnHighlight}>${dd==null?'—':(dd>=0?'+':'')+dd.toFixed(1)+'pp'}</td>`
        + `<td>${asym==null?'—':asym.toFixed(1)+'pp'}</td>`
        + `<td>${r.n_fire_up}↑ / ${r.n_fire_dn}↓</td>`
        + `<td>${icon} ${kLbl}</td></tr>`;
@@ -837,13 +862,16 @@ async function main(){
     const op = e.outperf_60d;
     const opClass = op==null?'neut':(op>=0?'pos':'neg');
     const opLbl = op==null?'—':(op>=0?'+':'')+(op*100).toFixed(0)+'pp';
-    const btc = e.btc_fwd_60d, spy = e.spy_fwd_60d;
     const shocksLbl = (e.active_shocks && e.active_shocks.length) ? e.active_shocks.map(s=>s.replace('_shock','').replace('gprd_threat','GPR')).join(', ') : 'none';
+    const bp = e.btc_prior_60d;
+    const bpClass = bp == null ? 'neut' : (bp > 0 ? 'pos' : 'neg');
+    const bpLbl = bp == null ? '—' : `${(bp*100).toFixed(0)}% (${e.btc_prior_direction === 'up' ? '↑' : '↓'})`;
     return `<div class="ec">
       <div class="nm">${e.name}</div>
       <div class="dt">${e.date} · ${ERA_SHORT[e.era]||e.era}</div>
       <div class="row"><span class="l">VIX</span><span class="v">${e.vix?.toFixed(1)}</span></div>
       <div class="row"><span class="l">β₆₀</span><span class="v">${e.beta?.toFixed(2)}</span></div>
+      <div class="row"><span class="l">BTC prior 60d</span><span class="v ${bpClass}">${bpLbl}</span></div>
       <div class="row"><span class="l">Shocks</span><span class="v" style="font-size:0.85em">${shocksLbl}</span></div>
       <div class="row" style="margin-top:7px;padding-top:5px;border-top:1px solid var(--bd)">
         <span class="l">60d outperf</span><span class="v ${opClass}">${opLbl}</span>
@@ -880,36 +908,57 @@ async function main(){
     ],
   }, {responsive:true});
 
-  // ===== 12-cell era × VIX grid =====
+  // ===== 12-cell era × VIX grid with momentum-conditioned toggle =====
   const gw = document.getElementById('grid12-wrap');
-  const grid12 = d.grid_12;
-  const cellMap12 = {};
-  grid12.forEach(c => { cellMap12[`${c.era}__${c.vix_bin}`] = c; });
-  let gh = '<div class="grid12"><div class="g-h"></div>';
-  VIX_BINS.forEach(vb => gh += `<div class="g-h">${VIX_LBL[vb]}</div>`);
-  ERAS.forEach(era => {
-    gh += `<div class="g-row-l">${ERA_SHORT[era]}</div>`;
-    VIX_BINS.forEach(vb => {
-      const c = cellMap12[`${era}__${vb}`];
-      const sp = c?.weighted_share;
-      const n = c?.total_n || 0;
-      let bg = '#fafafa';
-      if (sp != null) {
-        if (sp >= 0.6) bg = `rgba(46,125,50,${0.25 + (sp-0.6)*1.5})`;
-        else if (sp <= 0.4) bg = `rgba(198,40,40,${0.25 + (0.4-sp)*1.5})`;
-        else bg = `rgba(255,255,255,1)`;
-      }
-      const cur = c?.is_current ? ' current' : '';
-      gh += `<div class="gc${cur}" style="background:${bg}">
-        <div class="pct">${sp != null ? (sp*100).toFixed(0)+'%' : '—'}</div>
-        <div class="n">n=${n}</div>
-      </div>`;
+  document.getElementById('g12-todaydir').textContent = btcPriorDir === 'up' ? '↑' : '↓';
+
+  function renderGrid12(view) {
+    let data;
+    if (view === 'today') data = d['grid_12_prior_' + btcPriorDir];
+    else if (view === 'other') data = d['grid_12_prior_' + (btcPriorDir === 'up' ? 'down' : 'up')];
+    else data = d.grid_12_aggregate;
+    const cellMap = {};
+    data.forEach(c => { cellMap[`${c.era}__${c.vix_bin}`] = c; });
+    let gh = '<div class="grid12"><div class="g-h"></div>';
+    VIX_BINS.forEach(vb => gh += `<div class="g-h">${VIX_LBL[vb]}</div>`);
+    ERAS.forEach(era => {
+      gh += `<div class="g-row-l">${ERA_SHORT[era]}</div>`;
+      VIX_BINS.forEach(vb => {
+        const c = cellMap[`${era}__${vb}`];
+        const sp = c?.weighted_share;
+        const n = c?.total_n || 0;
+        let bg = '#fafafa';
+        if (sp != null && n >= 5) {
+          if (sp >= 0.6) bg = `rgba(46,125,50,${0.25 + (sp-0.6)*1.5})`;
+          else if (sp <= 0.4) bg = `rgba(198,40,40,${0.25 + (0.4-sp)*1.5})`;
+          else bg = `rgba(255,255,255,1)`;
+        }
+        const cur = c?.is_current && view === 'today' ? ' current' : '';
+        const dim = n < 5 ? ' style="opacity:0.4"' : '';
+        gh += `<div class="gc${cur}" style="background:${bg}"${dim}>
+          <div class="pct">${sp != null && n >= 5 ? (sp*100).toFixed(0)+'%' : (n<5?'<5':'—')}</div>
+          <div class="n">n=${n}</div>
+        </div>`;
+      });
+    });
+    gh += '</div>';
+    gw.innerHTML = gh;
+  }
+  renderGrid12('today');
+  document.querySelectorAll('.g12-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      document.querySelectorAll('.g12-btn').forEach(b => {
+        b.style.background = '#fff'; b.style.color = ''; b.style.borderColor = 'var(--bd)';
+      });
+      e.target.closest('button').style.background = 'var(--ac)';
+      e.target.closest('button').style.color = '#fff';
+      e.target.closest('button').style.borderColor = 'var(--ac)';
+      renderGrid12(e.target.closest('button').dataset.view);
     });
   });
-  gh += '</div>';
-  gw.innerHTML = gh;
 
-  // 84-cell full heatmap (collapsed by default)
+  // 84-cell heatmap with momentum-conditioning toggle (collapsed by default)
+  document.getElementById('hm-todaydir').textContent = btcPriorDir === 'up' ? '↑' : '↓';
   const shockOrder = ['none','any','oil_shock','dollar_shock','rate_shock','banking_shock','gprd_threat_shock'];
   const shockShort = {none:'None',any:'Any',oil_shock:'Oil',dollar_shock:'Dollar',rate_shock:'Rates',banking_shock:'Banking',gprd_threat_shock:'GPR'};
   const cellMap84 = {};
@@ -918,30 +967,55 @@ async function main(){
     if (!cellMap84[c.era][c.shock]) cellMap84[c.era][c.shock] = {};
     cellMap84[c.era][c.shock][c.vix_bin] = c;
   });
-  const yLabels=[], zMat=[], txtMat=[];
-  ERAS.forEach(era => {
-    shockOrder.forEach(shock => {
-      yLabels.push(`${ERA_SHORT[era].substring(0,9)} | ${shockShort[shock]}`);
-      const row=[], txt=[];
-      VIX_BINS.forEach(vb => {
-        const c = cellMap84[era]?.[shock]?.[vb];
-        if (c && c.share_positive_60d != null) {
-          row.push(c.share_positive_60d); txt.push(`${(c.share_positive_60d*100).toFixed(0)}%<br>n=${c.n}`);
-        } else { row.push(null); txt.push('—'); }
+  function renderHeatmap(view) {
+    const yLabels=[], zMat=[], txtMat=[];
+    ERAS.forEach(era => {
+      shockOrder.forEach(shock => {
+        yLabels.push(`${ERA_SHORT[era].substring(0,9)} | ${shockShort[shock]}`);
+        const row=[], txt=[];
+        VIX_BINS.forEach(vb => {
+          const c = cellMap84[era]?.[shock]?.[vb];
+          if (!c) { row.push(null); txt.push('—'); return; }
+          let sp, n;
+          if (view === 'today') {
+            const sub = btcPriorDir === 'up' ? c.prior_up : c.prior_down;
+            sp = sub?.share_positive; n = sub?.n;
+          } else if (view === 'other') {
+            const sub = btcPriorDir === 'up' ? c.prior_down : c.prior_up;
+            sp = sub?.share_positive; n = sub?.n;
+          } else {
+            sp = c.share_positive_60d; n = c.n;
+          }
+          if (sp != null && n >= 5) {
+            row.push(sp); txt.push(`${(sp*100).toFixed(0)}%<br>n=${n}`);
+          } else { row.push(null); txt.push(n < 5 ? `<5<br>n=${n||0}` : '—'); }
+        });
+        zMat.push(row); txtMat.push(txt);
       });
-      zMat.push(row); txtMat.push(txt);
+    });
+    Plotly.react('chart-heatmap', [{
+      z:zMat, x:VIX_BINS.map(v=>VIX_LBL[v]), y:yLabels, text:txtMat, texttemplate:'%{text}',
+      textfont:{size:10},
+      colorscale:[[0,'#c62828'],[0.4,'#f5b7b1'],[0.5,'#f8f9fa'],[0.6,'#a9d4a9'],[1,'#2e7d32']],
+      zmin:0.2, zmax:0.8, showscale:true, colorbar:{title:'Share-pos 60d',thickness:14},
+      hovertemplate:'%{y} × %{x}<br>%{text}<extra></extra>',
+    }], {...L, xaxis:{...L.xaxis,title:'VIX bin',type:'category'},
+      yaxis:{...L.yaxis,title:'Era | Shock-type',type:'category',autorange:'reversed',tickfont:{size:10}},
+      margin:{l:160,r:80,t:30,b:50}, height:780,
+    }, {responsive:true});
+  }
+  renderHeatmap('today');
+  document.querySelectorAll('.hm-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      document.querySelectorAll('.hm-btn').forEach(b => {
+        b.style.background = '#fff'; b.style.color = ''; b.style.borderColor = 'var(--bd)';
+      });
+      e.target.closest('button').style.background = 'var(--ac)';
+      e.target.closest('button').style.color = '#fff';
+      e.target.closest('button').style.borderColor = 'var(--ac)';
+      renderHeatmap(e.target.closest('button').dataset.view);
     });
   });
-  Plotly.newPlot('chart-heatmap', [{
-    z:zMat, x:VIX_BINS.map(v=>VIX_LBL[v]), y:yLabels, text:txtMat, texttemplate:'%{text}',
-    textfont:{size:10},
-    colorscale:[[0,'#c62828'],[0.4,'#f5b7b1'],[0.5,'#f8f9fa'],[0.6,'#a9d4a9'],[1,'#2e7d32']],
-    zmin:0.2, zmax:0.8, showscale:true, colorbar:{title:'Share-pos 60d',thickness:14},
-    hovertemplate:'%{y} × %{x}<br>%{text}<extra></extra>',
-  }], {...L, xaxis:{...L.xaxis,title:'VIX bin',type:'category'},
-    yaxis:{...L.yaxis,title:'Era | Shock-type',type:'category',autorange:'reversed',tickfont:{size:10}},
-    margin:{l:160,r:80,t:30,b:50}, height:780,
-  }, {responsive:true});
 
   // ===== Methodology =====
   const m = d.methodology;

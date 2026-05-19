@@ -69,8 +69,22 @@ def vix_bin_of(v):
 
 
 def _cell_horizon(cell, h):
+    """Extract (share_positive, mean_outperf, n) at horizon h from a cell dict.
+
+    Handles two shapes:
+      1. Lookup-table cell: stats nested under by_horizon_calendar[h]['outperf_calendar_fwd']
+      2. Momentum-conditioned cell: stats at top level (share_positive, mean_outperf, n_days)
+    """
     if not cell:
         return {"share_positive": None, "mean_outperf": None, "n": 0}
+    # Shape 2: momentum-conditioned cell with top-level stats
+    if "share_positive" in cell and "by_horizon_calendar" not in cell:
+        return {
+            "share_positive": cell.get("share_positive"),
+            "mean_outperf": cell.get("mean_outperf"),
+            "n": int(cell.get("n_days", cell.get("n", 0))),
+        }
+    # Shape 1: lookup-table cell
     hd = cell.get("by_horizon_calendar", {}).get(str(h), {})
     if not hd:
         return {"share_positive": None, "mean_outperf": None, "n": int(cell.get("n_days", 0))}
@@ -509,8 +523,60 @@ def main():
         })
     out["effect_size_matrix"] = es_matrix
 
-    # ===== What would flip the cell — auto-computed boundary deltas =====
-    def _lookup_with_fallback(shock, vix_bin, era_name):
+    # ===== Build the momentum-conditioned panel ONCE, reuse everywhere =====
+    # This is the panel with BTC prior 60d + forward-60d outperf + shock flags joined.
+    # Used by: what_would_flip lookup, momentum_conditioned cell stats, grid_12 view,
+    # 84-cell sub-cell stats. Build once for efficiency.
+    panel_with_prior = panel.copy()
+    panel_with_prior["btc_prior_60d"] = btc_prior_60d_series.reindex(panel.index, method="ffill")
+    panel_with_prior["era"] = [era_of(d) for d in panel.index]
+    panel_with_prior["vix_bin"] = panel_with_prior["vix"].apply(vix_bin_of)
+    spy_arr2 = panel["spy"].astype(float).values
+    nyse_arr2 = np.asarray(panel.index.values)
+    tph_60_2 = nyse_arr2 + np.timedelta64(60, "D")
+    pos_ge_2 = np.searchsorted(nyse_arr2, tph_60_2, side="left")
+    valid2 = pos_ge_2 < len(nyse_arr2)
+    pos_clip_2 = np.clip(pos_ge_2, 0, len(nyse_arr2) - 1)
+    spy_fwd_60_2 = np.where(valid2, spy_arr2[pos_clip_2] / spy_arr2 - 1.0, np.nan)
+    btc_fwd_60_2 = (btc_close.shift(-60) / btc_close - 1.0).reindex(panel.index, method="ffill")
+    panel_with_prior["outperf_60"] = btc_fwd_60_2.values - spy_fwd_60_2
+    for s in SHOCKS:
+        panel_with_prior[s] = wf[f"{s}_wf"].reindex(panel.index).fillna(0).astype(int)
+
+    def _cell_subset_by_shock_vix_era(shock_v, vb_v, era_v):
+        """Subset of panel_with_prior matching the (shock, vix_bin, era) cell."""
+        if shock_v == "none":
+            mask = (panel_with_prior["era"] == era_v) & (panel_with_prior["vix_bin"] == vb_v)
+            for s in SHOCKS:
+                mask &= (panel_with_prior[s] == 0)
+        elif shock_v == "any":
+            mask = (panel_with_prior["era"] == era_v) & (panel_with_prior["vix_bin"] == vb_v)
+            shock_mask = pd.Series(False, index=panel_with_prior.index)
+            for s in SHOCKS:
+                shock_mask |= (panel_with_prior[s] == 1)
+            mask &= shock_mask
+        else:
+            mask = ((panel_with_prior["era"] == era_v)
+                    & (panel_with_prior["vix_bin"] == vb_v)
+                    & (panel_with_prior[shock_v] == 1))
+        return panel_with_prior[mask & panel_with_prior["outperf_60"].notna()
+                                & panel_with_prior["btc_prior_60d"].notna()]
+
+    def _lookup_with_fallback(shock, vix_bin, era_name, prior_dir=None):
+        """Momentum-conditioned cell lookup with 3-tier fallback.
+        prior_dir: 'up' | 'down' | None (unconditional)."""
+        if prior_dir is not None:
+            sub = _cell_subset_by_shock_vix_era(shock, vix_bin, era_name)
+            if prior_dir == "up":
+                sub = sub[sub["btc_prior_60d"] > 0]
+            elif prior_dir == "down":
+                sub = sub[sub["btc_prior_60d"] <= 0]
+            if len(sub) >= 5:
+                return ({
+                    "n_days": int(len(sub)),
+                    "share_positive": float((sub["outperf_60"] > 0).mean()),
+                    "mean_outperf": float(sub["outperf_60"].mean()),
+                }, "primary_momentum_conditioned")
         k1 = f"{shock}__{vix_bin}__{era_name}"
         c = primary.get(k1)
         if c and _cell_horizon(c, 60)["n"] >= 5:
@@ -529,7 +595,7 @@ def main():
         delta = b - out["current_vix"]
         new_bin = vix_bin_of(b + 0.01)
         if new_bin != vb and abs(delta) < 15:
-            new_cell, new_tier = _lookup_with_fallback(primary_shock, new_bin, era)
+            new_cell, new_tier = _lookup_with_fallback(primary_shock, new_bin, era, prior_dir=btc_prior_direction)
             new_sp = _cell_horizon(new_cell, 60).get("share_positive")
             direction = "rises" if delta > 0 else "falls"
             flips.append({
@@ -545,7 +611,7 @@ def main():
         if st["active"]:
             new_active = [x for x in active if x != s]
             new_primary_shock = "none" if not new_active else new_active[0]
-            new_cell, new_tier = _lookup_with_fallback(new_primary_shock, vb, era)
+            new_cell, new_tier = _lookup_with_fallback(new_primary_shock, vb, era, prior_dir=btc_prior_direction)
             flips.append({
                 "trigger": f"{st['display']['label']} turns off",
                 "effect": f"cell shifts to {new_primary_shock}__{vb}__{era}",
@@ -559,7 +625,7 @@ def main():
                 if gap_pct < 40:
                     new_active_list = sorted(active + [s])
                     new_primary_shock = new_active_list[0]
-                    new_cell, new_tier = _lookup_with_fallback(new_primary_shock, vb, era)
+                    new_cell, new_tier = _lookup_with_fallback(new_primary_shock, vb, era, prior_dir=btc_prior_direction)
                     flips.append({
                         "trigger": f"{st['display']['label']} fires (raw needs +{gap_pct:.0f}% to reach cutoff)",
                         "effect": f"cell shifts to {new_primary_shock}__{vb}__{era}",
@@ -572,7 +638,7 @@ def main():
     if not bk_st["active"] and bk_st["proximity"] is not None and bk_st["display"]["kind"] == "signed":
         sigma_gap = -bk_st["proximity"] if bk_st["proximity"] < 0 else 0
         if sigma_gap > 0:
-            new_cell, new_tier = _lookup_with_fallback("banking_shock", vb, era)
+            new_cell, new_tier = _lookup_with_fallback("banking_shock", vb, era, prior_dir=btc_prior_direction)
             flips.append({
                 "trigger": f"Banking shock fires (STLFSI4 needs +{sigma_gap:.1f}σ to reach threshold)",
                 "effect": f"safe-haven cell activates (banking_shock × {vb} × {era})",
@@ -583,12 +649,20 @@ def main():
             })
     out["what_would_flip"] = flips[:6]
 
-    # ===== BlackRock 6-event validation =====
+    # ===== BlackRock 6-event validation — augmented with BTC prior 60d at event =====
     try:
         br = json.loads(BLACKROCK.read_text())
         events = []
         for e in br.get("events", []):
             h60 = e["per_horizon_calendar"].get("60", {})
+            event_date = pd.Timestamp(e["event_date_calendar"])
+            # BTC prior 60d at the event date
+            ev_btc_prior = None
+            try:
+                ev_btc_prior = float(btc_prior_60d_series.reindex([event_date], method="ffill").iloc[0])
+            except Exception:
+                pass
+            ev_btc_dir = "up" if (ev_btc_prior or 0) > 0 else "down"
             events.append({
                 "name": e["event_name"],
                 "date": e["event_date_calendar"],
@@ -597,6 +671,8 @@ def main():
                 "vix": e["vix_at_state"],
                 "beta": e["beta_60_at_state"],
                 "active_shocks": e["active_shocks_day_of_state"],
+                "btc_prior_60d": ev_btc_prior,
+                "btc_prior_direction": ev_btc_dir,
                 "btc_fwd_60d": h60.get("btc_fwd"),
                 "spy_fwd_60d": h60.get("spy_fwd"),
                 "outperf_60d": h60.get("outperf"),
@@ -605,40 +681,83 @@ def main():
     except Exception:
         out["blackrock_events"] = []
 
-    # ===== 12-cell era × VIX-bin aggregate (current cell highlighted) =====
-    # Aggregate across shock-types: average share-positive 60d weighted by n
-    grid_12 = {}
-    for era_n, _, _ in ERAS:
-        for vb_n, _, _ in VIX_BINS:
-            key = f"{era_n}__{vb_n}"
-            grid_12[key] = {"era": era_n, "vix_bin": vb_n, "weighted_share": None,
-                            "total_n": 0, "is_current": (era_n == era and vb_n == vb)}
-    for c_key, c in primary.items():
-        if c.get("shock") == "any": continue  # avoid double-counting
-        if c.get("shock") == "none": continue
-        h60 = _cell_horizon(c, 60)
-        n = h60["n"]; sp = h60["share_positive"]
-        if not n or sp is None: continue
-        k = f"{c['era']}__{c['vix_bin']}"
-        cell = grid_12[k]
-        prior_n = cell["total_n"]
-        if prior_n == 0:
-            cell["weighted_share"] = sp
-        else:
-            cell["weighted_share"] = (cell["weighted_share"] * prior_n + sp * n) / (prior_n + n)
-        cell["total_n"] = prior_n + n
-    out["grid_12"] = list(grid_12.values())
+    # ===== 12-cell era × VIX-bin aggregate, momentum-conditioned =====
+    # Build three views: aggregate (prior-direction-agnostic), prior_up, prior_down.
+    # Each cell shows weighted share-positive 60d across shock types within the cell.
+    def _build_grid_view(prior_filter):
+        """prior_filter: None (aggregate), 'up' (BTC prior > 0), 'down' (BTC prior <= 0)"""
+        grid = {}
+        for era_n, _, _ in ERAS:
+            for vb_n, _, _ in VIX_BINS:
+                key = f"{era_n}__{vb_n}"
+                grid[key] = {"era": era_n, "vix_bin": vb_n,
+                             "weighted_share": None, "total_n": 0,
+                             "is_current": (era_n == era and vb_n == vb)}
+        # Iterate raw panel rows for accurate momentum-conditioned aggregation
+        for ts, row in panel_with_prior.iterrows():
+            if pd.isna(row.get("outperf_60")): continue
+            bp = row.get("btc_prior_60d")
+            if pd.isna(bp): continue
+            if prior_filter == "up" and bp <= 0: continue
+            if prior_filter == "down" and bp > 0: continue
+            k = f"{row['era']}__{row['vix_bin']}"
+            if k not in grid: continue
+            cell = grid[k]
+            # Running mean of share_positive (treat each obs as 1)
+            cell["total_n"] += 1
+            sp = 1.0 if row["outperf_60"] > 0 else 0.0
+            if cell["weighted_share"] is None:
+                cell["weighted_share"] = sp
+            else:
+                n = cell["total_n"]
+                cell["weighted_share"] = ((cell["weighted_share"] * (n - 1)) + sp) / n
+        return list(grid.values())
 
-    # ===== 84-cell full table =====
+    out["grid_12_aggregate"] = _build_grid_view(None)
+    out["grid_12_prior_up"] = _build_grid_view("up")
+    out["grid_12_prior_down"] = _build_grid_view("down")
+    # Default view = today's direction
+    out["grid_12"] = out[f"grid_12_prior_{btc_prior_direction}"]
+
+    # ===== 84-cell full table, momentum-conditioned =====
+    # For each primary cell, compute aggregate + prior_up + prior_down sub-stats from raw panel
+    def _cell_subset_by_shock_vix_era(shock_v, vb_v, era_v):
+        if shock_v == "none":
+            mask = (panel_with_prior["era"] == era_v) & (panel_with_prior["vix_bin"] == vb_v)
+            for s in SHOCKS:
+                mask &= (panel_with_prior[s] == 0)
+        elif shock_v == "any":
+            mask = (panel_with_prior["era"] == era_v) & (panel_with_prior["vix_bin"] == vb_v)
+            shock_mask = pd.Series(False, index=panel_with_prior.index)
+            for s in SHOCKS:
+                shock_mask |= (panel_with_prior[s] == 1)
+            mask &= shock_mask
+        else:
+            mask = ((panel_with_prior["era"] == era_v)
+                    & (panel_with_prior["vix_bin"] == vb_v)
+                    & (panel_with_prior[shock_v] == 1))
+        return panel_with_prior[mask & panel_with_prior["outperf_60"].notna()
+                                & panel_with_prior["btc_prior_60d"].notna()]
+
     cells = []
     for key, c in primary.items():
         h60 = _cell_horizon(c, 60)
+        sub = _cell_subset_by_shock_vix_era(c.get("shock"), c.get("vix_bin"), c.get("era"))
+        up = sub[sub["btc_prior_60d"] > 0]
+        dn = sub[sub["btc_prior_60d"] <= 0]
+        def _ss(s):
+            if not len(s): return {"n": 0, "share_positive": None, "mean_outperf": None}
+            return {"n": int(len(s)),
+                    "share_positive": float((s["outperf_60"] > 0).mean()),
+                    "mean_outperf": float(s["outperf_60"].mean())}
         cells.append({
             "key": key, "shock": c.get("shock"), "vix_bin": c.get("vix_bin"), "era": c.get("era"),
             "n": int(c.get("n_days", 0)),
             "share_positive_60d": h60["share_positive"],
             "mean_outperf_60d": h60["mean_outperf"],
             "regime_warning": c.get("regime_warning"),
+            "prior_up": _ss(up),
+            "prior_down": _ss(dn),
         })
     out["cells"] = cells
 
