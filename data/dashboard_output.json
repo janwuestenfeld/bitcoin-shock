@@ -4256,13 +4256,13 @@
       },
       {
         "date": "2023-10-09",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.045838,
         "active": 0
       },
       {
         "date": "2023-10-10",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.045838,
         "active": 0
       },
@@ -4400,13 +4400,13 @@
       },
       {
         "date": "2023-11-10",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.045744,
         "active": 0
       },
       {
         "date": "2023-11-13",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.045744,
         "active": 0
       },
@@ -5786,13 +5786,13 @@
       },
       {
         "date": "2024-10-14",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.03037,
         "active": 0
       },
       {
         "date": "2024-10-15",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.03037,
         "active": 0
       },
@@ -5906,13 +5906,13 @@
       },
       {
         "date": "2024-11-11",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.030303,
         "active": 0
       },
       {
         "date": "2024-11-12",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.030303,
         "active": 0
       },
@@ -7280,13 +7280,13 @@
       },
       {
         "date": "2025-10-13",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.030085,
         "active": 0
       },
       {
         "date": "2025-10-14",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.030085,
         "active": 0
       },
@@ -7406,13 +7406,13 @@
       },
       {
         "date": "2025-11-11",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.029996,
         "active": 0
       },
       {
         "date": "2025-11-12",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.029996,
         "active": 0
       },
@@ -8758,13 +8758,13 @@
       },
       {
         "date": "2023-10-09",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.68998,
         "active": 0
       },
       {
         "date": "2023-10-10",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.68998,
         "active": 0
       },
@@ -8902,13 +8902,13 @@
       },
       {
         "date": "2023-11-10",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.69467,
         "active": 0
       },
       {
         "date": "2023-11-13",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.69467,
         "active": 0
       },
@@ -10288,13 +10288,13 @@
       },
       {
         "date": "2024-10-14",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.5091,
         "active": 0
       },
       {
         "date": "2024-10-15",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.5091,
         "active": 0
       },
@@ -10408,13 +10408,13 @@
       },
       {
         "date": "2024-11-11",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.51852,
         "active": 0
       },
       {
         "date": "2024-11-12",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.51852,
         "active": 0
       },
@@ -11782,13 +11782,13 @@
       },
       {
         "date": "2025-10-13",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.6081,
         "active": 0
       },
       {
         "date": "2025-10-14",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.6081,
         "active": 0
       },
@@ -11908,13 +11908,13 @@
       },
       {
         "date": "2025-11-11",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.59858,
         "active": 0
       },
       {
         "date": "2025-11-12",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.59858,
         "active": 0
       },
@@ -13260,13 +13260,13 @@
       },
       {
         "date": "2023-10-09",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.1,
         "active": 0
       },
       {
         "date": "2023-10-10",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.1,
         "active": 0
       },
@@ -14790,13 +14790,13 @@
       },
       {
         "date": "2024-10-14",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.09,
         "active": 0
       },
       {
         "date": "2024-10-15",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.09,
         "active": 0
       },
@@ -14910,13 +14910,13 @@
       },
       {
         "date": "2024-11-11",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.09,
         "active": 0
       },
       {
         "date": "2024-11-12",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.09,
         "active": 0
       },
@@ -16284,13 +16284,13 @@
       },
       {
         "date": "2025-10-13",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.09,
         "active": 0
       },
       {
         "date": "2025-10-14",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.09,
         "active": 0
       },
@@ -16410,13 +16410,13 @@
       },
       {
         "date": "2025-11-11",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.086,
         "active": 0
       },
       {
         "date": "2025-11-12",
-        "raw": NaN,
+        "raw": null,
         "cutoff": 0.086,
         "active": 0
       },
@@ -29055,6 +29055,6 @@
       "m3_r2_pp": 6.544386044701933
     }
   },
-  "updated": "2026-05-19T16:34:29Z",
+  "updated": "2026-05-19T17:03:32Z",
   "panel_n_rows": 3017
 }

@@ -455,7 +455,23 @@ def main():
     out["updated"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     out["panel_n_rows"] = int(len(panel))
 
-    OUT.write_text(json.dumps(out, indent=2, default=str))
+    # Recursively coerce NaN/Inf → None so browser JSON.parse() accepts the file.
+    # Python's default json.dumps writes literal NaN/Infinity, which is valid Python
+    # but invalid per the JSON spec; browsers will throw.
+    def _clean(o):
+        if isinstance(o, dict): return {k: _clean(v) for k, v in o.items()}
+        if isinstance(o, (list, tuple)): return [_clean(x) for x in o]
+        if isinstance(o, float):
+            if np.isnan(o) or np.isinf(o): return None
+            return o
+        if isinstance(o, np.floating):
+            v = float(o)
+            return None if (np.isnan(v) or np.isinf(v)) else v
+        if isinstance(o, np.integer): return int(o)
+        if isinstance(o, np.bool_): return bool(o)
+        return o
+
+    OUT.write_text(json.dumps(_clean(out), indent=2, default=str, allow_nan=False))
     print(f"wrote {OUT} ({OUT.stat().st_size/1024:.1f} KB)")
 
 
