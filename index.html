@@ -80,6 +80,12 @@
     .scard .badge.off{background:var(--bd);color:var(--dim)}
     .scard .last{font-size:0.7em;color:var(--dim);margin-top:4px}
     .scard .last .trend{color:var(--am);font-weight:600}
+    .scard .d60{font-size:0.74em;margin-top:6px;padding:5px 8px;background:#fff;border:1px solid var(--bd);border-radius:4px;display:flex;justify-content:space-between;align-items:center;gap:6px}
+    .scard .d60 .lbl{color:var(--dim);font-size:0.95em}
+    .scard .d60 .delta{font-weight:700;white-space:nowrap}
+    .scard .d60 .delta.up{color:var(--rd)}
+    .scard .d60 .delta.dn{color:var(--gn)}
+    .scard .d60 .delta.flat{color:var(--dim)}
     .scard .spark{margin-top:8px;height:60px}
 
     /* What would flip */
@@ -369,6 +375,22 @@ async function main(){
       ? `Last fired: <b>${st.last_fire_date}</b> (${st.days_since_last_fire}d ago)`
       : 'Never fired in panel';
     const trendLine = st.trend_20d ? `<span class="trend">${st.trend_20d === 'rising' ? '↑' : '↓'} 20d</span>` : '';
+
+    // 60-day prior trend block: shows where the indicator was 60d ago + delta to today
+    let d60Html = '';
+    if (st.raw_60d_ago != null && st.raw_change_60d_pct != null) {
+      const delta = st.raw_change_60d_pct;
+      const cls = delta > 5 ? 'up' : (delta < -5 ? 'dn' : 'flat');
+      const arrow = delta > 0 ? '↑' : (delta < 0 ? '↓' : '→');
+      const fmt = disp.kind === 'signed'
+        ? `${delta >= 0 ? '+' : ''}${delta.toFixed(2)}σ`
+        : `${delta >= 0 ? '+' : ''}${delta.toFixed(0)}%`;
+      d60Html = `<div class="d60">
+        <span class="lbl">60d ago: <b>${st.raw_60d_ago.toFixed(4)}</b></span>
+        <span class="delta ${cls}">${arrow} ${fmt}</span>
+      </div>`;
+    }
+
     const div = document.createElement('div');
     div.className = 'scard' + (fire ? ' fire' : '');
     div.innerHTML = `
@@ -379,6 +401,7 @@ async function main(){
       <div class="bar-wrap"><div class="bar" style="width:${Math.min(100,barPct)}%"></div></div>
       <div class="prox-lbl"><b>${proxLine}</b></div>
       <span class="badge ${fire?'on':'off'}">${fire ? 'ACTIVE' : 'inactive'}</span>
+      ${d60Html}
       <div class="last">${lastLine} ${trendLine}</div>
       <div class="spark" id="spark-${s}"></div>
     `;

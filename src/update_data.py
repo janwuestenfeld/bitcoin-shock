@@ -186,26 +186,49 @@ def main():
         else:
             days_since_last = None; last_fire_str = None
 
-        # Trend toward / away from cutoff (proximity over last 20 days vs prior 20)
-        trend = None
+        # 20-day binary trend (kept for label) AND 60-day prior comparison (load-bearing)
+        trend_20d = None
         if raw is not None and thr is not None:
             rh = wf[f"{s}_wf_raw"].dropna().tail(40)
             if len(rh) >= 40:
-                last_20 = rh.tail(20).mean()
-                prior_20 = rh.head(20).mean()
-                if kind == "signed":
-                    # Direction toward higher stress (toward threshold from below)
-                    trend = "rising" if last_20 > prior_20 else "falling"
-                else:
-                    trend = "rising" if last_20 > prior_20 else "falling"
+                trend_20d = "rising" if rh.tail(20).mean() > rh.head(20).mean() else "falling"
+
+        # 60-day prior: raw value 60 trading days ago + change
+        raw_60d_ago = None; raw_change_60d_pct = None; raw_change_60d_abs = None
+        raw_series = wf[f"{s}_wf_raw"].dropna()
+        if len(raw_series) >= 61 and raw is not None:
+            r60 = float(raw_series.iloc[-61])  # value 60 obs before today
+            raw_60d_ago = r60
+            raw_change_60d_abs = raw - r60
+            if kind == "unsigned" and r60 != 0:
+                raw_change_60d_pct = (raw / r60 - 1.0) * 100
+            elif kind == "signed":
+                # For signed measures (banking), report the absolute delta in std-units
+                std60 = float(raw_series.tail(252).std()) if len(raw_series.tail(252)) >= 30 else None
+                if std60 and std60 > 0:
+                    raw_change_60d_pct = raw_change_60d_abs / std60  # σ change
+
+        # Cutoff change over 60 days (how much has the cutoff itself shifted?)
+        cutoff_60d_ago = None; cutoff_change_60d = None
+        thr_series = wf[f"{s}_wf_thresh"].dropna()
+        if len(thr_series) >= 61 and thr is not None:
+            c60 = float(thr_series.iloc[-61])
+            cutoff_60d_ago = c60
+            if c60 != 0:
+                cutoff_change_60d = (thr / c60 - 1.0) * 100 if kind == "unsigned" else (thr - c60)
 
         per_shock[s] = {
             "display": disp,
             "raw_current": raw, "cutoff_current": thr,
+            "raw_60d_ago": raw_60d_ago,
+            "raw_change_60d_pct": raw_change_60d_pct,
+            "raw_change_60d_abs": raw_change_60d_abs,
+            "cutoff_60d_ago": cutoff_60d_ago,
+            "cutoff_change_60d_pct": cutoff_change_60d,
             "active": active, "prior_active": prior_active,
             "proximity": proximity, "proximity_label": proximity_label,
             "days_since_last_fire": days_since_last, "last_fire_date": last_fire_str,
-            "trend_20d": trend,
+            "trend_20d": trend_20d,
         }
     out["active_shocks"] = {s: per_shock[s]["active"] for s in SHOCKS}
     out["per_shock_state"] = per_shock
