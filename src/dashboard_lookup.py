@@ -66,13 +66,13 @@ np.random.seed(42)
 # Paths
 # ---------------------------------------------------------------------------
 ROOT = Path(__file__).resolve().parent.parent
-PANEL_PATH = ROOT / "output" / "seed" / "paper1_context" / "panel_with_shocks.parquet"
-BTC_CAL_PATH = ROOT / "data" / "aux" / "btc_calendar_daily.parquet"
-OUT_DIR = ROOT / "output" / "stage3a" / "results"
+PANEL_PATH = ROOT / "data" / "panel_with_shocks.parquet"
+BTC_CAL_PATH = ROOT / "data" / "btc_calendar_daily.parquet"
+OUT_DIR = ROOT / "output"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 OUT_PATH = OUT_DIR / "dashboard_lookup_table.json"
 OUT_PATH_EWMA = OUT_DIR / "dashboard_lookup_table_ewma.json"
-EWMA_SHOCKS_PATH = ROOT / "data" / "aux" / "ewma_shocks_panel.parquet"
+EWMA_SHOCKS_PATH = ROOT / "data" / "ewma_shocks_panel.parquet"
 # _EWMA_PATCH_APPLIED_v1
 
 # ---------------------------------------------------------------------------
