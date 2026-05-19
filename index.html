@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bitcoin Conditional Shock Regime Classifier</title>
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#fff;--sf:#f8f9fa;--bd:#e1e4e8;--tx:#1a1a2e;--dim:#666;--ac:#f7931a;--bl:#0f3460;--gn:#2e7d32;--rd:#c62828;--am:#e67e22}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);line-height:1.55}
+    .c{max-width:1200px;margin:0 auto;padding:20px}
+    header{text-align:center;padding:30px 0 20px;border-bottom:3px solid var(--ac);margin-bottom:30px}
+    header h1{font-size:2.2em;font-weight:700}
+    header h1 span{color:var(--ac)}
+    header p{color:var(--dim);font-size:1.1em;margin-top:8px}
+    header .author{margin-top:6px;font-size:0.95em}
+    header .author a{color:var(--ac);text-decoration:none;font-weight:600}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:30px}
+    .card{background:var(--sf);border:1px solid var(--bd);border-radius:4px;padding:16px 18px;text-align:center}
+    .card .l{font-size:.78em;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;font-weight:500}
+    .card .v{font-size:1.7em;font-weight:700;margin-top:4px}
+    .card .v.sm{font-size:1.15em}
+    .card .s{font-size:.8em;color:var(--dim);margin-top:3px}
+    .pos{color:var(--gn)}
+    .neg{color:var(--rd)}
+    .neut{color:var(--dim)}
+    .warn{color:var(--am)}
+    section{margin-bottom:40px}
+    section h2{font-size:1.4em;margin-bottom:15px;padding-bottom:8px;border-bottom:2px solid var(--ac);display:inline-block}
+    .bx{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:15px;margin-bottom:20px}
+    .bx.note{padding:24px 28px}
+    .bx.note p{margin-bottom:14px}
+    .bx.note ul{margin:6px 0 14px 20px}
+    .bx.note li{margin-bottom:5px}
+    .ft{width:100%;border-collapse:collapse;margin-top:10px}
+    .ft th,.ft td{padding:10px 14px;text-align:center;border-bottom:1px solid var(--bd)}
+    .ft th{background:var(--sf);color:var(--dim);font-size:.85em;text-transform:uppercase}
+    .ft td.label{text-align:left;font-weight:500}
+    footer{text-align:center;padding:30px 0;color:var(--dim);font-size:.85em;border-top:1px solid var(--bd);margin-top:40px}
+    footer a{color:var(--ac);text-decoration:none}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    @media(max-width:768px){.g2{grid-template-columns:1fr}}
+    .meth{font-family:-apple-system,monospace,monospace}
+    .badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:0.75em;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+    .badge.keep{background:rgba(46,125,50,0.12);color:var(--gn)}
+    .badge.border{background:rgba(230,126,34,0.12);color:var(--am)}
+    .heatmap-cell{font-size:0.78em}
+  </style>
+  <script data-goatcounter="https://shock.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<div class="c">
+
+<header>
+  <h1>Bitcoin Conditional <span>SHOCK</span> Regime Classifier</h1>
+  <p>Walk-forward cell-conditional bias for BTC vs SPY relative performance</p>
+  <p class="author">Developed by <a href="https://www.linkedin.com/in/dr-jan-wuestenfeld">Dr. Jan Wuestenfeld</a></p>
+</header>
+
+<div class="cards" id="cards"></div>
+
+<section>
+  <div class="bx note">
+    <p style="margin-bottom:14px;">The Bitcoin Conditional Shock Regime Classifier maps today's
+    <b>(VIX, active macro-shock indicators, era)</b> into one of 84 historical cells and reports
+    the cell's <b>share-positive</b> outperformance distribution at h = 5 / 20 / 60 / 90 calendar
+    days. It is a probabilistic regime classifier, not a point forecaster.
+    Full technical details in
+    <a href="https://github.com/janwuestenfeld/bitcoin-shock" target="_blank">the companion paper &amp; methodology repo</a>.</p>
+
+    <p><b>What this does</b></p>
+    <ul>
+      <li><b>Classifies today's regime:</b> reads VIX and five top-decile macro shocks (oil, dollar, 10Y rate, banking stress, GPR-threat) under era-conditional walk-forward cutoffs with prior-era q99 tail fallback &mdash; the methodologically clean no-look-ahead identification.</li>
+      <li><b>Looks up the historical cell:</b> matches today's regime against 84 era&times;VIX&times;shock-type cells from 2014-2025 and reports the cell's historical share of 60-day BTC outperformance over SPY.</li>
+      <li><b>Reports horizon distribution:</b> share-positive at h = 5, 20, 60, 90 calendar days, with cell sample size for confidence calibration.</li>
+    </ul>
+
+    <p><b>How to read the prediction</b></p>
+    <ul>
+      <li><b style="color:var(--gn)">Share-positive &ge; 60%:</b> bullish cell &mdash; majority of historical analogues delivered BTC outperformance.</li>
+      <li><b style="color:var(--rd)">Share-positive &le; 40%:</b> bearish cell &mdash; majority of historical analogues delivered BTC underperformance.</li>
+      <li><b>Near 50%:</b> coin-flip cell &mdash; the framework offers no edge here.</li>
+      <li><b>n &lt; 10 analogues:</b> low-confidence prediction; the cell uses fallback aggregation.</li>
+    </ul>
+
+    <p><b>What this does <em>not</em> do</b></p>
+    <ul>
+      <li><b>Not a price forecaster:</b> reports directional bias and probability, not target prices.</li>
+      <li><b>Not a same-day &beta; predictor:</b> &beta; is a 60-day rolling object; "today's shock &rarr; tomorrow's &beta;" is not the question this answers.</li>
+      <li><b>Not a shield against novel regimes:</b> at era boundaries the classifier goes silent (~60-day warmup); during ongoing eras the cutoff is fully stable.</li>
+    </ul>
+
+    <p style="margin-top:10px;color:var(--dim);font-size:0.88em;"><b>Disclaimer:</b> Not financial advice. Past cell-conditional performance does not guarantee future results; historical regimes may not persist.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Methodology Convergence: Four Cutoff Variants</h2>
+  <p style="color:var(--dim);margin-bottom:12px;">
+  The shock-classifier converged on the walk-forward cutoff with prior-era q99 tail fallback as
+  the methodologically defensible no-look-ahead identification. The table shows the OOS R&sup2;
+  contribution from shock-type-conditional cells (M3 over M2 baseline) under each cutoff. Walk-forward
+  delivers the strongest signal precisely because the shock labels are aligned with the information
+  set contemporaneous investors actually had &mdash; future observations cannot influence past investor
+  behavior, so they should not influence the model's shock classifications either.</p>
+  <table class="ft" id="meth-table"></table>
+</section>
+
+<section>
+  <h2>Historical Cell Map (84 cells, h = 60d share-positive)</h2>
+  <p style="color:var(--dim);margin-bottom:12px;">Each cell is a (shock-type &times; VIX-bin &times; era) combination.
+  Green cells delivered BTC outperformance &ge; 60% of the time at h=60 days; red cells delivered
+  underperformance &ge; 60% of the time. Cells with n &lt; 10 (small-sample) are dimmed.</p>
+  <div class="bx" id="chart-heatmap" style="height:780px;"></div>
+</section>
+
+<section>
+  <h2>VIX Regime History (last 2 years)</h2>
+  <p style="color:var(--dim);margin-bottom:12px;">VIX with regime band shading
+  (calm &lt; 14.5; low-stress 14.5-20; mid-stress 20-30; extreme-stress &ge; 30).</p>
+  <div class="bx" id="chart-vix" style="height:380px;"></div>
+</section>
+
+<footer>
+  <p><b>Bitcoin Conditional Shock Regime Classifier</b> by <a href="https://www.linkedin.com/in/dr-jan-wuestenfeld">Dr. Jan Wuestenfeld</a></p>
+  <p>Data: FRED (VIXCLS, DCOILWTICO, DTWEXBGS, DGS10, STLFSI4), CoinMetrics (BTC), yfinance (SPY), Caldara-Iacoviello (GPR-threat) | Updated daily</p>
+  <p>Source &amp; methodology: <a href="https://github.com/janwuestenfeld/bitcoin-shock" target="_blank">github.com/janwuestenfeld/bitcoin-shock</a></p>
+  <p id="ts"></p>
+</footer>
+
+</div>
+
+<script>
+const A='#f7931a',B='#0f3460',G='#2e7d32',R='#c62828',GR='#999',AM='#e67e22';
+const LF={family:'-apple-system,sans-serif',size:13,color:'#1a1a2e'};
+const L={paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'#fafafa',font:LF,
+  margin:{l:65,r:25,t:45,b:45},
+  xaxis:{gridcolor:'#e8e8e8',hoverformat:'%Y-%m-%d'},
+  yaxis:{gridcolor:'#e8e8e8'}};
+
+const SHOCKS = ["oil_shock","dollar_shock","rate_shock","banking_shock","gprd_threat_shock"];
+const SHOCK_LABELS = {
+  oil_shock:"Oil", dollar_shock:"Dollar", rate_shock:"Rates",
+  banking_shock:"Banking", gprd_threat_shock:"GPR-Threat"
+};
+const VIX_BINS = ["calm","low_stress","mid_stress","extreme_stress"];
+const VIX_LABELS = {calm:"Calm",low_stress:"Low-Stress",mid_stress:"Mid-Stress",extreme_stress:"Extreme-Stress"};
+const ERAS = ["pre_covid","post_covid_pre_etf","post_etf"];
+const ERA_LABELS = {pre_covid:"Pre-COVID",post_covid_pre_etf:"Post-COVID/Pre-ETF",post_etf:"Post-ETF"};
+
+function shareClass(s){if(s==null)return'neut';if(s>=0.60)return'pos';if(s<=0.40)return'neg';return'neut'}
+function shareLabel(s){if(s==null)return'-';return (s*100).toFixed(0)+'%'}
+function ppLabel(v){if(v==null)return'-';const s=v>=0?'+':'';return `${s}${(v*100).toFixed(1)}pp`}
+
+async function main(){
+  const d = await fetch('data/dashboard_output.json?t='+Date.now()).then(r=>r.json());
+
+  // ===== KPI cards =====
+  const active = Object.entries(d.active_shocks).filter(([k,v])=>v).map(([k])=>SHOCK_LABELS[k]);
+  const activeLabel = active.length ? active.join(', ') : 'None';
+  const h60 = d.horizons['60'];
+  const sp60 = h60.share_positive;
+  const spClass = shareClass(sp60);
+  const ttl = sp60 == null ? 'n/a' : (sp60 >= 0.60 ? 'BULLISH bias' : (sp60 <= 0.40 ? 'BEARISH bias' : 'NEUTRAL'));
+  const ttlClass = sp60 == null ? 'neut' : spClass;
+
+  document.getElementById('cards').innerHTML = `
+    <div class="card"><div class="l">VIX (today)</div><div class="v">${d.current_vix.toFixed(2)}</div><div class="s">${VIX_LABELS[d.vix_bin]} regime</div></div>
+    <div class="card"><div class="l">Era</div><div class="v sm">${ERA_LABELS[d.current_era]}</div><div class="s">${d.current_date}</div></div>
+    <div class="card"><div class="l">Active Shocks</div><div class="v sm">${activeLabel}</div><div class="s">${active.length} of 5 firing</div></div>
+    <div class="card"><div class="l">Cell n analogues</div><div class="v">${d.cell_n}</div><div class="s">tier: ${d.cell_tier_used}</div></div>
+    <div class="card"><div class="l">Share-positive 60d</div><div class="v ${spClass}">${shareLabel(sp60)}</div><div class="s ${ttlClass}">${ttl}</div></div>
+    <div class="card"><div class="l">Cell mean outperf 60d</div><div class="v ${(h60.mean_outperf||0)>=0?'pos':'neg'}">${ppLabel(h60.mean_outperf)}</div><div class="s">vs SPY at h=60</div></div>
+  `;
+
+  // ===== Methodology table =====
+  const m = d.methodology;
+  const rows = [
+    {key:'full_sample', meta:m.full_sample, n_loss:'(baseline)'},
+    {key:'ewma_126', meta:m.ewma_126, n_loss:'(rolling)'},
+    {key:'era_conditional', meta:m.era_conditional, n_loss:'(look-ahead in x)'},
+    {key:'walkforward', meta:m.walkforward, n_loss:'(no look-ahead, COVID via q99)'},
+  ];
+  let t = '<thead><tr><th>Cutoff</th><th>Panel n</th><th>&Delta;R&sup2; M2&rarr;M3 (pp)</th><th>Perm <i>p</i></th><th>Banking M4 (pp)</th><th>Verdict</th></tr></thead><tbody>';
+  rows.forEach(r=>{
+    const me = r.meta || {};
+    const verdict = me.verdict || '-';
+    const vClass = verdict.includes('KEEP') ? 'badge keep' : (verdict.includes('BORDER') ? 'badge border' : '');
+    const dr = me.dr2_m3_pp;
+    const drClass = dr > 2 ? 'pos' : (dr < 1 ? 'neut' : 'warn');
+    const bankClass = (me.banking_m4_pp || 0) >= 0 ? 'pos' : 'neg';
+    const isWf = r.key === 'walkforward';
+    t += `<tr${isWf?' style="background:rgba(247,147,26,0.04);font-weight:500"':''}><td class="label">${me.label}${isWf?' &larr;':''}</td>`
+       + `<td>${me.n_obs || '-'}</td>`
+       + `<td class="${drClass}">${dr==null?'-':(dr>=0?'+':'')+dr.toFixed(2)}</td>`
+       + `<td>${me.p_value==null?'-':me.p_value.toFixed(3)}</td>`
+       + `<td class="${bankClass}">${me.banking_m4_pp==null?'-':(me.banking_m4_pp>=0?'+':'')+me.banking_m4_pp.toFixed(2)}</td>`
+       + `<td><span class="${vClass}">${verdict}</span></td></tr>`;
+  });
+  t += '</tbody>';
+  document.getElementById('meth-table').innerHTML = t;
+
+  // ===== Cell heatmap: 7 shock-types × 4 VIX bins × 3 eras =====
+  // We display three sub-heatmaps (one per era), each 7 rows × 4 cols.
+  // Cell value: share_positive_60d. Annotation: "X% (n=Y)".
+  const shockOrder = ['none','any','oil_shock','dollar_shock','rate_shock','banking_shock','gprd_threat_shock'];
+  const shockShortLabel = {none:'None',any:'Any',oil_shock:'Oil',dollar_shock:'Dollar',rate_shock:'Rates',banking_shock:'Banking',gprd_threat_shock:'GPR-Threat'};
+
+  // Build a map: era -> shock -> vix_bin -> {share, mean, n}
+  const cellMap = {};
+  d.cells.forEach(c => {
+    if (!cellMap[c.era]) cellMap[c.era] = {};
+    if (!cellMap[c.era][c.shock]) cellMap[c.era][c.shock] = {};
+    cellMap[c.era][c.shock][c.vix_bin] = c;
+  });
+
+  const traces = [];
+  const annotations = [];
+  const yLabels = [];
+  const zMatrix = [];
+  const textMatrix = [];
+
+  // Build row labels and z values: rows iterate era-then-shock, cols iterate vix_bin
+  ERAS.forEach((era, eIdx) => {
+    shockOrder.forEach((shock) => {
+      const label = `${ERA_LABELS[era].split('/')[0].substring(0,9)} | ${shockShortLabel[shock]}`;
+      yLabels.push(label);
+      const row = [];
+      const txtRow = [];
+      VIX_BINS.forEach((vb) => {
+        const c = cellMap[era]?.[shock]?.[vb];
+        if (c && c.share_positive_60d != null) {
+          row.push(c.share_positive_60d);
+          const dim = c.n < 10 ? ' style="opacity:0.5"' : '';
+          txtRow.push(`${(c.share_positive_60d*100).toFixed(0)}%<br>n=${c.n}`);
+        } else {
+          row.push(null);
+          txtRow.push('-');
+        }
+      });
+      zMatrix.push(row);
+      textMatrix.push(txtRow);
+    });
+  });
+
+  const xLabels = VIX_BINS.map(vb => VIX_LABELS[vb]);
+  Plotly.newPlot('chart-heatmap', [{
+    z: zMatrix,
+    x: xLabels,
+    y: yLabels,
+    text: textMatrix,
+    texttemplate: '%{text}',
+    textfont: {size:10},
+    colorscale: [[0,'#c62828'],[0.4,'#f5b7b1'],[0.5,'#f8f9fa'],[0.6,'#a9d4a9'],[1,'#2e7d32']],
+    zmin:0.2, zmax:0.8,
+    showscale:true,
+    colorbar:{title:'Share-positive 60d',thickness:14},
+    hovertemplate:'%{y} × %{x}<br>%{text}<extra></extra>',
+  }],{
+    ...L,
+    title:{text:'Cell-conditional share-positive 60d BTC-SPY outperformance',font:{size:15}},
+    xaxis:{...L.xaxis,title:'VIX bin',type:'category'},
+    yaxis:{...L.yaxis,title:'Era | Shock-type',type:'category',autorange:'reversed',tickfont:{size:10}},
+    margin:{l:160,r:80,t:60,b:50},
+    height:780,
+  },{responsive:true});
+
+  // ===== VIX history =====
+  const vh = d.vix_history;
+  const xs = vh.map(p=>p.date);
+  const ys = vh.map(p=>p.vix);
+  Plotly.newPlot('chart-vix', [
+    {x:xs,y:ys,name:'VIX',line:{color:B,width:1.5},mode:'lines'},
+  ],{
+    ...L,
+    title:{text:'VIX (last ~750 trading days)',font:{size:15}},
+    yaxis:{...L.yaxis,title:'VIX'},
+    shapes:[
+      {type:'line',y0:14.5,y1:14.5,x0:xs[0],x1:xs[xs.length-1],line:{color:G,width:1,dash:'dash'}},
+      {type:'line',y0:20,y1:20,x0:xs[0],x1:xs[xs.length-1],line:{color:AM,width:1,dash:'dash'}},
+      {type:'line',y0:30,y1:30,x0:xs[0],x1:xs[xs.length-1],line:{color:R,width:1,dash:'dash'}},
+    ],
+    annotations:[
+      {x:xs[xs.length-1],y:14.5,text:'calm/low boundary (14.5)',showarrow:false,xanchor:'right',font:{color:G,size:10},yshift:8},
+      {x:xs[xs.length-1],y:20,text:'low/mid boundary (20)',showarrow:false,xanchor:'right',font:{color:AM,size:10},yshift:8},
+      {x:xs[xs.length-1],y:30,text:'mid/extreme boundary (30)',showarrow:false,xanchor:'right',font:{color:R,size:10},yshift:8},
+    ],
+    margin:{...L.margin,r:60},
+  },{responsive:true});
+
+  document.getElementById('ts').textContent = 'Last updated: ' + d.updated;
+}
+main().catch(e => {
+  document.getElementById('cards').innerHTML = '<div class="card"><div class="l">Error</div><div class="v sm warn">Failed to load dashboard_output.json</div><div class="s">'+e.message+'</div></div>';
+  console.error(e);
+});
+</script>
+</body>
+</html>

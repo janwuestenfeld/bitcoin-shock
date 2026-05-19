@@ -1,0 +1,432 @@
+{
+  "_metadata": {
+    "script": "code/tmp/blackrock_calendar.py",
+    "panel": "/Users/janwustenfeld/Documents/btc-vix-threshold-paper2/output/seed/paper1_context/panel_with_shocks.parquet",
+    "btc_calendar": "/Users/janwustenfeld/Documents/btc-vix-threshold-paper2/data/aux/btc_calendar_daily.parquet",
+    "generated_at": "2026-05-19T09:17:09.177981Z",
+    "horizons_calendar_days": [
+      10,
+      60
+    ],
+    "seed": 42,
+    "convention": "BTC return: calendar 24/7. SPY return: from spy(nearest NYSE <= t) to spy(nearest NYSE >= t+h calendar)."
+  },
+  "events": [
+    {
+      "event_name": "US-Iran escalation",
+      "event_date_calendar": "2020-01-03",
+      "nyse_state_date": "2020-01-03",
+      "nyse_gap_backward_days": 0,
+      "vix_at_state": 14.020000457763672,
+      "beta_60_at_state": 0.5337570716346738,
+      "era": "pre_covid",
+      "regime": "calm",
+      "active_shocks_day_of_state": [],
+      "per_horizon_calendar": {
+        "10": {
+          "btc_fwd": 0.11026414162078169,
+          "spy_fwd": 0.017183434002115527,
+          "outperf": 0.09308070761866616,
+          "tph_calendar": "2020-01-13",
+          "nyse_tph_used": "2020-01-13",
+          "nyse_gap_forward_days": 0
+        },
+        "60": {
+          "btc_fwd": 0.19869306714103385,
+          "spy_fwd": -0.06876315153845292,
+          "outperf": 0.26745621867948677,
+          "tph_calendar": "2020-03-03",
+          "nyse_tph_used": "2020-03-03",
+          "nyse_gap_forward_days": 0
+        }
+      },
+      "previous_nyse_aligned": {
+        "target_date": "2020-01-03",
+        "btc_fwd_10_pct": 21.834,
+        "spy_fwd_10_pct": 2.959,
+        "outperf_btc_minus_spy_10_pct": 18.875,
+        "btc_fwd_60_pct": -12.07,
+        "spy_fwd_60_pct": -19.585,
+        "outperf_btc_minus_spy_60_pct": 7.516
+      }
+    },
+    {
+      "event_name": "COVID outbreak",
+      "event_date_calendar": "2020-03-09",
+      "nyse_state_date": "2020-03-09",
+      "nyse_gap_backward_days": 0,
+      "vix_at_state": 54.459999084472656,
+      "beta_60_at_state": 0.6504940915751865,
+      "era": "post_covid_pre_etf",
+      "regime": "stress",
+      "active_shocks_day_of_state": [
+        "oil_shock",
+        "rate_shock",
+        "banking_shock"
+      ],
+      "per_horizon_calendar": {
+        "10": {
+          "btc_fwd": -0.21438083619410875,
+          "spy_fwd": -0.12296269605411558,
+          "outperf": -0.09141814013999316,
+          "tph_calendar": "2020-03-19",
+          "nyse_tph_used": "2020-03-19",
+          "nyse_gap_forward_days": 0
+        },
+        "60": {
+          "btc_fwd": 0.24858694266172465,
+          "spy_fwd": 0.07267480286286387,
+          "outperf": 0.17591213979886078,
+          "tph_calendar": "2020-05-08",
+          "nyse_tph_used": "2020-05-08",
+          "nyse_gap_forward_days": 0
+        }
+      },
+      "previous_nyse_aligned": {
+        "target_date": "2020-03-09",
+        "btc_fwd_10_pct": -17.856,
+        "spy_fwd_10_pct": -18.222,
+        "outperf_btc_minus_spy_10_pct": 0.366,
+        "btc_fwd_60_pct": 22.11,
+        "spy_fwd_60_pct": 14.508,
+        "outperf_btc_minus_spy_60_pct": 7.602
+      }
+    },
+    {
+      "event_name": "US election challenges",
+      "event_date_calendar": "2020-11-03",
+      "nyse_state_date": "2020-11-03",
+      "nyse_gap_backward_days": 0,
+      "vix_at_state": 35.54999923706055,
+      "beta_60_at_state": 0.9436184422800159,
+      "era": "post_covid_pre_etf",
+      "regime": "stress",
+      "active_shocks_day_of_state": [
+        "dollar_shock",
+        "banking_shock"
+      ],
+      "per_horizon_calendar": {
+        "10": {
+          "btc_fwd": 0.16669011013729862,
+          "spy_fwd": 0.06567862907089372,
+          "outperf": 0.1010114810664049,
+          "tph_calendar": "2020-11-13",
+          "nyse_tph_used": "2020-11-13",
+          "nyse_gap_forward_days": 0
+        },
+        "60": {
+          "btc_fwd": 1.287838437679635,
+          "spy_fwd": 0.10216954308176107,
+          "outperf": 1.185668894597874,
+          "tph_calendar": "2021-01-02",
+          "nyse_tph_used": "2021-01-04",
+          "nyse_gap_forward_days": 2
+        }
+      },
+      "previous_nyse_aligned": {
+        "target_date": "2020-11-03",
+        "btc_fwd_10_pct": 26.329,
+        "spy_fwd_10_pct": 7.318,
+        "outperf_btc_minus_spy_10_pct": 19.011,
+        "btc_fwd_60_pct": 139.84,
+        "spy_fwd_60_pct": 12.44,
+        "outperf_btc_minus_spy_60_pct": 127.4
+      }
+    },
+    {
+      "event_name": "Russia-Ukraine invasion",
+      "event_date_calendar": "2022-02-21",
+      "nyse_state_date": "2022-02-18",
+      "nyse_gap_backward_days": 3,
+      "vix_at_state": 27.75,
+      "beta_60_at_state": 1.40271944190357,
+      "era": "post_covid_pre_etf",
+      "regime": "stress",
+      "active_shocks_day_of_state": [
+        "gprd_threat_shock"
+      ],
+      "per_horizon_calendar": {
+        "10": {
+          "btc_fwd": 0.14541843794418208,
+          "spy_fwd": 0.0034084832201244364,
+          "outperf": 0.14200995472405764,
+          "tph_calendar": "2022-03-03",
+          "nyse_tph_used": "2022-03-03",
+          "nyse_gap_forward_days": 0
+        },
+        "60": {
+          "btc_fwd": 0.07116111201483899,
+          "spy_fwd": -0.015812930437320794,
+          "outperf": 0.08697404245215978,
+          "tph_calendar": "2022-04-22",
+          "nyse_tph_used": "2022-04-22",
+          "nyse_gap_forward_days": 0
+        }
+      },
+      "previous_nyse_aligned": {
+        "target_date": "2022-02-21",
+        "btc_fwd_10_pct": 1.369,
+        "spy_fwd_10_pct": -3.101,
+        "outperf_btc_minus_spy_10_pct": 4.47,
+        "btc_fwd_60_pct": -24.688,
+        "spy_fwd_60_pct": -8.495,
+        "outperf_btc_minus_spy_60_pct": -16.193
+      }
+    },
+    {
+      "event_name": "US regional banking (SVB)",
+      "event_date_calendar": "2023-03-09",
+      "nyse_state_date": "2023-03-09",
+      "nyse_gap_backward_days": 0,
+      "vix_at_state": 22.610000610351562,
+      "beta_60_at_state": 1.0716470673919523,
+      "era": "post_covid_pre_etf",
+      "regime": "stress",
+      "active_shocks_day_of_state": [],
+      "per_horizon_calendar": {
+        "10": {
+          "btc_fwd": 0.385034973388759,
+          "spy_fwd": 0.009405405097782094,
+          "outperf": 0.37562956829097693,
+          "tph_calendar": "2023-03-19",
+          "nyse_tph_used": "2023-03-20",
+          "nyse_gap_forward_days": 1
+        },
+        "60": {
+          "btc_fwd": 0.3625326095365562,
+          "spy_fwd": 0.05811429298486881,
+          "outperf": 0.3044183165516874,
+          "tph_calendar": "2023-05-08",
+          "nyse_tph_used": "2023-05-08",
+          "nyse_gap_forward_days": 0
+        }
+      },
+      "previous_nyse_aligned": {
+        "target_date": "2023-03-09",
+        "btc_fwd_10_pct": 39.5,
+        "spy_fwd_10_pct": 0.794,
+        "outperf_btc_minus_spy_10_pct": 38.705,
+        "btc_fwd_60_pct": 26.713,
+        "spy_fwd_60_pct": 9.493,
+        "outperf_btc_minus_spy_60_pct": 17.22
+      }
+    },
+    {
+      "event_name": "US global tariff",
+      "event_date_calendar": "2025-04-02",
+      "nyse_state_date": "2025-04-02",
+      "nyse_gap_backward_days": 0,
+      "vix_at_state": 21.510000228881836,
+      "beta_60_at_state": 1.1743426571615607,
+      "era": "post_etf",
+      "regime": "stress",
+      "active_shocks_day_of_state": [],
+      "per_horizon_calendar": {
+        "10": {
+          "btc_fwd": 0.0328701770315738,
+          "spy_fwd": -0.04499407825884405,
+          "outperf": 0.07786425529041785,
+          "tph_calendar": "2025-04-12",
+          "nyse_tph_used": "2025-04-14",
+          "nyse_gap_forward_days": 2
+        },
+        "60": {
+          "btc_fwd": 0.280956344999163,
+          "spy_fwd": 0.04993618954820889,
+          "outperf": 0.2310201554509541,
+          "tph_calendar": "2025-06-01",
+          "nyse_tph_used": "2025-06-02",
+          "nyse_gap_forward_days": 1
+        }
+      },
+      "previous_nyse_aligned": {
+        "target_date": "2025-04-02",
+        "btc_fwd_10_pct": 1.933,
+        "spy_fwd_10_pct": -6.884,
+        "outperf_btc_minus_spy_10_pct": 8.817,
+        "btc_fwd_60_pct": 29.795,
+        "spy_fwd_60_pct": 9.771,
+        "outperf_btc_minus_spy_60_pct": 20.025
+      }
+    }
+  ],
+  "cell_percentile_summary": [
+    {
+      "event_name": "US-Iran escalation",
+      "event_date_calendar": "2020-01-03",
+      "era": "pre_covid",
+      "regime": "calm",
+      "vix_at_state": 14.020000457763672,
+      "active_shocks_day_of_state": [],
+      "by_horizon": {
+        "10": {
+          "strict_n": 689,
+          "strict_mean_pct": 3.419290465905939,
+          "strict_pctile": 72.56894049346879,
+          "loose_n": 689,
+          "loose_mean_pct": 3.419290465905939,
+          "loose_pctile": 72.56894049346879,
+          "realized_pct": 9.308070761866617
+        },
+        "60": {
+          "strict_n": 689,
+          "strict_mean_pct": 20.55898106620029,
+          "strict_pctile": 67.05370101596516,
+          "loose_n": 689,
+          "loose_mean_pct": 20.55898106620029,
+          "loose_pctile": 67.05370101596516,
+          "realized_pct": 26.745621867948678
+        }
+      }
+    },
+    {
+      "event_name": "COVID outbreak",
+      "event_date_calendar": "2020-03-09",
+      "era": "post_covid_pre_etf",
+      "regime": "stress",
+      "vix_at_state": 54.459999084472656,
+      "active_shocks_day_of_state": [
+        "banking_shock",
+        "oil_shock",
+        "rate_shock"
+      ],
+      "by_horizon": {
+        "10": {
+          "strict_n": 8,
+          "strict_mean_pct": -1.1637361483625486,
+          "strict_pctile": 25.0,
+          "loose_n": 352,
+          "loose_mean_pct": 0.5122022158415462,
+          "loose_pctile": 9.375,
+          "realized_pct": -9.141814013999316
+        },
+        "60": {
+          "strict_n": 8,
+          "strict_mean_pct": 0.1587196428474824,
+          "strict_pctile": 75.0,
+          "loose_n": 352,
+          "loose_mean_pct": 3.4467687261082967,
+          "loose_pctile": 74.14772727272727,
+          "realized_pct": 17.591213979886078
+        }
+      }
+    },
+    {
+      "event_name": "US election challenges",
+      "event_date_calendar": "2020-11-03",
+      "era": "post_covid_pre_etf",
+      "regime": "stress",
+      "vix_at_state": 35.54999923706055,
+      "active_shocks_day_of_state": [
+        "dollar_shock",
+        "banking_shock"
+      ],
+      "by_horizon": {
+        "10": {
+          "strict_n": 16,
+          "strict_mean_pct": 0.10579277998780459,
+          "strict_pctile": 93.75,
+          "loose_n": 218,
+          "loose_mean_pct": 0.6164318120067102,
+          "loose_pctile": 86.23853211009175,
+          "realized_pct": 10.10114810664049
+        },
+        "60": {
+          "strict_n": 16,
+          "strict_mean_pct": 11.579105252472152,
+          "strict_pctile": 100.0,
+          "loose_n": 218,
+          "loose_mean_pct": 5.425327219523071,
+          "loose_pctile": 99.54128440366972,
+          "realized_pct": 118.56688945978739
+        }
+      }
+    },
+    {
+      "event_name": "Russia-Ukraine invasion",
+      "event_date_calendar": "2022-02-21",
+      "era": "post_covid_pre_etf",
+      "regime": "stress",
+      "vix_at_state": 27.75,
+      "active_shocks_day_of_state": [
+        "gprd_threat_shock"
+      ],
+      "by_horizon": {
+        "10": {
+          "strict_n": 50,
+          "strict_mean_pct": 2.156633688296187,
+          "strict_pctile": 88.0,
+          "loose_n": 128,
+          "loose_mean_pct": 0.8567280692080953,
+          "loose_pctile": 90.625,
+          "realized_pct": 14.200995472405765
+        },
+        "60": {
+          "strict_n": 50,
+          "strict_mean_pct": 0.28673053834501694,
+          "strict_pctile": 68.0,
+          "loose_n": 128,
+          "loose_mean_pct": -4.082751065742878,
+          "loose_pctile": 75.0,
+          "realized_pct": 8.697404245215978
+        }
+      }
+    },
+    {
+      "event_name": "US regional banking (SVB)",
+      "event_date_calendar": "2023-03-09",
+      "era": "post_covid_pre_etf",
+      "regime": "stress",
+      "vix_at_state": 22.610000610351562,
+      "active_shocks_day_of_state": [],
+      "by_horizon": {
+        "10": {
+          "strict_n": 437,
+          "strict_mean_pct": 1.8359457604224785,
+          "strict_pctile": 98.62700228832952,
+          "loose_n": 437,
+          "loose_mean_pct": 1.8359457604224785,
+          "loose_pctile": 98.62700228832952,
+          "realized_pct": 37.56295682909769
+        },
+        "60": {
+          "strict_n": 437,
+          "strict_mean_pct": 18.07673531567233,
+          "strict_pctile": 67.04805491990847,
+          "loose_n": 437,
+          "loose_mean_pct": 18.07673531567233,
+          "loose_pctile": 67.04805491990847,
+          "realized_pct": 30.441831655168738
+        }
+      }
+    },
+    {
+      "event_name": "US global tariff",
+      "event_date_calendar": "2025-04-02",
+      "era": "post_etf",
+      "regime": "stress",
+      "vix_at_state": 21.510000228881836,
+      "active_shocks_day_of_state": [],
+      "by_horizon": {
+        "10": {
+          "strict_n": 216,
+          "strict_mean_pct": -0.4214365781379408,
+          "strict_pctile": 91.66666666666666,
+          "loose_n": 216,
+          "loose_mean_pct": -0.4214365781379408,
+          "loose_pctile": 91.66666666666666,
+          "realized_pct": 7.786425529041785
+        },
+        "60": {
+          "strict_n": 185,
+          "strict_mean_pct": 2.8175537824462893,
+          "strict_pctile": 82.70270270270271,
+          "loose_n": 185,
+          "loose_mean_pct": 2.8175537824462893,
+          "loose_pctile": 82.70270270270271,
+          "realized_pct": 23.102015545095412
+        }
+      }
+    }
+  ]
+}

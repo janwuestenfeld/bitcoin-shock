@@ -1,0 +1,276 @@
+{
+  "_metadata": {
+    "script": "code/blackrock_horizon_sensitivity.py",
+    "panel": "/Users/janwustenfeld/Documents/btc-vix-threshold-paper2/output/seed/paper1_context/panel_with_shocks.parquet",
+    "btc_calendar": "/Users/janwustenfeld/Documents/btc-vix-threshold-paper2/data/aux/btc_calendar_daily.parquet",
+    "generated_at": "2026-05-19T10:19:38.504535Z",
+    "horizons_calendar_days": [
+      5,
+      20,
+      60,
+      90
+    ],
+    "seed": 42,
+    "convention": "Calendar-anchored: BTC at calendar t -> BTC at calendar t+h (ffill). SPY at nearest NYSE <= t -> nearest NYSE >= t+h."
+  },
+  "events": [
+    {
+      "anchor_calendar_date": "2020-01-03",
+      "nyse_state_date": "2020-01-03",
+      "nyse_gap_backward_days": 0,
+      "btc_t_calendar_price": 7315.3093603156,
+      "spy_t_nyse_price": 294.6400146484375,
+      "by_horizon": {
+        "5": {
+          "tph_calendar": "2020-01-08",
+          "nyse_tph_used": "2020-01-08",
+          "nyse_gap_forward_days": 0,
+          "btc_fwd_pct": 10.17578521825213,
+          "spy_fwd_pct": 0.6327549798213594,
+          "outperf_pct": 9.543030238430772
+        },
+        "20": {
+          "tph_calendar": "2020-01-23",
+          "nyse_tph_used": "2020-01-23",
+          "nyse_gap_forward_days": 0,
+          "btc_fwd_pct": 14.368158636663498,
+          "spy_fwd_pct": 2.8876625052668192,
+          "outperf_pct": 11.480496131396677
+        },
+        "60": {
+          "tph_calendar": "2020-03-03",
+          "nyse_tph_used": "2020-03-03",
+          "nyse_gap_forward_days": 0,
+          "btc_fwd_pct": 19.869306714103384,
+          "spy_fwd_pct": -6.876315153845292,
+          "outperf_pct": 26.745621867948678
+        },
+        "90": {
+          "tph_calendar": "2020-04-02",
+          "nyse_tph_used": "2020-04-02",
+          "nyse_gap_forward_days": 0,
+          "btc_fwd_pct": -7.143472852400534,
+          "spy_fwd_pct": -21.432056754572148,
+          "outperf_pct": 14.288583902171615
+        }
+      },
+      "event_name": "US-Iran escalation",
+      "event_date_calendar": "2020-01-03"
+    },
+    {
+      "anchor_calendar_date": "2020-03-09",
+      "nyse_state_date": "2020-03-09",
+      "nyse_gap_backward_days": 0,
+      "btc_t_calendar_price": 7896.38531987142,
+      "spy_t_nyse_price": 250.6099395751953,
+      "by_horizon": {
+        "5": {
+          "tph_calendar": "2020-03-14",
+          "nyse_tph_used": "2020-03-16",
+          "nyse_gap_forward_days": 2,
+          "btc_fwd_pct": -34.84142049804667,
+          "spy_fwd_pct": -12.53694218810516,
+          "outperf_pct": -22.304478309941512
+        },
+        "20": {
+          "tph_calendar": "2020-03-29",
+          "nyse_tph_used": "2020-03-30",
+          "nyse_gap_forward_days": 1,
+          "btc_fwd_pct": -25.2207516782185,
+          "spy_fwd_pct": -4.0263400335594834,
+          "outperf_pct": -21.194411644659017
+        },
+        "60": {
+          "tph_calendar": "2020-05-08",
+          "nyse_tph_used": "2020-05-08",
+          "nyse_gap_forward_days": 0,
+          "btc_fwd_pct": 24.858694266172463,
+          "spy_fwd_pct": 7.267480286286387,
+          "outperf_pct": 17.591213979886078
+        },
+        "90": {
+          "tph_calendar": "2020-06-07",
+          "nyse_tph_used": "2020-06-08",
+          "nyse_gap_forward_days": 1,
+          "btc_fwd_pct": 23.44357216859947,
+          "spy_fwd_pct": 18.550304484791823,
+          "outperf_pct": 4.893267683807645
+        }
+      },
+      "event_name": "COVID outbreak",
+      "event_date_calendar": "2020-03-09"
+    },
+    {
+      "anchor_calendar_date": "2020-11-03",
+      "nyse_state_date": "2020-11-03",
+      "nyse_gap_backward_days": 0,
+      "btc_t_calendar_price": 13996.915398597312,
+      "spy_t_nyse_price": 311.49395751953125,
+      "by_horizon": {
+        "5": {
+          "tph_calendar": "2020-11-08",
+          "nyse_tph_used": "2020-11-09",
+          "nyse_gap_forward_days": 1,
+          "btc_fwd_pct": 10.738689674027068,
+          "spy_fwd_pct": 5.514383512389598,
+          "outperf_pct": 5.224306161637471
+        },
+        "20": {
+          "tph_calendar": "2020-11-23",
+          "nyse_tph_used": "2020-11-23",
+          "nyse_gap_forward_days": 0,
+          "btc_fwd_pct": 31.266477195617416,
+          "spy_fwd_pct": 6.377376620867525,
+          "outperf_pct": 24.88910057474989
+        },
+        "60": {
+          "tph_calendar": "2021-01-02",
+          "nyse_tph_used": "2021-01-04",
+          "nyse_gap_forward_days": 2,
+          "btc_fwd_pct": 128.7838437679635,
+          "spy_fwd_pct": 10.216954308176106,
+          "outperf_pct": 118.56688945978739
+        },
+        "90": {
+          "tph_calendar": "2021-02-01",
+          "nyse_tph_used": "2021-02-01",
+          "nyse_gap_forward_days": 0,
+          "btc_fwd_pct": 139.84049978781331,
+          "spy_fwd_pct": 12.440460176776135,
+          "outperf_pct": 127.40003961103719
+        }
+      },
+      "event_name": "US election challenges",
+      "event_date_calendar": "2020-11-03"
+    },
+    {
+      "anchor_calendar_date": "2022-02-21",
+      "nyse_state_date": "2022-02-18",
+      "nyse_gap_backward_days": 3,
+      "btc_t_calendar_price": 37098.0360081824,
+      "spy_t_nyse_price": 409.62786865234375,
+      "by_horizon": {
+        "5": {
+          "tph_calendar": "2022-02-26",
+          "nyse_tph_used": "2022-02-28",
+          "nyse_gap_forward_days": 2,
+          "btc_fwd_pct": 5.279368815357821,
+          "spy_fwd_pct": 0.5526911677737223,
+          "outperf_pct": 4.726677647584099
+        },
+        "20": {
+          "tph_calendar": "2022-03-13",
+          "nyse_tph_used": "2022-03-14",
+          "nyse_gap_forward_days": 1,
+          "btc_fwd_pct": 1.9146064553660969,
+          "spy_fwd_pct": -3.967953954968473,
+          "outperf_pct": 5.88256041033457
+        },
+        "60": {
+          "tph_calendar": "2022-04-22",
+          "nyse_tph_used": "2022-04-22",
+          "nyse_gap_forward_days": 0,
+          "btc_fwd_pct": 7.116111201483899,
+          "spy_fwd_pct": -1.5812930437320794,
+          "outperf_pct": 8.697404245215978
+        },
+        "90": {
+          "tph_calendar": "2022-05-22",
+          "nyse_tph_used": "2022-05-23",
+          "nyse_gap_forward_days": 1,
+          "btc_fwd_pct": -18.238595878660647,
+          "spy_fwd_pct": -8.308262593641835,
+          "outperf_pct": -9.930333285018811
+        }
+      },
+      "event_name": "Russia-Ukraine invasion",
+      "event_date_calendar": "2022-02-21"
+    },
+    {
+      "anchor_calendar_date": "2023-03-09",
+      "nyse_state_date": "2023-03-09",
+      "nyse_gap_backward_days": 0,
+      "btc_t_calendar_price": 20349.8141732905,
+      "spy_t_nyse_price": 375.3678894042969,
+      "by_horizon": {
+        "5": {
+          "tph_calendar": "2023-03-14",
+          "nyse_tph_used": "2023-03-14",
+          "nyse_gap_forward_days": 0,
+          "btc_fwd_pct": 21.716185505274453,
+          "spy_fwd_pct": 0.043438830151565355,
+          "outperf_pct": 21.672746675122887
+        },
+        "20": {
+          "tph_calendar": "2023-03-29",
+          "nyse_tph_used": "2023-03-29",
+          "nyse_gap_forward_days": 0,
+          "btc_fwd_pct": 39.5063932119516,
+          "spy_fwd_pct": 2.8914504853840173,
+          "outperf_pct": 36.61494272656758
+        },
+        "60": {
+          "tph_calendar": "2023-05-08",
+          "nyse_tph_used": "2023-05-08",
+          "nyse_gap_forward_days": 0,
+          "btc_fwd_pct": 36.25326095365562,
+          "spy_fwd_pct": 5.811429298486881,
+          "outperf_pct": 30.441831655168738
+        },
+        "90": {
+          "tph_calendar": "2023-06-07",
+          "nyse_tph_used": "2023-06-07",
+          "nyse_gap_forward_days": 0,
+          "btc_fwd_pct": 29.4340027133706,
+          "spy_fwd_pct": 9.351819971536713,
+          "outperf_pct": 20.082182741833886
+        }
+      },
+      "event_name": "US regional banking (SVB)",
+      "event_date_calendar": "2023-03-09"
+    },
+    {
+      "anchor_calendar_date": "2025-04-02",
+      "nyse_state_date": "2025-04-02",
+      "nyse_gap_backward_days": 0,
+      "btc_t_calendar_price": 82555.631296318,
+      "spy_t_nyse_price": 558.1219482421875,
+      "by_horizon": {
+        "5": {
+          "tph_calendar": "2025-04-07",
+          "nyse_tph_used": "2025-04-07",
+          "nyse_gap_forward_days": 0,
+          "btc_fwd_pct": -3.7960183170196005,
+          "spy_fwd_pct": -10.653299826011263,
+          "outperf_pct": 6.857281508991663
+        },
+        "20": {
+          "tph_calendar": "2025-04-22",
+          "nyse_tph_used": "2025-04-22",
+          "nyse_gap_forward_days": 0,
+          "btc_fwd_pct": 13.251645249353983,
+          "spy_fwd_pct": -6.602079772360181,
+          "outperf_pct": 19.853725021714162
+        },
+        "60": {
+          "tph_calendar": "2025-06-01",
+          "nyse_tph_used": "2025-06-02",
+          "nyse_gap_forward_days": 1,
+          "btc_fwd_pct": 28.0956344999163,
+          "spy_fwd_pct": 4.993618954820889,
+          "outperf_pct": 23.102015545095412
+        },
+        "90": {
+          "tph_calendar": "2025-07-01",
+          "nyse_tph_used": "2025-07-01",
+          "nyse_gap_forward_days": 0,
+          "btc_fwd_pct": 27.872992962751763,
+          "spy_fwd_pct": 9.734992514438012,
+          "outperf_pct": 18.13800044831375
+        }
+      },
+      "event_name": "US global tariff",
+      "event_date_calendar": "2025-04-02"
+    }
+  ]
+}
