@@ -17,12 +17,6 @@
     header .author{margin-top:4px;font-size:0.9em}
     header .author a{color:var(--ac);text-decoration:none;font-weight:600}
 
-    /* Practitioner narrative opener */
-    .narr{background:var(--sf);border:1px solid var(--bd);border-left:4px solid var(--ac);border-radius:6px;padding:18px 22px;margin-bottom:18px;font-size:0.95em}
-    .narr h3{font-size:0.78em;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin-bottom:8px}
-    .narr p{margin-bottom:8px}
-    .narr p:last-child{margin-bottom:0}
-
     /* What changed today — banner row */
     .changed{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;align-items:center;background:rgba(247,147,26,0.06);border-left:3px solid var(--ac);padding:10px 14px;border-radius:4px;font-size:0.93em}
     .changed .chip{background:#fff;border:1px solid var(--bd);border-radius:3px;padding:3px 9px;font-weight:500;color:var(--tx)}
@@ -160,27 +154,26 @@
     footer{text-align:center;padding:22px 0;color:var(--dim);font-size:.82em;border-top:1px solid var(--bd);margin-top:25px}
     footer a{color:var(--ac);text-decoration:none}
 
-    /* First-visit intro card */
-    .intro{background:rgba(247,147,26,0.06);border:1px dashed var(--ac);border-radius:8px;padding:18px 22px 14px;margin-bottom:22px;position:relative}
-    .intro-x{position:absolute;top:8px;right:10px;background:none;border:0;font-size:1.4em;color:var(--dim);cursor:pointer;line-height:1;padding:2px 8px;border-radius:4px}
-    .intro-x:hover{background:rgba(0,0,0,0.05);color:var(--tx)}
-    .intro-title{font-weight:700;font-size:1.05em;margin-bottom:10px;color:var(--ac)}
-    .intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;font-size:0.91em;line-height:1.5}
-    @media(max-width:700px){.intro-grid{grid-template-columns:1fr}}
-    .intro-grid > div{position:relative;padding-left:28px}
-    .intro-n{position:absolute;left:0;top:0;background:var(--ac);color:#fff;width:20px;height:20px;border-radius:50%;text-align:center;line-height:20px;font-size:0.78em;font-weight:700}
-    .intro-foot{margin-top:12px;font-size:0.82em;color:var(--dim)}
-    .intro-foot b{color:var(--tx)}
-
-    /* "What to do today" actionability block */
-    .actionable{background:#fff;border:1px solid var(--bd);border-left:4px solid var(--ac);border-radius:6px;padding:16px 20px;margin-bottom:18px}
-    .actionable h3{font-size:0.82em;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:8px}
-    .actionable .lab{font-size:1.15em;font-weight:700;margin-bottom:8px}
-    .actionable .row{display:grid;grid-template-columns:140px 1fr;gap:6px 14px;font-size:0.92em;line-height:1.5;margin-top:4px}
-    @media(max-width:600px){.actionable .row{grid-template-columns:1fr}}
-    .actionable .row b{color:var(--tx);font-weight:600}
-    .actionable .row .lbl{color:var(--dim);font-size:0.85em;text-transform:uppercase;letter-spacing:.3px;font-weight:600}
-    .actionable .nfa{margin-top:10px;padding-top:8px;border-top:1px solid var(--bd);font-size:0.78em;color:var(--dim);font-style:italic}
+    /* Persistent thesis strip (3-mode taxonomy) */
+    .thesis{margin:0 0 22px 0}
+    .thesis .ts-lead{font-size:0.92em;color:var(--tx);margin-bottom:10px;line-height:1.55}
+    .thesis .ts-lead b{color:var(--tx)}
+    .thesis-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    @media(max-width:900px){.thesis-cards{grid-template-columns:1fr}}
+    .tcard{background:#fff;border:1px solid var(--bd);border-top:4px solid var(--ac);border-radius:6px;padding:14px 16px}
+    .tcard.rev{border-top-color:var(--gn)}
+    .tcard.tk{border-top-color:var(--rd)}
+    .tcard.dr{border-top-color:var(--am)}
+    .tcard .tag{font-size:0.72em;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:4px}
+    .tcard .mode{font-size:1.1em;font-weight:700;color:var(--tx);margin-bottom:6px}
+    .tcard.rev .mode{color:var(--gn)}
+    .tcard.tk .mode{color:var(--rd)}
+    .tcard.dr .mode{color:var(--am)}
+    .tcard .shocks{font-size:0.88em;font-weight:600;color:var(--tx);margin-bottom:8px}
+    .tcard .nums{font-size:0.85em;margin-bottom:6px;line-height:1.6}
+    .tcard .nums .n{font-weight:700}
+    .tcard .nums .lbl{color:var(--dim);font-size:0.92em}
+    .tcard .story{font-size:0.82em;color:var(--dim);line-height:1.5}
 
     /* Worked examples */
     .we-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
@@ -205,39 +198,50 @@
   <p class="author">Developed by <a href="https://www.linkedin.com/in/dr-jan-wuestenfeld">Dr. Jan Wuestenfeld</a> &mdash; <span id="date-tag"></span></p>
 </header>
 
-<!-- Thesis card (dismissible, persists via localStorage) -->
-<div class="intro" id="intro">
-  <button class="intro-x" onclick="dismissIntro()" aria-label="Dismiss">&times;</button>
-  <p style="margin-bottom:10px;font-size:0.97em;line-height:1.6">
-    Bitcoin's structural properties &mdash; non-sovereign, fixed supply, no counterparty &mdash;
-    make it a natural candidate for safe-haven flows during macro and geopolitical shocks. The
-    Bitcoin-native investment narrative leans on this: macro stress should be a tailwind. The
-    historical record is more nuanced. Banking-stress events <em>do</em> behave like a true
-    reversal catalyst, consistent with the safe-haven thesis. But oil, dollar, and rates shocks
-    terminate BTC uptrends rather than supporting them, and geopolitical-threat shocks impose a
-    uniform −5pp drag regardless of direction. The shock-as-tailwind story holds for one channel
-    and partially fails for three others &mdash; and which channel fires today determines whether
-    BTC outperforms SPY over the next 60 days.
-  </p>
-  <p style="margin-bottom:8px;font-size:0.97em;line-height:1.6">
-    The dashboard pattern-matches today's macro state &mdash; VIX, era, active shocks, BTC prior
-    60d momentum &mdash; against 84 historical analogue cells, and reports what BTC actually did
-    vs SPY in those analogues. It tells you when the safe-haven thesis applies, when a shock is
-    a trend-killer instead, and when there's no edge in either direction.
-  </p>
-  <p style="margin-bottom:0;font-size:0.82em;color:var(--dim)">
-    <b>Method.</b> Walk-forward identification (no look-ahead). +1.97pp OOS R² beyond BTC's own
-    momentum and a macro-regime baseline. n=2,818 trading days, ridge + 5-fold CV,
-    permutation-tested. A structured prior over the 60d return distribution &mdash; not a price
-    target, not a buy/sell signal.
+<!-- Persistent thesis strip: the three modes (always visible) -->
+<div class="thesis">
+  <p class="ts-lead"><b>The framework's finding.</b> Not all macro shocks behave the same way for Bitcoin.
+  Conditional on BTC's prior 60-day direction, the five macro shocks examined here split into
+  three distinct behavioural modes:</p>
+  <div class="thesis-cards">
+    <div class="tcard rev">
+      <div class="tag">Mode 1</div>
+      <div class="mode">🔄 Reversal catalyst</div>
+      <div class="shocks">Banking stress</div>
+      <div class="nums">
+        <div><span class="lbl">When BTC was falling:</span> <span class="n pos">+7.8pp</span></div>
+        <div><span class="lbl">When BTC was rising:</span> <span class="n neg">−16.6pp</span></div>
+      </div>
+      <div class="story">Opposite-signed by prior trend. Banking-stress catalyses safe-haven flow into BTC during drawdowns and terminates uptrends — it <em>changes</em> the trajectory.</div>
+    </div>
+    <div class="tcard tk">
+      <div class="tag">Mode 2</div>
+      <div class="mode">⛔ Trend killer</div>
+      <div class="shocks">Oil · Dollar · Rates</div>
+      <div class="nums">
+        <div><span class="lbl">When BTC was rising:</span> <span class="n neg">−11 to −18pp</span></div>
+        <div><span class="lbl">When BTC was falling:</span> <span class="n neut">≈0pp</span></div>
+      </div>
+      <div class="story">Asymmetric in prior direction. Terminates BTC rallies; near-zero marginal effect when BTC is already trending down. Risk-asset behaviour under tightening macro.</div>
+    </div>
+    <div class="tcard dr">
+      <div class="tag">Mode 3</div>
+      <div class="mode">📉 Drag</div>
+      <div class="shocks">GPR threat (geopolitical)</div>
+      <div class="nums">
+        <div><span class="lbl">When BTC was rising:</span> <span class="n neg">−5.0pp</span></div>
+        <div><span class="lbl">When BTC was falling:</span> <span class="n neg">−6.3pp</span></div>
+      </div>
+      <div class="story">Symmetric mild headwind. Geopolitical threat dampens BTC outperformance regardless of prior trend — it doesn't change direction.</div>
+    </div>
+  </div>
+  <p class="ts-lead" style="margin-top:12px;font-size:0.85em;color:var(--dim);line-height:1.55">
+    Walk-forward identification, no look-ahead. The dashboard below pattern-matches today's regime
+    inputs (VIX, era, active shocks, BTC prior 60d) against historical analogues and reports what
+    BTC actually did vs SPY in those analogues. This is a structured prior over the 60-day return
+    distribution &mdash; not a price target, not a trade recommendation.
   </p>
 </div>
-
-<!-- Practitioner narrative -->
-<div class="narr" id="narrative"></div>
-
-<!-- What changed today -->
-<div class="changed" id="changed"></div>
 
 <!-- HERO -->
 <div class="hero" id="hero"></div>
@@ -245,8 +249,8 @@
 <!-- "How today's call was made" decision-tree block -->
 <div class="dtree" id="dtree"></div>
 
-<!-- "What to do today" actionability for current regime -->
-<div class="actionable" id="actionable"></div>
+<!-- What changed today -->
+<div class="changed" id="changed"></div>
 
 <!-- "What each shock means" mechanism strip -->
 <section>
@@ -410,66 +414,6 @@
 </div>
 
 <script>
-// ===== Intro card dismiss persistence =====
-// Versioned key so changes to intro content force a re-show
-const INTRO_KEY = 'shock_intro_dismissed_v2';
-function dismissIntro(){
-  localStorage.setItem(INTRO_KEY, '1');
-  document.getElementById('intro').style.display = 'none';
-}
-(function(){
-  if (localStorage.getItem(INTRO_KEY) === '1') {
-    const el = document.getElementById('intro');
-    if (el) el.style.display = 'none';
-  }
-})();
-
-// ===== Per-regime actionability content =====
-// Distilled from the actionability-agent output. Practitioner-tone; "what to do" with
-// caveats. Not financial advice — explicit in each block.
-const ACTIONABILITY = {
-  HIGH_BETA_BULL: {
-    direction: "Overweight BTC vs SPY. Historical analogues delivered +8 to +14pp forward 60d outperformance.",
-    size: "High conviction. ~+11pp mean with tight dispersion (~±5pp). Pair trade at 50–100% normal BTC notional with equal-dollar SPY short captures the relative-value thesis.",
-    horizon: "30–60 days. Calm-VIX post-ETF regimes don't persist; median such window lasts 6–10 weeks. Revisit weekly.",
-    invalidates: "VIX closes &gt;14.5 for 3 sessions; ANY trend-killer (oil/dollar/rates/banking) crosses cutoff; BTC prior 60d turns negative. Watch the shock cards: first to climb past 70% of cutoff is early warning.",
-    pairs: "Trim BTC delta against rich Mar/Jun call skew if vol bid. Small mining-equity or basket allocation diversifies.",
-    history: "Late-Feb 2024 (post-ETF inflows, VIX ~13 → +22pp). Mid-Oct 2024 (calm pre-election → +18pp)."
-  },
-  REVERSAL_PRIMED: {
-    direction: "Long BTC vs SPY, but on a catalyst — not immediately. Banking-stress + BTC drawdown delivers +5 to +10pp historically, BIMODAL (⅔ pay out, ⅓ continue down before reversing). Buy weakness in tranches.",
-    size: "Medium conviction. 30–60% of normal BTC notional, scaled in over 5–10 sessions. Single all-in entry has historically been worse than averaging. Pair with defined SPY hedge.",
-    horizon: "45–90 days. Banking stress takes 2–3 weeks to translate into safe-haven flow; modal pattern is further weakness then reversal. Revisit day 30 to confirm STLFSI4 still elevated.",
-    invalidates: "Banking-stress deactivates without BTC recovering (stress was transient). Second trend-killer (rates/dollar) fires while banking on (now multi-shock stress, not clean safe-haven).",
-    pairs: "Long-vol BTC structure (call spreads 30–45 DTE) for asymmetry. Short regional bank equities as co-moving hedge.",
-    history: "March 2023 SVB (STLFSI4 spike + BTC down ~12% → +28pp over 60d)."
-  },
-  TREND_KILL: {
-    direction: "Underweight BTC vs SPY. Mean forward-60d underperformance −10 to −15pp. The rally is on borrowed time; the shock is the bill.",
-    size: "Medium-high conviction on short BTC-vs-SPY pair. Consistent negative outperformance with low dispersion (asymmetry comes from killing the up-leg). Size 40–70% of normal BTC pair notional.",
-    horizon: "20–45 days, peak underperformance clustering days 30–45. Revisit day 20; if BTC still grinding higher and shock deactivated, regime has rejected — close.",
-    invalidates: "Active trend-killer deactivates AND BTC prior 60d remains positive (macro pressure lifted). VIX expands to mid-stress (20+) before shock deactivates (different regime — broader risk-off).",
-    pairs: "Long SPY/NDX as equity leg. Long USD or short oil/copper depending on which shock fired. Buy BTC downside (puts 30–45 DTE) if IV cheap vs realized.",
-    history: "Late-Apr 2022 (BTC at $40k, dollar shock + DXY 103 → −24pp). Aug 2023 (rate shock + 10Y above 4.2% → −13pp)."
-  },
-  DRAG: {
-    direction: "Modest underweight BTC vs SPY. −3 to −7pp expected forward-60d. This is a tilt, not a conviction trade.",
-    size: "Low-medium conviction. 20–40% of normal BTC notional. GPR alone dampens rather than reverses; median closer to flat with tail driving the negative mean. Position for EV, not for high conviction.",
-    horizon: "30–60 days. GPR shocks can persist (multi-week elevated threat) or resolve in days. Revisit every 2 weeks; signal half-life shorter than macro-channel shocks.",
-    invalidates: "GPR-threat deactivates without event materializing. Companion shock (oil/dollar) fires → regime upgrades to TREND-KILL. BTC absorbs GPR firing with no underperformance in first 15 days → analogue set not playing out, downsize.",
-    pairs: "Hedge the GPR-vol spike: long oil calls or long VIX call spreads — captures right tail if event escalates. Convexity the BTC short alone doesn't deliver.",
-    history: "Early-Oct 2023 Israel-Gaza (GPR spike, no companion shock → −6pp). Feb 2022 Ukraine preamble (GPR alone → −4pp before oil joined)."
-  },
-  BASELINE: {
-    direction: "Neutral. Expected forward-60d sits inside ±2pp; dispersion washes out the mean. The framework has nothing to say beyond the unconditional prior.",
-    size: "No incremental BTC-vs-SPY pair from this dashboard. Maintain strategic allocation; do not adjust on regime call.",
-    horizon: "Revisit when any input changes: shock approaches cutoff (>70% proximity), VIX crosses bin boundary, BTC prior 60d crosses zero. BASELINE transitions to any other regime with a single input change.",
-    invalidates: "By definition: any conditions that put regime into HIGH-BETA-BULL, REVERSAL-PRIMED, TREND-KILL, or DRAG. Watch the &quot;What would flip&quot; panel.",
-    pairs: "Right regime to rebalance toward strategic targets, take profits on outsized positions, or reset hedges. Window for non-macro-driven trades: BTC vs ETH, basis trades, options structures.",
-    history: "Most of 2017–2019 (extended BASELINE stretches — boring beta). Mid-2021 pre-China-ban was another long BASELINE before banking/rate channels reactivated in 2022."
-  }
-};
-
 const A='#f7931a',B='#0f3460',G='#2e7d32',R='#c62828',GR='#999',AM='#e67e22',VL='#7b2cbf';
 const LF={family:'-apple-system,sans-serif',size:13,color:'#1a1a2e'};
 const SLF={family:'-apple-system,sans-serif',size:10,color:'#666'};
@@ -510,47 +454,9 @@ async function main(){
   const callClass = conf==='no_call' ? 'call-neut call-low' :
     (biasC==='pos' ? 'call-bull' : (biasC==='neg' ? 'call-bear' : 'call-neut'));
 
-  // ===== Practitioner narrative =====
+  // Compute active shocks list (used by hero / decision tree downstream)
   const active = Object.entries(d.active_shocks).filter(([k,v])=>v).map(([k])=>d.per_shock_state[k].display.label);
   const activeStr = active.length ? active.join(' + ') : 'none';
-  let narrHtml = `<h3>Today's read</h3>`;
-  // Auto-narrative from data
-  const eraL = ERA_LBL[d.current_era];
-  const vixL = VIX_LBL[d.vix_bin];
-  let p1 = `VIX prints <b>${d.current_vix.toFixed(2)}</b> on the ${d.current_date} panel close &mdash; the <b>${vixL}</b> bin in the <b>${eraL}</b> era. `;
-  p1 += active.length === 0
-    ? `No macro shocks are firing; the regime is risk-on by default.`
-    : `Active shock${active.length>1?'s':''}: <b>${activeStr}</b>.`;
-  narrHtml += `<p>${p1}</p>`;
-  // Shock detail line
-  const nearFire = SHOCKS.filter(s => {
-    const st = d.per_shock_state[s];
-    return !st.active && st.proximity != null && st.display.kind === 'unsigned' && st.proximity > 0.7;
-  }).map(s => `${d.per_shock_state[s].display.label} at ${(d.per_shock_state[s].proximity*100).toFixed(0)}% of cutoff`);
-  const farFire = SHOCKS.filter(s => {
-    const st = d.per_shock_state[s];
-    return !st.active && st.proximity != null && st.display.kind === 'unsigned' && st.proximity < 0.3;
-  }).length;
-  let p2 = '';
-  if (nearFire.length) p2 += `Approaching fire: ${nearFire.join(', ')}. `;
-  if (farFire) p2 += `${farFire} of 5 indicators sit well below activation. `;
-  const bk = d.per_shock_state.banking_shock;
-  if (bk && !bk.active && bk.proximity != null) {
-    const dirLbl = bk.proximity < 0 ? 'below threshold' : 'above threshold';
-    p2 += `Banking-stress is <b>${Math.abs(bk.proximity).toFixed(2)}σ</b> ${dirLbl} (STLFSI4 ${bk.raw_current.toFixed(2)} vs ${bk.cutoff_current.toFixed(2)} trigger).`;
-  }
-  if (p2) narrHtml += `<p>${p2}</p>`;
-  // The call
-  let p3 = `Cell match: <b>${d.cell_key}</b> (n=${d.cell_n}, ${conf.replace('_',' ')} confidence). `;
-  if (sp60 != null && conf !== 'no_call') {
-    if (sp60 >= 0.6) p3 += `Historical analogues show BTC outperformed SPY at h=60d in <b class="pos">${fmtPct(sp60)}</b> of cases &mdash; <b class="pos">BULLISH bias</b>${conf==='low'?' (low-n; calibrate)':''}.`;
-    else if (sp60 <= 0.4) p3 += `Historical analogues show BTC outperformed SPY at h=60d in only <b class="neg">${fmtPct(sp60)}</b> of cases &mdash; <b class="neg">BEARISH bias</b>${conf==='low'?' (low-n; calibrate)':''}.`;
-    else p3 += `Share-positive at h=60d sits at <b>${fmtPct(sp60)}</b> &mdash; <b>no strong edge</b>.`;
-  } else {
-    p3 += `Insufficient historical analogues for a confident call.`;
-  }
-  narrHtml += `<p>${p3}</p>`;
-  document.getElementById('narrative').innerHTML = narrHtml;
 
   // ===== What changed today =====
   const ch = document.getElementById('changed');
@@ -654,20 +560,6 @@ async function main(){
       Expected forward 60d outperformance vs SPY: <b>${regime.forward_60d}</b> &nbsp;·&nbsp;
       Matched cell ${d.cell_human_label}, n=${d.cell_n} analogues.
     </div>
-  `;
-
-  // ===== Actionability block (what to do given today's regime) =====
-  const actionContent = ACTIONABILITY[regime.label] || ACTIONABILITY.BASELINE;
-  document.getElementById('actionable').innerHTML = `
-    <h3>What to do today — given today's regime</h3>
-    <div class="lab ${regimeBigClass}">${regime.display} regime</div>
-    <div class="row"><span class="lbl">Direction</span><span>${actionContent.direction}</span></div>
-    <div class="row"><span class="lbl">Size</span><span>${actionContent.size}</span></div>
-    <div class="row"><span class="lbl">Time horizon</span><span>${actionContent.horizon}</span></div>
-    <div class="row"><span class="lbl">Invalidates</span><span>${actionContent.invalidates}</span></div>
-    <div class="row"><span class="lbl">Pairs well</span><span>${actionContent.pairs}</span></div>
-    <div class="row"><span class="lbl">Historical setups</span><span>${actionContent.history}</span></div>
-    <div class="nfa">Not financial advice. Probabilistic regime classifier; structured prior over 60d returns, not a deterministic signal. Combine with position sizing, drawdown discipline, and your own view on what isn't in the conditioning set.</div>
   `;
 
   // ===== Mechanism strip ("What each shock means") =====
@@ -1059,7 +951,8 @@ async function main(){
   });
 }
 main().catch(e => {
-  document.getElementById('narrative').innerHTML = '<div style="color:var(--rd)"><b>Error loading dashboard data:</b> '+e.message+'</div>';
+  const el = document.getElementById('hero');
+  if (el) el.innerHTML = '<div style="color:var(--rd);padding:20px"><b>Error loading dashboard data:</b> '+e.message+'</div>';
   console.error(e);
 });
 </script>
