@@ -119,15 +119,13 @@
   </details>
 </section>
 
-<!-- SECTION 4: 84-cell heatmap (collapsed reference) -->
+<!-- SECTION 4: 84-cell heatmap (reference, always visible) -->
 <section>
-  <h2>Historical cell reference</h2>
-  <p class="blurb">The 84-cell historical reference is collapsed by default. Open to see how
-  every (era &times; VIX-bin &times; shock-type) combination behaved historically.</p>
-  <details>
-    <summary>Show 84-cell heatmap (h = 60d share-positive)</summary>
-    <div class="bx" id="chart-heatmap" style="height:780px;margin-top:12px;"></div>
-  </details>
+  <h2>Historical cell reference (84 cells, h = 60d share-positive)</h2>
+  <p class="blurb">Every (era &times; shock-type &times; VIX-bin) combination's historical share
+  of 60-day BTC outperformance. Green &ge; 60% (bullish), red &le; 40% (bearish), grey near 50%.
+  Cells with n &lt; 10 are small-sample &mdash; weight accordingly.</p>
+  <div class="bx" id="chart-heatmap" style="height:780px;"></div>
 </section>
 
 <!-- SECTION 5: Methodology (at bottom) -->
@@ -406,6 +404,19 @@ async function main(){
   document.getElementById('meth-table').innerHTML = mt;
 
   document.getElementById('ts').textContent = 'Last updated: ' + d.updated;
+
+  // Re-resize any Plotly charts when a <details> section is opened (Plotly
+  // renders to zero dimensions in hidden containers, so reveal triggers
+  // a manual resize).
+  document.querySelectorAll('details').forEach(det => {
+    det.addEventListener('toggle', () => {
+      if (det.open) {
+        det.querySelectorAll('[id^="chart-"], [id^="spark-"]').forEach(el => {
+          if (window.Plotly) Plotly.Plots.resize(el);
+        });
+      }
+    });
+  });
 }
 main().catch(e => {
   document.getElementById('hero').innerHTML = '<div class="panel" style="grid-column:1/-1"><h3>Error</h3><div class="big warn">Failed to load dashboard data</div><div class="sub">'+e.message+'</div></div>';
