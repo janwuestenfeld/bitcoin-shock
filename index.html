@@ -7,75 +7,129 @@
   <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{--bg:#fff;--sf:#f8f9fa;--bd:#e1e4e8;--tx:#1a1a2e;--dim:#666;--ac:#f7931a;--bl:#0f3460;--gn:#2e7d32;--rd:#c62828;--am:#e67e22}
+    :root{--bg:#fff;--sf:#f8f9fa;--bd:#e1e4e8;--tx:#1a1a2e;--dim:#666;--ac:#f7931a;--bl:#0f3460;--gn:#2e7d32;--rd:#c62828;--am:#e67e22;--vl:#7b2cbf}
     body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);line-height:1.55}
-    .c{max-width:1200px;margin:0 auto;padding:20px}
-    header{text-align:center;padding:24px 0 18px;border-bottom:3px solid var(--ac);margin-bottom:25px}
-    header h1{font-size:2.1em;font-weight:700}
+    .c{max-width:1240px;margin:0 auto;padding:20px}
+    header{text-align:center;padding:22px 0 16px;border-bottom:3px solid var(--ac);margin-bottom:22px}
+    header h1{font-size:2.05em;font-weight:700}
     header h1 span{color:var(--ac)}
-    header p{color:var(--dim);font-size:1.05em;margin-top:6px}
-    header .author{margin-top:5px;font-size:0.92em}
+    header p{color:var(--dim);font-size:1.02em;margin-top:5px}
+    header .author{margin-top:4px;font-size:0.9em}
     header .author a{color:var(--ac);text-decoration:none;font-weight:600}
 
-    /* HERO call card */
-    .hero{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:30px}
-    @media(max-width:768px){.hero{grid-template-columns:1fr}}
-    .hero .panel{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:22px 24px}
-    .hero .panel h3{font-size:0.78em;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;font-weight:500;margin-bottom:8px}
-    .hero .panel .big{font-size:2.4em;font-weight:700;line-height:1.1}
-    .hero .panel .sub{color:var(--dim);font-size:0.95em;margin-top:6px}
-    .hero .call-bull{background:linear-gradient(135deg,rgba(46,125,50,0.08),rgba(46,125,50,0.02));border-color:rgba(46,125,50,0.3)}
-    .hero .call-bear{background:linear-gradient(135deg,rgba(198,40,40,0.08),rgba(198,40,40,0.02));border-color:rgba(198,40,40,0.3)}
-    .hero .call-neut{background:linear-gradient(135deg,rgba(102,102,102,0.06),rgba(102,102,102,0.02))}
+    /* Practitioner narrative opener */
+    .narr{background:var(--sf);border:1px solid var(--bd);border-left:4px solid var(--ac);border-radius:6px;padding:18px 22px;margin-bottom:18px;font-size:0.95em}
+    .narr h3{font-size:0.78em;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin-bottom:8px}
+    .narr p{margin-bottom:8px}
+    .narr p:last-child{margin-bottom:0}
 
-    /* Shock state grid */
-    .shocks{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:30px}
-    @media(max-width:900px){.shocks{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:500px){.shocks{grid-template-columns:1fr}}
-    .shock-card{background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:14px;display:flex;flex-direction:column}
-    .shock-card.fire{border-color:var(--rd);background:rgba(198,40,40,0.04)}
-    .shock-card .name{font-size:0.85em;color:var(--dim);text-transform:uppercase;letter-spacing:.4px;font-weight:600}
-    .shock-card .desc{font-size:0.72em;color:var(--dim);margin-top:2px}
-    .shock-card .val{font-size:1.5em;font-weight:700;margin-top:8px}
-    .shock-card .cutoff{font-size:0.78em;color:var(--dim);margin-top:2px}
-    .shock-card .badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:0.7em;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-top:8px;align-self:flex-start}
-    .shock-card .badge.on{background:var(--rd);color:#fff}
-    .shock-card .badge.off{background:var(--bd);color:var(--dim)}
-    .shock-card .pct{font-size:0.85em;margin-top:4px;font-weight:600}
-    .shock-card .pct.above{color:var(--rd)}
-    .shock-card .pct.below{color:var(--gn)}
-    .shock-card .spark{margin-top:10px}
+    /* What changed today — banner row */
+    .changed{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;align-items:center;background:rgba(247,147,26,0.06);border-left:3px solid var(--ac);padding:10px 14px;border-radius:4px;font-size:0.93em}
+    .changed .chip{background:#fff;border:1px solid var(--bd);border-radius:3px;padding:3px 9px;font-weight:500;color:var(--tx)}
+    .changed .lbl{color:var(--dim);font-weight:600;text-transform:uppercase;letter-spacing:.4px;font-size:0.78em;margin-right:6px}
 
-    section{margin-bottom:36px}
-    section h2{font-size:1.35em;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid var(--ac);display:inline-block}
-    section .blurb{color:var(--dim);margin-bottom:14px;font-size:0.95em}
-    .bx{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:15px;margin-bottom:16px}
+    /* HERO */
+    .hero{display:grid;grid-template-columns:1.1fr 1fr 1.2fr;gap:14px;margin-bottom:24px}
+    @media(max-width:960px){.hero{grid-template-columns:1fr 1fr}}
+    @media(max-width:600px){.hero{grid-template-columns:1fr}}
+    .hpanel{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:16px 18px}
+    .hpanel h3{font-size:0.74em;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin-bottom:6px}
+    .hpanel .big{font-size:2.2em;font-weight:700;line-height:1.05}
+    .hpanel .sub{color:var(--dim);font-size:0.92em;margin-top:4px}
+    .hpanel .mini{font-size:0.85em;margin-top:8px}
+    .call-bull{background:linear-gradient(135deg,rgba(46,125,50,0.10),rgba(46,125,50,0.02));border-color:rgba(46,125,50,0.35)}
+    .call-bear{background:linear-gradient(135deg,rgba(198,40,40,0.10),rgba(198,40,40,0.02));border-color:rgba(198,40,40,0.35)}
+    .call-neut{background:linear-gradient(135deg,rgba(102,102,102,0.06),rgba(102,102,102,0.02))}
+    .call-low{opacity:0.85}
 
-    .reading{background:var(--sf);border:1px solid var(--bd);border-left:4px solid var(--ac);border-radius:6px;padding:18px 22px;margin-bottom:20px}
-    .reading h3{font-size:1.05em;margin-bottom:8px}
-    .reading p{margin-bottom:8px}
-    .reading b.b{color:var(--gn)}
-    .reading b.r{color:var(--rd)}
+    /* Confidence chip */
+    .conf{display:inline-block;padding:2px 8px;border-radius:3px;font-size:0.72em;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-left:6px;vertical-align:middle}
+    .conf-high{background:var(--gn);color:#fff}
+    .conf-medium{background:var(--am);color:#fff}
+    .conf-low{background:var(--bd);color:var(--tx)}
+    .conf-no_call{background:var(--dim);color:#fff}
 
-    .ft{width:100%;border-collapse:collapse;margin-top:10px}
-    .ft th,.ft td{padding:9px 12px;text-align:center;border-bottom:1px solid var(--bd);font-size:0.92em}
-    .ft th{background:var(--sf);color:var(--dim);font-size:.78em;text-transform:uppercase;letter-spacing:.4px}
+    /* Horizon strip */
+    .hstrip{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+    .hstrip .hi{background:#fff;border:1px solid var(--bd);border-radius:4px;padding:6px 4px;text-align:center}
+    .hstrip .hi .lbl{font-size:0.7em;color:var(--dim);text-transform:uppercase;letter-spacing:.3px}
+    .hstrip .hi .val{font-size:1.05em;font-weight:700;line-height:1.1}
+    .hstrip .hi .sub{font-size:0.72em;color:var(--dim)}
+
+    /* Shock cards */
+    section{margin-bottom:30px}
+    section h2{font-size:1.3em;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--ac);display:inline-block}
+    section .blurb{color:var(--dim);margin-bottom:12px;font-size:0.93em}
+
+    .shocks{display:grid;grid-template-columns:repeat(5,1fr);gap:11px}
+    @media(max-width:1000px){.shocks{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:520px){.shocks{grid-template-columns:1fr}}
+    .scard{background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:12px;display:flex;flex-direction:column}
+    .scard.fire{border-color:var(--rd);background:rgba(198,40,40,0.05)}
+    .scard .nm{font-size:0.82em;color:var(--dim);text-transform:uppercase;letter-spacing:.4px;font-weight:600}
+    .scard .ds{font-size:0.7em;color:var(--dim);margin-top:1px}
+    .scard .val{font-size:1.35em;font-weight:700;margin-top:6px}
+    .scard .cut{font-size:0.74em;color:var(--dim)}
+    .scard .bar-wrap{margin-top:8px;height:8px;background:#e8e8e8;border-radius:4px;position:relative;overflow:hidden}
+    .scard .bar{height:100%;background:linear-gradient(90deg,var(--gn) 0,var(--am) 70%,var(--rd) 100%);border-radius:4px;transition:width .3s}
+    .scard .bar-marker{position:absolute;top:-2px;width:2px;height:12px;background:#000}
+    .scard .prox-lbl{font-size:0.74em;margin-top:4px;color:var(--dim)}
+    .scard .prox-lbl b{color:var(--tx)}
+    .scard .badge{display:inline-block;padding:2px 7px;border-radius:3px;font-size:0.68em;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-top:6px;align-self:flex-start}
+    .scard .badge.on{background:var(--rd);color:#fff}
+    .scard .badge.off{background:var(--bd);color:var(--dim)}
+    .scard .last{font-size:0.7em;color:var(--dim);margin-top:4px}
+    .scard .last .trend{color:var(--am);font-weight:600}
+    .scard .spark{margin-top:8px;height:60px}
+
+    /* What would flip */
+    .flips{background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:14px 18px}
+    .flips ul{list-style:none;margin:0}
+    .flips li{padding:8px 0;border-bottom:1px solid var(--bd);font-size:0.93em}
+    .flips li:last-child{border-bottom:0}
+    .flips .trig{font-weight:600;color:var(--tx)}
+    .flips .eff{color:var(--dim);font-size:0.9em;margin-top:2px}
+    .flips .eff b{color:var(--tx)}
+    .flips .haven{border-left:3px solid var(--gn);padding-left:10px;margin-left:-13px}
+
+    /* BlackRock event strip */
+    .events{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+    @media(max-width:1100px){.events{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:600px){.events{grid-template-columns:repeat(2,1fr)}}
+    .ec{background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:11px;font-size:0.84em}
+    .ec .nm{font-weight:700;font-size:0.92em;margin-bottom:3px}
+    .ec .dt{color:var(--dim);font-size:0.78em;margin-bottom:6px}
+    .ec .row{display:flex;justify-content:space-between;margin-top:3px}
+    .ec .row .l{color:var(--dim)}
+    .ec .row .v{font-weight:600}
+
+    /* 12-cell grid */
+    .grid12{display:grid;grid-template-columns:auto repeat(4,1fr);gap:4px}
+    .grid12 .g-h{background:var(--sf);padding:8px 6px;font-size:0.74em;color:var(--dim);text-transform:uppercase;text-align:center;font-weight:600;letter-spacing:.3px}
+    .grid12 .g-row-l{background:var(--sf);padding:10px 8px;font-size:0.82em;font-weight:600;color:var(--tx);display:flex;align-items:center}
+    .grid12 .gc{padding:14px 8px;text-align:center;border-radius:4px;font-size:0.92em;cursor:default;transition:transform .15s}
+    .grid12 .gc:hover{transform:scale(1.04)}
+    .grid12 .gc.current{outline:3px solid var(--ac);outline-offset:-3px;position:relative;z-index:1;font-weight:700}
+    .grid12 .gc .pct{font-size:1.1em;font-weight:700}
+    .grid12 .gc .n{font-size:0.72em;opacity:0.8;margin-top:2px}
+
+    /* Other */
+    .bx{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:13px}
+    .ft{width:100%;border-collapse:collapse;margin-top:8px}
+    .ft th,.ft td{padding:8px 11px;text-align:center;border-bottom:1px solid var(--bd);font-size:0.9em}
+    .ft th{background:var(--sf);color:var(--dim);font-size:.76em;text-transform:uppercase;letter-spacing:.4px}
     .ft td.label{text-align:left;font-weight:500}
-
     .pos{color:var(--gn)}.neg{color:var(--rd)}.neut{color:var(--dim)}.warn{color:var(--am)}
-    .badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:0.72em;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+    .badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:0.7em;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
     .badge.keep{background:rgba(46,125,50,0.12);color:var(--gn)}
     .badge.border{background:rgba(230,126,34,0.12);color:var(--am)}
-
-    details{margin-top:14px}
-    details summary{cursor:pointer;color:var(--ac);font-weight:600;font-size:0.95em;padding:4px 0}
+    details{margin-top:10px}
+    details summary{cursor:pointer;color:var(--ac);font-weight:600;font-size:0.92em;padding:4px 0;list-style:revert}
     details summary:hover{text-decoration:underline}
-
-    footer{text-align:center;padding:25px 0;color:var(--dim);font-size:.85em;border-top:1px solid var(--bd);margin-top:30px}
+    footer{text-align:center;padding:22px 0;color:var(--dim);font-size:.82em;border-top:1px solid var(--bd);margin-top:25px}
     footer a{color:var(--ac);text-decoration:none}
   </style>
-  <script data-goatcounter="https://shock.goatcounter.com/count"
-          async src="//gc.zgo.at/count.js"></script>
+  <script data-goatcounter="https://shock.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
 <div class="c">
@@ -86,199 +140,360 @@
   <p class="author">Developed by <a href="https://www.linkedin.com/in/dr-jan-wuestenfeld">Dr. Jan Wuestenfeld</a> &mdash; <span id="date-tag"></span></p>
 </header>
 
-<!-- HERO: The call -->
+<!-- Practitioner narrative -->
+<div class="narr" id="narrative"></div>
+
+<!-- What changed today -->
+<div class="changed" id="changed"></div>
+
+<!-- HERO -->
 <div class="hero" id="hero"></div>
 
-<!-- SECTION 1: Where the shocks are now -->
+<!-- Shock state -->
 <section>
   <h2>Where the macro shocks are now</h2>
-  <p class="blurb">Five top-decile macro shock indicators, each with a walk-forward cutoff that
-  catches the most extreme 10% of within-era observations. A shock is <b>ACTIVE</b> when today's
-  raw measure exceeds the cutoff. The cutoff updates daily as new data arrives &mdash; no
-  look-ahead.</p>
+  <p class="blurb">Five top-decile macro shock indicators with walk-forward cutoffs. A shock is
+  <b>ACTIVE</b> when today's raw measure exceeds the cutoff. The proximity bar shows distance to
+  fire: green = far below, amber = approaching, red = at/above cutoff. Sparkline shows the last
+  ~2 years of raw value (blue) and cutoff (red dashed); the dot marks today.</p>
   <div class="shocks" id="shocks"></div>
 </section>
 
-<!-- SECTION 2: How shocks relate to VIX -->
+<!-- What would flip -->
 <section>
-  <h2>How shocks relate to VIX</h2>
-  <p class="blurb">VIX (last ~2 years) with active shock-firing days overlaid. Banking-stress is
-  the most VIX-co-moving shock (&rho; &asymp; 0.6); the others fire more independently.</p>
-  <div class="bx" id="chart-vix-shocks" style="height:380px;"></div>
-  <table class="ft" id="comovement-table"></table>
+  <h2>What would flip the cell</h2>
+  <p class="blurb">Auto-computed boundary distances. These triggers would shift today's cell
+  classification and change the bias call. Green-bordered rows are safe-haven overrides
+  (banking-shock activations).</p>
+  <div class="flips"><ul id="flips"></ul></div>
 </section>
 
-<!-- SECTION 3: What this means -->
+<!-- Beta trajectory -->
 <section>
-  <h2>What this means today</h2>
-  <div class="reading" id="reading"></div>
-  <table class="ft" id="horizon-table"></table>
+  <h2>BTC β trajectory (60-day rolling, vs SPY)</h2>
+  <p class="blurb">Backward-rolling β by construction &mdash; no look-ahead. The vertical dashed
+  line marks the spot-ETF launch (2024-01-10). Regime band shading shows the calm / low-stress /
+  mid-stress / extreme-stress VIX zones over the same window.</p>
+  <div class="bx" id="chart-beta" style="height:360px"></div>
+</section>
+
+<!-- BlackRock validation strip -->
+<section>
+  <h2>Historical validation: BlackRock 6-event sample</h2>
+  <p class="blurb">Six BlackRock-narrative geopolitical/macro events. Each card shows the regime
+  state on the day of the event and the realized BTC vs SPY 60-day outperformance. This is the
+  framework's track record on episodes practitioners actually remember.</p>
+  <div class="events" id="events"></div>
+</section>
+
+<!-- VIX trajectory + shocks (90 days) -->
+<section>
+  <h2>VIX + shock-fires (last 90 days)</h2>
+  <p class="blurb">VIX with regime-bin reference lines and shock-fire days overlaid. Banking-stress
+  is the strongest VIX co-mover (&rho; &asymp; 0.6); the others fire more independently.</p>
+  <div class="bx" id="chart-vix" style="height:350px"></div>
+</section>
+
+<!-- 12-cell era × VIX grid -->
+<section>
+  <h2>Era × VIX-bin baseline (today's cell highlighted)</h2>
+  <p class="blurb">The 12-cell era &times; VIX baseline carries the load-bearing predictive
+  signal (M2 R&sup2; &asymp; +3.35pp). Cell shading: green &ge; 60% share-positive 60d (bullish),
+  red &le; 40% (bearish), grey near 50%. Today's cell has the orange outline. The full 84-cell
+  shock-conditional breakdown is below.</p>
+  <div id="grid12-wrap"></div>
   <details>
-    <summary>Closest historical analogues</summary>
-    <div id="analogues" style="margin-top:12px;font-size:0.93em;color:var(--dim);"></div>
+    <summary>Show full 84-cell shock-type breakdown (heatmap)</summary>
+    <div class="bx" id="chart-heatmap" style="height:780px;margin-top:10px"></div>
   </details>
 </section>
 
-<!-- SECTION 4: 84-cell heatmap (reference, always visible) -->
+<!-- Methodology (collapsed, at bottom) -->
 <section>
-  <h2>Historical cell reference (84 cells, h = 60d share-positive)</h2>
-  <p class="blurb">Every (era &times; shock-type &times; VIX-bin) combination's historical share
-  of 60-day BTC outperformance. Green &ge; 60% (bullish), red &le; 40% (bearish), grey near 50%.
-  Cells with n &lt; 10 are small-sample &mdash; weight accordingly.</p>
-  <div class="bx" id="chart-heatmap" style="height:780px;"></div>
-</section>
-
-<!-- SECTION 5: Methodology (at bottom) -->
-<section>
-  <h2>Methodology &mdash; how the classifier was built</h2>
-  <p class="blurb">The shock-cutoff methodology iterated through four variants before converging
-  on the walk-forward basis. Walk-forward is the methodologically correct choice because shock labels
-  should reflect what contemporaneous investors actually saw &mdash; future observations cannot
-  drive past investor decisions, so they should not be used to define which past days were shocks.</p>
+  <h2>Methodology</h2>
+  <p class="blurb">Walk-forward shock cutoffs with prior-era q99 tail fallback during 60-day
+  warmup. Zero look-ahead. Full methodology: see the
+  <a href="https://github.com/janwuestenfeld/bitcoin-shock" target="_blank">repo README</a>.</p>
   <details>
-    <summary>Show methodology comparison table</summary>
-    <table class="ft" id="meth-table" style="margin-top:12px"></table>
+    <summary>Show 4-cutoff methodology comparison</summary>
+    <table class="ft" id="meth-table" style="margin-top:10px"></table>
   </details>
 </section>
 
 <footer>
   <p><b>Bitcoin Conditional Shock Regime Classifier</b> by <a href="https://www.linkedin.com/in/dr-jan-wuestenfeld">Dr. Jan Wuestenfeld</a></p>
-  <p>Data: FRED (VIX, WTI, USD broad, 10Y, STLFSI4), CoinMetrics (BTC), yfinance (SPY), Caldara-Iacoviello (GPR-threat) | Updated daily</p>
-  <p>Source &amp; methodology: <a href="https://github.com/janwuestenfeld/bitcoin-shock" target="_blank">github.com/janwuestenfeld/bitcoin-shock</a></p>
+  <p>Data: FRED (VIX, WTI, USD broad, 10Y, STLFSI4), CoinMetrics (BTC), yfinance (SPY), Caldara-Iacoviello (GPR-threat) | Updated daily | <a href="https://github.com/janwuestenfeld/bitcoin-shock" target="_blank">github.com/janwuestenfeld/bitcoin-shock</a></p>
   <p id="ts"></p>
 </footer>
 
 </div>
 
 <script>
-const A='#f7931a',B='#0f3460',G='#2e7d32',R='#c62828',GR='#999',AM='#e67e22';
+const A='#f7931a',B='#0f3460',G='#2e7d32',R='#c62828',GR='#999',AM='#e67e22',VL='#7b2cbf';
 const LF={family:'-apple-system,sans-serif',size:13,color:'#1a1a2e'};
 const SLF={family:'-apple-system,sans-serif',size:10,color:'#666'};
 const L={paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'#fafafa',font:LF,
-  margin:{l:55,r:20,t:35,b:40},
-  xaxis:{gridcolor:'#e8e8e8',hoverformat:'%Y-%m-%d'},
-  yaxis:{gridcolor:'#e8e8e8'}};
+  margin:{l:55,r:20,t:30,b:38},xaxis:{gridcolor:'#e8e8e8',hoverformat:'%Y-%m-%d'},yaxis:{gridcolor:'#e8e8e8'}};
 const SHOCKS=["oil_shock","dollar_shock","rate_shock","banking_shock","gprd_threat_shock"];
-const VIX_LABEL={calm:"Calm",low_stress:"Low-Stress",mid_stress:"Mid-Stress",extreme_stress:"Extreme-Stress"};
-const ERA_LABEL={pre_covid:"Pre-COVID",post_covid_pre_etf:"Post-COVID / Pre-ETF",post_etf:"Post-ETF"};
 const VIX_BINS=["calm","low_stress","mid_stress","extreme_stress"];
+const VIX_LBL={calm:"Calm",low_stress:"Low-Stress",mid_stress:"Mid-Stress",extreme_stress:"Extreme-Stress"};
 const ERAS=["pre_covid","post_covid_pre_etf","post_etf"];
+const ERA_LBL={pre_covid:"Pre-COVID",post_covid_pre_etf:"Post-COVID / Pre-ETF",post_etf:"Post-ETF"};
+const ERA_SHORT={pre_covid:"Pre-COVID",post_covid_pre_etf:"Post-COVID",post_etf:"Post-ETF"};
+const SHOCK_COLOR={oil_shock:A,dollar_shock:G,rate_shock:AM,banking_shock:R,gprd_threat_shock:VL};
 
-function fmt(v,d=2){return v==null||isNaN(v)?'-':v.toFixed(d)}
-function fmtPP(v){return v==null?'-':(v>=0?'+':'')+(v*100).toFixed(1)+'pp'}
-function fmtPct(v,d=0){return v==null?'-':(v*100).toFixed(d)+'%'}
+function fmt(v,d=2){return v==null||isNaN(v)?'—':v.toFixed(d)}
+function fmtPct(v,d=0){return v==null||isNaN(v)?'—':(v*100).toFixed(d)+'%'}
+function fmtPP(v){return v==null||isNaN(v)?'—':(v>=0?'+':'')+(v*100).toFixed(1)+'pp'}
 function biasClass(s){if(s==null)return'neut';if(s>=0.60)return'pos';if(s<=0.40)return'neg';return'neut'}
-function biasLabel(s){if(s==null)return'NO MATCH';if(s>=0.60)return'BULLISH';if(s<=0.40)return'BEARISH';return'NEUTRAL'}
+function biasLabel(s,conf){
+  if(conf==='no_call'||s==null)return'NO CALL';
+  if(s>=0.60)return'BULLISH';if(s<=0.40)return'BEARISH';return'NEUTRAL'
+}
 
 async function main(){
   const d = await fetch('data/dashboard_output.json?t='+Date.now()).then(r=>r.json());
   document.getElementById('date-tag').textContent = 'as of ' + d.current_date;
 
-  // ===== HERO =====
   const sp60 = d.horizons['60'].share_positive;
   const mu60 = d.horizons['60'].mean_outperf;
+  const conf = d.confidence;
   const biasC = biasClass(sp60);
-  const biasL = biasLabel(sp60);
-  const heroCallClass = biasC === 'pos' ? 'call-bull' : (biasC === 'neg' ? 'call-bear' : 'call-neut');
+  const biasL = biasLabel(sp60, conf);
+  const callClass = conf==='no_call' ? 'call-neut call-low' :
+    (biasC==='pos' ? 'call-bull' : (biasC==='neg' ? 'call-bear' : 'call-neut'));
 
+  // ===== Practitioner narrative =====
   const active = Object.entries(d.active_shocks).filter(([k,v])=>v).map(([k])=>d.per_shock_state[k].display.label);
-  const activeLabel = active.length ? active.join(' + ') : 'none';
+  const activeStr = active.length ? active.join(' + ') : 'none';
+  let narrHtml = `<h3>Today's read</h3>`;
+  // Auto-narrative from data
+  const eraL = ERA_LBL[d.current_era];
+  const vixL = VIX_LBL[d.vix_bin];
+  let p1 = `VIX prints <b>${d.current_vix.toFixed(2)}</b> on the ${d.current_date} panel close &mdash; the <b>${vixL}</b> bin in the <b>${eraL}</b> era. `;
+  p1 += active.length === 0
+    ? `No macro shocks are firing; the regime is risk-on by default.`
+    : `Active shock${active.length>1?'s':''}: <b>${activeStr}</b>.`;
+  narrHtml += `<p>${p1}</p>`;
+  // Shock detail line
+  const nearFire = SHOCKS.filter(s => {
+    const st = d.per_shock_state[s];
+    return !st.active && st.proximity != null && st.display.kind === 'unsigned' && st.proximity > 0.7;
+  }).map(s => `${d.per_shock_state[s].display.label} at ${(d.per_shock_state[s].proximity*100).toFixed(0)}% of cutoff`);
+  const farFire = SHOCKS.filter(s => {
+    const st = d.per_shock_state[s];
+    return !st.active && st.proximity != null && st.display.kind === 'unsigned' && st.proximity < 0.3;
+  }).length;
+  let p2 = '';
+  if (nearFire.length) p2 += `Approaching fire: ${nearFire.join(', ')}. `;
+  if (farFire) p2 += `${farFire} of 5 indicators sit well below activation. `;
+  const bk = d.per_shock_state.banking_shock;
+  if (bk && !bk.active && bk.proximity != null) {
+    const dirLbl = bk.proximity < 0 ? 'below threshold' : 'above threshold';
+    p2 += `Banking-stress is <b>${Math.abs(bk.proximity).toFixed(2)}σ</b> ${dirLbl} (STLFSI4 ${bk.raw_current.toFixed(2)} vs ${bk.cutoff_current.toFixed(2)} trigger).`;
+  }
+  if (p2) narrHtml += `<p>${p2}</p>`;
+  // The call
+  let p3 = `Cell match: <b>${d.cell_key}</b> (n=${d.cell_n}, ${conf.replace('_',' ')} confidence). `;
+  if (sp60 != null && conf !== 'no_call') {
+    if (sp60 >= 0.6) p3 += `Historical analogues show BTC outperformed SPY at h=60d in <b class="pos">${fmtPct(sp60)}</b> of cases &mdash; <b class="pos">BULLISH bias</b>${conf==='low'?' (low-n; calibrate)':''}.`;
+    else if (sp60 <= 0.4) p3 += `Historical analogues show BTC outperformed SPY at h=60d in only <b class="neg">${fmtPct(sp60)}</b> of cases &mdash; <b class="neg">BEARISH bias</b>${conf==='low'?' (low-n; calibrate)':''}.`;
+    else p3 += `Share-positive at h=60d sits at <b>${fmtPct(sp60)}</b> &mdash; <b>no strong edge</b>.`;
+  } else {
+    p3 += `Insufficient historical analogues for a confident call.`;
+  }
+  narrHtml += `<p>${p3}</p>`;
+  document.getElementById('narrative').innerHTML = narrHtml;
 
+  // ===== What changed today =====
+  const ch = document.getElementById('changed');
+  if (d.what_changed && d.what_changed.length) {
+    ch.innerHTML = `<span class="lbl">What changed today</span>` +
+      d.what_changed.map(c => `<span class="chip">${c.text}</span>`).join('');
+  } else {
+    ch.innerHTML = `<span class="lbl">What changed today</span><span class="chip">no material change vs prior trading day</span>`;
+  }
+
+  // ===== HERO =====
+  const horizonStrip = ['5','20','60','90'].map(h => {
+    const hi = d.horizons[h];
+    const c = biasClass(hi.share_positive);
+    return `<div class="hi"><div class="lbl">h=${h}d</div><div class="val ${c}">${fmtPct(hi.share_positive)}</div><div class="sub">n=${hi.n}</div></div>`;
+  }).join('');
+  const bk60 = d.beta_60;
+  const bkDelta = bk60.delta_5d;
+  const bkDirLbl = bkDelta == null ? '' : (bkDelta >= 0 ? '+' : '') + bkDelta.toFixed(2);
   document.getElementById('hero').innerHTML = `
-    <div class="panel">
+    <div class="hpanel">
       <h3>Today's regime</h3>
       <div class="big">VIX ${d.current_vix.toFixed(1)}</div>
-      <div class="sub">${VIX_LABEL[d.vix_bin]} regime · ${ERA_LABEL[d.current_era]}</div>
-      <div style="margin-top:14px;font-size:0.92em">
-        <b>Active shocks:</b> ${activeLabel}<br>
-        <b>Cell match:</b> <code>${d.cell_key}</code> (n=${d.cell_n}, tier: ${d.cell_tier_used})
-      </div>
+      <div class="sub">${VIX_LBL[d.vix_bin]} regime · ${ERA_LBL[d.current_era]}</div>
+      <div class="mini"><b>Active shocks:</b> ${activeStr}</div>
+      <div class="mini"><b>Cell:</b> <code>${d.cell_key}</code></div>
     </div>
-    <div class="panel ${heroCallClass}">
-      <h3>Cell-conditional bias (h=60d)</h3>
+    <div class="hpanel">
+      <h3>BTC β₆₀ (vs SPY)</h3>
+      <div class="big">${bk60.today != null ? bk60.today.toFixed(2) : '—'}</div>
+      <div class="sub">${bkDirLbl ? bkDirLbl + ' over 5d' : ''}</div>
+      <div class="mini" style="margin-top:14px">60-day backward-rolling OLS &mdash; no look-ahead by construction.</div>
+    </div>
+    <div class="hpanel ${callClass}">
+      <h3>Cell-conditional bias <span class="conf conf-${conf}">${conf.replace('_',' ')}</span></h3>
       <div class="big ${biasC}">${biasL}</div>
-      <div class="sub" style="margin-top:8px">
-        <b>${fmtPct(sp60)} of historical analogues</b> outperformed at h=60d<br>
-        Mean outperformance vs SPY: <b class="${(mu60||0)>=0?'pos':'neg'}">${fmtPP(mu60)}</b> &nbsp; <span style="color:var(--dim)">(n=${d.cell_n})</span>
-      </div>
+      <div class="sub">${conf==='no_call' ? 'n='+d.cell_n+' &mdash; below 5-analogue minimum' : fmtPct(sp60) + ' of n=' + d.cell_n + ' analogues outperformed at h=60d'}</div>
+      ${conf!=='no_call'?`<div class="mini">Mean outperf 60d: <b class="${(mu60||0)>=0?'pos':'neg'}">${fmtPP(mu60)}</b></div>`:''}
+      <div class="hstrip">${horizonStrip}</div>
     </div>
   `;
 
-  // ===== Per-shock cards with sparklines =====
+  // ===== Shock cards with proximity bars =====
   const shocksEl = document.getElementById('shocks');
   shocksEl.innerHTML = '';
-  SHOCKS.forEach((s, i) => {
+  SHOCKS.forEach(s => {
     const st = d.per_shock_state[s];
     const disp = st.display;
     const fire = st.active;
-    const pct = st.pct_of_cutoff;
-    const dist = st.distance_from_cutoff_pp;
-    const pctClass = pct == null ? 'neut' : (pct >= 100 ? 'above' : 'below');
+    // Build proximity bar: 0% (no risk) → 100% (cutoff) → fire zone
+    let barPct = 0;
+    if (st.proximity != null) {
+      if (disp.kind === 'unsigned') {
+        barPct = Math.min(120, Math.max(0, st.proximity * 100));
+      } else {
+        // signed: map -2σ → 0%, 0σ → 100%
+        const sigma = st.proximity;
+        barPct = Math.min(120, Math.max(0, (sigma + 2) / 2 * 100));
+      }
+    }
+    const proxLine = st.proximity_label || '';
+    const lastLine = st.last_fire_date
+      ? `Last fired: <b>${st.last_fire_date}</b> (${st.days_since_last_fire}d ago)`
+      : 'Never fired in panel';
+    const trendLine = st.trend_20d ? `<span class="trend">${st.trend_20d === 'rising' ? '↑' : '↓'} 20d</span>` : '';
     const div = document.createElement('div');
-    div.className = 'shock-card' + (fire ? ' fire' : '');
+    div.className = 'scard' + (fire ? ' fire' : '');
     div.innerHTML = `
-      <div class="name">${disp.label}</div>
-      <div class="desc">${disp.raw_desc}</div>
-      <div class="val">${st.raw_current == null ? '-' : st.raw_current.toFixed(4)}</div>
-      <div class="cutoff">cutoff: ${st.cutoff_current == null ? '-' : st.cutoff_current.toFixed(4)}</div>
-      <div class="pct ${pctClass}">${pct == null ? '' : (pct >= 100 ? '+' : '') + dist.toFixed(0) + '% vs cutoff'}</div>
+      <div class="nm">${disp.label}</div>
+      <div class="ds">${disp.raw_desc}</div>
+      <div class="val">${st.raw_current == null ? '—' : st.raw_current.toFixed(4)}</div>
+      <div class="cut">cutoff: ${st.cutoff_current == null ? '—' : st.cutoff_current.toFixed(4)}</div>
+      <div class="bar-wrap"><div class="bar" style="width:${Math.min(100,barPct)}%"></div></div>
+      <div class="prox-lbl"><b>${proxLine}</b></div>
       <span class="badge ${fire?'on':'off'}">${fire ? 'ACTIVE' : 'inactive'}</span>
-      <div class="spark" id="spark-${s}" style="height:80px"></div>
+      <div class="last">${lastLine} ${trendLine}</div>
+      <div class="spark" id="spark-${s}"></div>
     `;
     shocksEl.appendChild(div);
 
-    // Sparkline plot
     const h = d.shock_history[s];
     if (h && h.length) {
       const xs = h.map(p => p.date);
       const raws = h.map(p => p.raw);
       const cuts = h.map(p => p.cutoff);
-      const fires = h.map(p => p.active === 1);
+      const todayIdx = xs.length - 1;
       Plotly.newPlot('spark-' + s, [
-        {x: xs, y: raws, mode:'lines', line:{color:B, width:1}, name:'raw', hoverinfo:'skip'},
-        {x: xs, y: cuts, mode:'lines', line:{color:R, width:1, dash:'dash'}, name:'cutoff', hoverinfo:'skip'},
-        // Fire markers
-        {x: xs.filter((x,i)=>fires[i]), y: raws.filter((x,i)=>fires[i]),
-         mode:'markers', marker:{color:R, size:3, opacity:0.5}, name:'fired', hoverinfo:'skip'},
+        {x: xs, y: raws, mode:'lines', line:{color:B, width:1}, hoverinfo:'skip'},
+        {x: xs, y: cuts, mode:'lines', line:{color:R, width:1, dash:'dash'}, hoverinfo:'skip'},
+        // Today marker
+        {x:[xs[todayIdx]], y:[raws[todayIdx]], mode:'markers',
+         marker:{color:fire?R:B, size:6, line:{color:'#fff', width:1.2}}, hoverinfo:'skip'},
       ], {
         paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:SLF,
         margin:{l:30, r:5, t:5, b:18},
         xaxis:{visible:false, showgrid:false},
-        yaxis:{showgrid:false, tickfont:{size:8}, nticks:3},
+        yaxis:{showgrid:false, tickfont:{size:8}, nticks:3, zeroline:false},
         showlegend:false,
       }, {responsive:true, displayModeBar:false});
     }
   });
 
-  // ===== VIX + shock-firing overlay chart =====
-  const vh = d.vix_history;
+  // ===== What would flip the cell =====
+  const flipsUl = document.getElementById('flips');
+  if (d.what_would_flip && d.what_would_flip.length) {
+    flipsUl.innerHTML = d.what_would_flip.map(f => {
+      const sp = f.new_share_positive;
+      const spLbl = sp == null ? 'unknown' : fmtPct(sp);
+      const spClass = biasClass(sp);
+      const haven = f.kind === 'safe_haven_override' ? ' class="haven"' : '';
+      return `<li${haven}>
+        <div class="trig">${f.trigger}</div>
+        <div class="eff">→ ${f.effect} &nbsp; <b>(new bias: <span class="${spClass}">${spLbl}</span>, n=${f.new_n})</b></div>
+      </li>`;
+    }).join('');
+  } else {
+    flipsUl.innerHTML = '<li>No nearby boundary triggers.</li>';
+  }
+
+  // ===== β trajectory =====
+  const bh = d.beta_history;
+  const bxs = bh.map(p => p.date);
+  const bys = bh.map(p => p.beta);
+  const etfBreak = '2024-01-10';
+  Plotly.newPlot('chart-beta', [
+    {x:bxs, y:bys, name:'β₆₀(BTC, SPY)', line:{color:B, width:1.8}, mode:'lines',
+     hovertemplate:'%{x}<br>β = %{y:.2f}<extra></extra>'},
+  ], {
+    ...L,
+    title:{text:'BTC β₆₀ vs SPY (backward-rolling, no look-ahead)',font:{size:14}},
+    yaxis:{...L.yaxis, title:'β₆₀'},
+    shapes:[
+      {type:'line', x0:etfBreak, x1:etfBreak,
+       y0:Math.min(...bys.filter(v=>v!=null)), y1:Math.max(...bys.filter(v=>v!=null)),
+       line:{color:A, width:1.5, dash:'dash'}},
+      {type:'line', x0:bxs[0], x1:bxs[bxs.length-1], y0:1, y1:1,
+       line:{color:GR, width:1, dash:'dot'}},
+    ],
+    annotations:[
+      {x:etfBreak, y:Math.max(...bys.filter(v=>v!=null)), text:'Spot-ETF launch',
+       showarrow:false, font:{color:A, size:10}, xanchor:'left', yshift:-4},
+      {x:bxs[bxs.length-1], y:1, text:'β=1', showarrow:false,
+       font:{color:GR, size:10}, xanchor:'right', yshift:8},
+    ],
+    margin:{...L.margin, t:35},
+  }, {responsive:true});
+
+  // ===== BlackRock 6-event strip =====
+  const evEl = document.getElementById('events');
+  const events = d.blackrock_events || [];
+  evEl.innerHTML = events.map(e => {
+    const op = e.outperf_60d;
+    const opClass = op==null?'neut':(op>=0?'pos':'neg');
+    const opLbl = op==null?'—':(op>=0?'+':'')+(op*100).toFixed(0)+'pp';
+    const btc = e.btc_fwd_60d, spy = e.spy_fwd_60d;
+    const shocksLbl = (e.active_shocks && e.active_shocks.length) ? e.active_shocks.map(s=>s.replace('_shock','').replace('gprd_threat','GPR')).join(', ') : 'none';
+    return `<div class="ec">
+      <div class="nm">${e.name}</div>
+      <div class="dt">${e.date} · ${ERA_SHORT[e.era]||e.era}</div>
+      <div class="row"><span class="l">VIX</span><span class="v">${e.vix?.toFixed(1)}</span></div>
+      <div class="row"><span class="l">β₆₀</span><span class="v">${e.beta?.toFixed(2)}</span></div>
+      <div class="row"><span class="l">Shocks</span><span class="v" style="font-size:0.85em">${shocksLbl}</span></div>
+      <div class="row" style="margin-top:7px;padding-top:5px;border-top:1px solid var(--bd)">
+        <span class="l">60d outperf</span><span class="v ${opClass}">${opLbl}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  // ===== VIX + shock-fires (90 days) =====
+  const vh = d.vix_history_90d;
   const vxs = vh.map(p => p.date);
   const vys = vh.map(p => p.vix);
-  const traces = [
-    {x: vxs, y: vys, name:'VIX', line:{color:B, width:1.5}, mode:'lines'},
-  ];
-  // Add shock-fire markers as scatter overlays on top of VIX
-  const shockColors = {oil_shock:'#f7931a', dollar_shock:'#2e7d32', rate_shock:'#e67e22',
-                       banking_shock:'#c62828', gprd_threat_shock:'#7b2cbf'};
+  const vTraces = [{x:vxs, y:vys, name:'VIX', line:{color:B, width:1.6}, mode:'lines'}];
   SHOCKS.forEach(s => {
     const h = d.shock_history[s];
     if (!h) return;
     const fireMap = {};
     h.forEach(p => { if (p.active === 1) fireMap[p.date] = true; });
-    const xs = vxs.filter(x => fireMap[x]);
+    const dts = vxs.filter(x => fireMap[x]);
     const ys = vxs.map((x,i) => fireMap[x] ? vys[i] : null).filter(v => v != null);
-    if (xs.length === 0) return;
-    traces.push({
-      x: xs, y: ys, mode:'markers',
-      marker:{color: shockColors[s], size: 5, opacity: 0.75, line:{color:'#fff', width:0.4}},
-      name: d.per_shock_state[s].display.label + ' fired',
-    });
+    if (!dts.length) return;
+    vTraces.push({x:dts, y:ys, mode:'markers',
+      marker:{color:SHOCK_COLOR[s], size:7, opacity:0.85, line:{color:'#fff', width:0.5}},
+      name: d.per_shock_state[s].display.label});
   });
-  Plotly.newPlot('chart-vix-shocks', traces, {
+  Plotly.newPlot('chart-vix', vTraces, {
     ...L,
     title:{text:'VIX with shock-fire days overlaid',font:{size:14}},
     yaxis:{...L.yaxis, title:'VIX'},
-    legend:{x:0.01, y:0.99, bgcolor:'rgba(255,255,255,0.85)', font:{size:11}},
+    legend:{x:0.01, y:0.99, bgcolor:'rgba(255,255,255,0.85)', font:{size:10}},
     shapes:[
       {type:'line', y0:14.5, y1:14.5, x0:vxs[0], x1:vxs[vxs.length-1], line:{color:G, width:1, dash:'dot'}},
       {type:'line', y0:20, y1:20, x0:vxs[0], x1:vxs[vxs.length-1], line:{color:AM, width:1, dash:'dot'}},
@@ -286,118 +501,84 @@ async function main(){
     ],
   }, {responsive:true});
 
-  // Co-movement table
-  let ct = '<thead><tr><th>Shock</th><th>ρ with VIX</th><th>Interpretation</th></tr></thead><tbody>';
-  SHOCKS.forEach(s => {
-    const c = d.comovement[s].correlation_with_vix;
-    const interp = c == null ? '-' : (Math.abs(c) >= 0.4 ? 'strong VIX co-mover' : (Math.abs(c) >= 0.2 ? 'mild co-movement' : 'fires semi-independently'));
-    ct += `<tr><td class="label">${d.per_shock_state[s].display.label} (${d.per_shock_state[s].display.raw_desc})</td><td>${fmt(c, 2)}</td><td>${interp}</td></tr>`;
+  // ===== 12-cell era × VIX grid =====
+  const gw = document.getElementById('grid12-wrap');
+  const grid12 = d.grid_12;
+  const cellMap12 = {};
+  grid12.forEach(c => { cellMap12[`${c.era}__${c.vix_bin}`] = c; });
+  let gh = '<div class="grid12"><div class="g-h"></div>';
+  VIX_BINS.forEach(vb => gh += `<div class="g-h">${VIX_LBL[vb]}</div>`);
+  ERAS.forEach(era => {
+    gh += `<div class="g-row-l">${ERA_SHORT[era]}</div>`;
+    VIX_BINS.forEach(vb => {
+      const c = cellMap12[`${era}__${vb}`];
+      const sp = c?.weighted_share;
+      const n = c?.total_n || 0;
+      let bg = '#fafafa';
+      if (sp != null) {
+        if (sp >= 0.6) bg = `rgba(46,125,50,${0.25 + (sp-0.6)*1.5})`;
+        else if (sp <= 0.4) bg = `rgba(198,40,40,${0.25 + (0.4-sp)*1.5})`;
+        else bg = `rgba(255,255,255,1)`;
+      }
+      const cur = c?.is_current ? ' current' : '';
+      gh += `<div class="gc${cur}" style="background:${bg}">
+        <div class="pct">${sp != null ? (sp*100).toFixed(0)+'%' : '—'}</div>
+        <div class="n">n=${n}</div>
+      </div>`;
+    });
   });
-  ct += '</tbody>';
-  document.getElementById('comovement-table').innerHTML = ct;
+  gh += '</div>';
+  gw.innerHTML = gh;
 
-  // ===== Reading section =====
-  const era_L = ERA_LABEL[d.current_era];
-  const vix_L = VIX_LABEL[d.vix_bin];
-  let readingHtml = `<h3>Plain-language read</h3>`;
-  readingHtml += `<p>Today is a <b>${era_L}</b> era day with VIX at <b>${d.current_vix.toFixed(1)}</b> (<b>${vix_L}</b> regime). `;
-  if (active.length === 0) {
-    readingHtml += `No macro shocks are firing &mdash; this is a baseline-regime day.</p>`;
-  } else {
-    readingHtml += `Active shock(s): <b>${activeLabel}</b>.</p>`;
-  }
-  readingHtml += `<p><b>Historical cell match:</b> <code>${d.cell_key}</code> with <b>n=${d.cell_n}</b> historical analogues. `;
-  if (sp60 != null) {
-    if (sp60 >= 0.6) {
-      readingHtml += `In these conditions, BTC has historically outperformed SPY at h=60d in <b class="b">${fmtPct(sp60)}</b> of cases &mdash; <b class="b">BULLISH bias</b>.</p>`;
-    } else if (sp60 <= 0.4) {
-      readingHtml += `In these conditions, BTC has historically outperformed SPY at h=60d in only <b class="r">${fmtPct(sp60)}</b> of cases &mdash; <b class="r">BEARISH bias</b>.</p>`;
-    } else {
-      readingHtml += `In these conditions, BTC has historically outperformed SPY at h=60d in <b>${fmtPct(sp60)}</b> of cases &mdash; <b>NO STRONG BIAS</b>; the framework offers no edge here.</p>`;
-    }
-  } else {
-    readingHtml += `Cell has insufficient historical analogues to call.</p>`;
-  }
-  if (d.cell_n < 10) {
-    readingHtml += `<p style="color:var(--am);font-size:0.92em"><b>Confidence:</b> low (n=${d.cell_n}) &mdash; the cell uses fallback aggregation.</p>`;
-  }
-  document.getElementById('reading').innerHTML = readingHtml;
-
-  // Horizon table
-  let ht = '<thead><tr><th>Horizon</th><th>Share-positive</th><th>Mean outperf</th><th>n</th></tr></thead><tbody>';
-  ['5','20','60','90'].forEach(h => {
-    const hd = d.horizons[h];
-    const c = biasClass(hd.share_positive);
-    ht += `<tr><td class="label">${h} calendar days</td><td class="${c}">${fmtPct(hd.share_positive)}</td><td class="${(hd.mean_outperf||0)>=0?'pos':'neg'}">${fmtPP(hd.mean_outperf)}</td><td>${hd.n}</td></tr>`;
-  });
-  ht += '</tbody>';
-  document.getElementById('horizon-table').innerHTML = ht;
-
-  // Analogues
-  const an = document.getElementById('analogues');
-  if (d.closest_analogues && d.closest_analogues.length) {
-    an.innerHTML = d.closest_analogues.map(e =>
-      `<div style="margin-bottom:8px"><b>${e.event_name || e.label || e.date}</b> &mdash; ${e.shock_overlap?.length ? 'shared shocks: '+e.shock_overlap.join(', ') : 'same era + VIX bin'}</div>`
-    ).join('');
-  } else {
-    an.innerHTML = '<i>No close BlackRock-style analogues with the same shock profile in the regime.</i>';
-  }
-
-  // ===== 84-cell heatmap (collapsed by default) =====
+  // 84-cell full heatmap (collapsed by default)
   const shockOrder = ['none','any','oil_shock','dollar_shock','rate_shock','banking_shock','gprd_threat_shock'];
   const shockShort = {none:'None',any:'Any',oil_shock:'Oil',dollar_shock:'Dollar',rate_shock:'Rates',banking_shock:'Banking',gprd_threat_shock:'GPR'};
-  const cellMap = {};
+  const cellMap84 = {};
   d.cells.forEach(c => {
-    if (!cellMap[c.era]) cellMap[c.era] = {};
-    if (!cellMap[c.era][c.shock]) cellMap[c.era][c.shock] = {};
-    cellMap[c.era][c.shock][c.vix_bin] = c;
+    if (!cellMap84[c.era]) cellMap84[c.era] = {};
+    if (!cellMap84[c.era][c.shock]) cellMap84[c.era][c.shock] = {};
+    cellMap84[c.era][c.shock][c.vix_bin] = c;
   });
   const yLabels=[], zMat=[], txtMat=[];
   ERAS.forEach(era => {
     shockOrder.forEach(shock => {
-      yLabels.push(`${ERA_LABEL[era].split('/')[0].substring(0,9)} | ${shockShort[shock]}`);
+      yLabels.push(`${ERA_SHORT[era].substring(0,9)} | ${shockShort[shock]}`);
       const row=[], txt=[];
       VIX_BINS.forEach(vb => {
-        const c = cellMap[era]?.[shock]?.[vb];
+        const c = cellMap84[era]?.[shock]?.[vb];
         if (c && c.share_positive_60d != null) {
-          row.push(c.share_positive_60d);
-          txt.push(`${(c.share_positive_60d*100).toFixed(0)}%<br>n=${c.n}`);
-        } else { row.push(null); txt.push('-'); }
+          row.push(c.share_positive_60d); txt.push(`${(c.share_positive_60d*100).toFixed(0)}%<br>n=${c.n}`);
+        } else { row.push(null); txt.push('—'); }
       });
       zMat.push(row); txtMat.push(txt);
     });
   });
   Plotly.newPlot('chart-heatmap', [{
-    z:zMat, x:VIX_BINS.map(v=>VIX_LABEL[v]), y:yLabels, text:txtMat, texttemplate:'%{text}',
+    z:zMat, x:VIX_BINS.map(v=>VIX_LBL[v]), y:yLabels, text:txtMat, texttemplate:'%{text}',
     textfont:{size:10},
     colorscale:[[0,'#c62828'],[0.4,'#f5b7b1'],[0.5,'#f8f9fa'],[0.6,'#a9d4a9'],[1,'#2e7d32']],
-    zmin:0.2, zmax:0.8, showscale:true, colorbar:{title:'Share-positive 60d',thickness:14},
+    zmin:0.2, zmax:0.8, showscale:true, colorbar:{title:'Share-pos 60d',thickness:14},
     hovertemplate:'%{y} × %{x}<br>%{text}<extra></extra>',
-  }],{...L, xaxis:{...L.xaxis,title:'VIX bin',type:'category'},
+  }], {...L, xaxis:{...L.xaxis,title:'VIX bin',type:'category'},
     yaxis:{...L.yaxis,title:'Era | Shock-type',type:'category',autorange:'reversed',tickfont:{size:10}},
     margin:{l:160,r:80,t:30,b:50}, height:780,
-  },{responsive:true});
+  }, {responsive:true});
 
-  // ===== Methodology table =====
+  // ===== Methodology =====
   const m = d.methodology;
-  const rows = [
-    {key:'full_sample', meta:m.full_sample},
-    {key:'ewma_126', meta:m.ewma_126},
-    {key:'era_conditional', meta:m.era_conditional},
-    {key:'walkforward', meta:m.walkforward},
-  ];
+  const rows = [m.full_sample, m.ewma_126, m.era_conditional, m.walkforward];
+  const keys = ['full_sample','ewma_126','era_conditional','walkforward'];
   let mt = '<thead><tr><th>Cutoff</th><th>n</th><th>ΔR² M2→M3 (pp)</th><th>p</th><th>Banking M4 (pp)</th><th>Verdict</th></tr></thead><tbody>';
-  rows.forEach(r => {
-    const me = r.meta || {};
-    const v = me.verdict || '-';
+  rows.forEach((me, i) => {
+    const v = me?.verdict || '—';
     const vC = v.includes('KEEP') ? 'badge keep' : (v.includes('BORDER') ? 'badge border' : '');
-    const dr = me.dr2_m3_pp;
-    const isWf = r.key === 'walkforward';
-    mt += `<tr${isWf?' style="background:rgba(247,147,26,0.04);font-weight:500"':''}><td class="label">${me.label}${isWf?' ←':''}</td>`
-       + `<td>${me.n_obs||'-'}</td>`
-       + `<td class="${dr>2?'pos':(dr<1?'neut':'warn')}">${dr==null?'-':(dr>=0?'+':'')+dr.toFixed(2)}</td>`
-       + `<td>${me.p_value==null?'-':me.p_value.toFixed(3)}</td>`
-       + `<td class="${(me.banking_m4_pp||0)>=0?'pos':'neg'}">${me.banking_m4_pp==null?'-':(me.banking_m4_pp>=0?'+':'')+me.banking_m4_pp.toFixed(2)}</td>`
+    const dr = me?.dr2_m3_pp;
+    const isWf = keys[i] === 'walkforward';
+    mt += `<tr${isWf?' style="background:rgba(247,147,26,0.04);font-weight:500"':''}><td class="label">${me?.label||''}${isWf?' ←':''}</td>`
+       + `<td>${me?.n_obs||'—'}</td>`
+       + `<td class="${dr>2?'pos':(dr<1?'neut':'warn')}">${dr==null?'—':(dr>=0?'+':'')+dr.toFixed(2)}</td>`
+       + `<td>${me?.p_value==null?'—':me.p_value.toFixed(3)}</td>`
+       + `<td class="${(me?.banking_m4_pp||0)>=0?'pos':'neg'}">${me?.banking_m4_pp==null?'—':(me.banking_m4_pp>=0?'+':'')+me.banking_m4_pp.toFixed(2)}</td>`
        + `<td><span class="${vC}">${v}</span></td></tr>`;
   });
   mt += '</tbody>';
@@ -405,9 +586,6 @@ async function main(){
 
   document.getElementById('ts').textContent = 'Last updated: ' + d.updated;
 
-  // Re-resize any Plotly charts when a <details> section is opened (Plotly
-  // renders to zero dimensions in hidden containers, so reveal triggers
-  // a manual resize).
   document.querySelectorAll('details').forEach(det => {
     det.addEventListener('toggle', () => {
       if (det.open) {
@@ -419,7 +597,7 @@ async function main(){
   });
 }
 main().catch(e => {
-  document.getElementById('hero').innerHTML = '<div class="panel" style="grid-column:1/-1"><h3>Error</h3><div class="big warn">Failed to load dashboard data</div><div class="sub">'+e.message+'</div></div>';
+  document.getElementById('narrative').innerHTML = '<div style="color:var(--rd)"><b>Error loading dashboard data:</b> '+e.message+'</div>';
   console.error(e);
 });
 </script>
