@@ -29,8 +29,8 @@
     .changed .lbl{color:var(--dim);font-weight:600;text-transform:uppercase;letter-spacing:.4px;font-size:0.78em;margin-right:6px}
 
     /* HERO */
-    .hero{display:grid;grid-template-columns:1.1fr 1fr 1.2fr;gap:14px;margin-bottom:24px}
-    @media(max-width:960px){.hero{grid-template-columns:1fr 1fr}}
+    .hero{display:grid;grid-template-columns:1fr 1fr 1fr 1.2fr;gap:12px;margin-bottom:24px}
+    @media(max-width:1100px){.hero{grid-template-columns:1fr 1fr}}
     @media(max-width:600px){.hero{grid-template-columns:1fr}}
     .hpanel{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:16px 18px}
     .hpanel h3{font-size:0.74em;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin-bottom:6px}
@@ -174,6 +174,23 @@
   <div class="flips"><ul id="flips"></ul></div>
 </section>
 
+<!-- Effect-size matrix: shock × prior-direction asymmetry -->
+<section>
+  <h2>Shock effect-size matrix (full-sample, momentum-conditioned)</h2>
+  <p class="blurb">For each shock: the marginal forward-60d outperformance attributable to the
+  shock (Δ = shock-fire mean MINUS no-shock baseline), split by BTC's prior 60d direction. This
+  tests whether each shock <em>changes BTC's trajectory</em> or just dampens/amplifies it. Color:
+  red = the shock kills a rally, green = the shock catalyzes a reversal, neutral = dampener
+  with no directional effect.</p>
+  <table class="ft" id="es-matrix"></table>
+  <p style="font-size:0.82em;color:var(--dim);margin-top:8px"><b>Legend:</b>
+    🔄 <b>reversal</b> (shock has opposite effects depending on prior direction — changes trajectory) ·
+    ⛔ <b>trend killer</b> (kills uptrends, neutral in downtrends) ·
+    📉 <b>drag</b> (symmetric negative effect regardless of direction) ·
+    ↗️ <b>catalyst</b> (only triggers reversal from downtrends).
+  </p>
+</section>
+
 <!-- Beta trajectory -->
 <section>
   <h2>BTC β trajectory (60-day rolling, vs SPY)</h2>
@@ -256,6 +273,12 @@ function biasLabel(s,conf){
   if(conf==='no_call'||s==null)return'NO CALL';
   if(s>=0.60)return'BULLISH';if(s<=0.40)return'BEARISH';return'NEUTRAL'
 }
+function confidence_n(n){
+  if(n==null||n<5)return'no_call';
+  if(n<20)return'low';
+  if(n<50)return'medium';
+  return'high';
+}
 
 async function main(){
   const d = await fetch('data/dashboard_output.json?t='+Date.now()).then(r=>r.json());
@@ -329,6 +352,30 @@ async function main(){
   const bk60 = d.beta_60;
   const bkDelta = bk60.delta_5d;
   const bkDirLbl = bkDelta == null ? '' : (bkDelta >= 0 ? '+' : '') + bkDelta.toFixed(2);
+  // BTC prior 60d (momentum)
+  const btcPrior = d.btc_prior_60d;
+  const btcPriorDir = d.btc_prior_direction;
+  const btcPriorClass = btcPrior > 0 ? 'pos' : (btcPrior < 0 ? 'neg' : 'neut');
+
+  // Momentum-conditioned bias (the headline call refined by today's BTC prior direction)
+  const mc = d.momentum_conditioned;
+  const matched = mc.matched;
+  const mcConf = d.momentum_conditioned_confidence;
+  const matchedSp = matched.share_positive;
+  const matchedMu = matched.mean_outperf;
+  const matchedN = matched.n;
+  const mBiasC = biasClass(matchedSp);
+  const mBiasL = biasLabel(matchedSp, mcConf);
+  const mCallClass = mcConf==='no_call' ? 'call-neut call-low' :
+    (mBiasC==='pos' ? 'call-bull' : (mBiasC==='neg' ? 'call-bear' : 'call-neut'));
+
+  // Aggregate (the unconditional cell call) — shown as secondary context
+  const aggSp = mc.aggregate.share_positive;
+  const aggMu = mc.aggregate.mean_outperf;
+  const aggN = mc.aggregate.n;
+  const aggBiasC = biasClass(aggSp);
+  const aggBiasL = biasLabel(aggSp, confidence_n(aggN));
+
   document.getElementById('hero').innerHTML = `
     <div class="hpanel">
       <h3>Today's regime</h3>
@@ -338,16 +385,26 @@ async function main(){
       <div class="mini"><b>Cell:</b> <code>${d.cell_key}</code></div>
     </div>
     <div class="hpanel">
+      <h3>BTC prior 60d (momentum)</h3>
+      <div class="big ${btcPriorClass}">${btcPrior != null ? (btcPrior>=0?'+':'')+(btcPrior*100).toFixed(1)+'%' : '—'}</div>
+      <div class="sub">trend: <b>${btcPriorDir === 'up' ? 'rising' : 'falling'}</b></div>
+      <div class="mini" style="margin-top:10px">+1.97pp OOS R² beyond momentum is the framework's edge — this is the momentum baseline.</div>
+    </div>
+    <div class="hpanel">
       <h3>BTC β₆₀ (vs SPY)</h3>
       <div class="big">${bk60.today != null ? bk60.today.toFixed(2) : '—'}</div>
       <div class="sub">${bkDirLbl ? bkDirLbl + ' over 5d' : ''}</div>
-      <div class="mini" style="margin-top:14px">60-day backward-rolling OLS &mdash; no look-ahead by construction.</div>
+      <div class="mini" style="margin-top:10px">60-day backward-rolling OLS &mdash; no look-ahead by construction.</div>
     </div>
-    <div class="hpanel ${callClass}">
-      <h3>Cell-conditional bias <span class="conf conf-${conf}">${conf.replace('_',' ')}</span></h3>
-      <div class="big ${biasC}">${biasL}</div>
-      <div class="sub">${conf==='no_call' ? 'n='+d.cell_n+' &mdash; below 5-analogue minimum' : fmtPct(sp60) + ' of n=' + d.cell_n + ' analogues outperformed at h=60d'}</div>
-      ${conf!=='no_call'?`<div class="mini">Mean outperf 60d: <b class="${(mu60||0)>=0?'pos':'neg'}">${fmtPP(mu60)}</b></div>`:''}
+    <div class="hpanel ${mCallClass}">
+      <h3>Bias call (momentum-refined) <span class="conf conf-${mcConf}">${mcConf.replace('_',' ')}</span></h3>
+      <div class="big ${mBiasC}">${mBiasL}</div>
+      <div class="sub">${mcConf==='no_call' ? 'matched sub-cell n='+matchedN+' — below 5-analogue minimum' :
+        fmtPct(matchedSp) + ' of n=' + matchedN + ' analogues (BTC prior ' + btcPriorDir + ') outperformed at h=60d'}</div>
+      ${mcConf!=='no_call'?`<div class="mini">Mean outperf 60d: <b class="${(matchedMu||0)>=0?'pos':'neg'}">${fmtPP(matchedMu)}</b></div>`:''}
+      <div class="mini" style="font-size:0.78em;color:var(--dim);margin-top:8px;padding-top:6px;border-top:1px solid var(--bd)">
+        <b>Aggregate (unconditional):</b> <span class="${aggBiasC}">${aggBiasL}</span> &mdash; ${fmtPct(aggSp)} sp+, ${fmtPP(aggMu)} mean (n=${aggN})
+      </div>
       <div class="hstrip">${horizonStrip}</div>
     </div>
   `;
@@ -445,6 +502,33 @@ async function main(){
   } else {
     flipsUl.innerHTML = '<li>No nearby boundary triggers.</li>';
   }
+
+  // ===== Effect-size matrix =====
+  const esEl = document.getElementById('es-matrix');
+  const ICON = {reversal:'🔄', trend_killer:'⛔', drag:'📉', catalyst:'↗️', mixed:'🔀'};
+  const KIND_LBL = {reversal:'Reversal', trend_killer:'Trend killer', drag:'Drag',
+                    catalyst:'Catalyst', mixed:'Mixed'};
+  let esHtml = '<thead><tr><th>Shock</th><th>Prior ↑ Δ</th><th>Prior ↓ Δ</th><th>Asymmetry</th><th>n (fire)</th><th>Behavior</th></tr></thead><tbody>';
+  d.effect_size_matrix.forEach(r => {
+    const du = r.prior_up_delta_pp;
+    const dd = r.prior_down_delta_pp;
+    const asym = r.asymmetry_pp;
+    const dupClass = du == null ? 'neut' : (du > 0 ? 'pos' : 'neg');
+    const ddnClass = dd == null ? 'neut' : (dd > 0 ? 'pos' : 'neg');
+    const icon = ICON[r.kind] || '';
+    const kLbl = KIND_LBL[r.kind] || (r.kind || '—');
+    // Highlight today's primary shock if active
+    const isPrimary = r.shock === d.primary_shock && d.active_shocks[r.shock];
+    esHtml += `<tr${isPrimary?' style="background:rgba(247,147,26,0.05);font-weight:500"':''}>`
+       + `<td class="label">${r.label}${isPrimary?' ← active today':''}</td>`
+       + `<td class="${dupClass}">${du==null?'—':(du>=0?'+':'')+du.toFixed(1)+'pp'}</td>`
+       + `<td class="${ddnClass}">${dd==null?'—':(dd>=0?'+':'')+dd.toFixed(1)+'pp'}</td>`
+       + `<td>${asym==null?'—':asym.toFixed(1)+'pp'}</td>`
+       + `<td>${r.n_fire_up}↑ / ${r.n_fire_dn}↓</td>`
+       + `<td>${icon} ${kLbl}</td></tr>`;
+  });
+  esHtml += '</tbody>';
+  esEl.innerHTML = esHtml;
 
   // ===== β trajectory =====
   const bh = d.beta_history;

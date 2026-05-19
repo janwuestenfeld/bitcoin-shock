@@ -128,11 +128,21 @@ def main():
     prior_panel = panel.loc[prior_date] if prior_date is not None else None
     prior_wf = wf.loc[prior_date] if prior_date is not None and prior_date in wf.index else None
 
+    # ===== BTC prior 60d (fourth regime dimension; backward-rolling, no look-ahead) =====
+    btc_cal = pd.read_parquet(BTC_CAL).copy()
+    btc_cal.index = pd.to_datetime(btc_cal.index)
+    btc_close = btc_cal["close"].astype(float)
+    btc_prior_60d_series = btc_close / btc_close.shift(60) - 1.0
+    btc_prior_today = float(btc_prior_60d_series.reindex([last_date], method="ffill").iloc[0])
+    btc_prior_direction = "up" if btc_prior_today > 0 else "down"
+
     out = {
         "current_date": str(last_date.date()),
         "current_vix": float(last_panel["vix"]),
         "vix_bin": vix_bin_of(last_panel["vix"]),
         "current_era": era_of(last_date),
+        "btc_prior_60d": btc_prior_today,
+        "btc_prior_direction": btc_prior_direction,
     }
 
     # ===== β_60 series =====
@@ -309,6 +319,100 @@ def main():
     out["cell_regime_warning"] = used.get("regime_warning")
     out["horizons"] = {str(h): _cell_horizon(used, h) for h in HORIZONS}
     out["confidence"] = confidence_for_n(out["cell_n"])
+
+    # ===== Momentum-conditioned cell stats (compute from raw panel) =====
+    # For today's cell (era × vix-bin × primary_shock), split historical analogues by BTC prior 60d direction.
+    # Get the historical sample matching today's cell
+    panel_with_prior = panel.copy()
+    panel_with_prior["btc_prior_60d"] = btc_prior_60d_series.reindex(panel.index, method="ffill")
+    panel_with_prior["era"] = [era_of(d) for d in panel.index]
+    panel_with_prior["vix_bin"] = panel_with_prior["vix"].apply(vix_bin_of)
+    # Forward outperformance (BTC calendar - SPY NYSE) at h=60
+    spy_arr = panel["spy"].astype(float).values
+    nyse_arr = np.asarray(panel.index.values)
+    tph_60 = nyse_arr + np.timedelta64(60, "D")
+    pos_ge = np.searchsorted(nyse_arr, tph_60, side="left")
+    valid = pos_ge < len(nyse_arr)
+    pos_clip = np.clip(pos_ge, 0, len(nyse_arr) - 1)
+    spy_fwd_60 = np.where(valid, spy_arr[pos_clip] / spy_arr - 1.0, np.nan)
+    btc_fwd_60 = (btc_close.shift(-60) / btc_close - 1.0).reindex(panel.index, method="ffill")
+    panel_with_prior["outperf_60"] = btc_fwd_60.values - spy_fwd_60
+    # Add shock indicators from walk-forward panel
+    for s in SHOCKS:
+        panel_with_prior[s] = wf[f"{s}_wf"].reindex(panel.index).fillna(0).astype(int)
+
+    def _cell_subset(era_v, vix_v, shock_v):
+        """Return subset of panel matching cell + valid forward outperf + valid prior."""
+        if shock_v == "none":
+            mask = (panel_with_prior["era"] == era_v) & (panel_with_prior["vix_bin"] == vix_v)
+            for s in SHOCKS:
+                mask &= (panel_with_prior[s] == 0)
+        elif shock_v == "any":
+            mask = (panel_with_prior["era"] == era_v) & (panel_with_prior["vix_bin"] == vix_v)
+            shock_mask = pd.Series(False, index=panel_with_prior.index)
+            for s in SHOCKS:
+                shock_mask |= (panel_with_prior[s] == 1)
+            mask &= shock_mask
+        else:
+            mask = (panel_with_prior["era"] == era_v) & (panel_with_prior["vix_bin"] == vix_v) & (panel_with_prior[shock_v] == 1)
+        return panel_with_prior[mask & panel_with_prior["outperf_60"].notna() & panel_with_prior["btc_prior_60d"].notna()]
+
+    def _split_stats(subset):
+        up = subset[subset["btc_prior_60d"] > 0]
+        dn = subset[subset["btc_prior_60d"] <= 0]
+        def stats(s):
+            if not len(s): return {"n": 0, "share_positive": None, "mean_outperf": None}
+            return {"n": int(len(s)), "share_positive": float((s["outperf_60"] > 0).mean()),
+                    "mean_outperf": float(s["outperf_60"].mean())}
+        return {"prior_up": stats(up), "prior_down": stats(dn), "aggregate": stats(subset)}
+
+    cell_subset = _cell_subset(era, vb, primary_shock)
+    out["momentum_conditioned"] = _split_stats(cell_subset)
+    # The "matched" sub-cell is the one matching today's BTC prior direction
+    matched_key = f"prior_{btc_prior_direction}"
+    out["momentum_conditioned"]["matched"] = out["momentum_conditioned"][matched_key]
+    out["momentum_conditioned"]["matched_direction"] = btc_prior_direction
+    out["momentum_conditioned_confidence"] = confidence_for_n(out["momentum_conditioned"]["matched"]["n"])
+
+    # ===== Effect-size matrix: per-shock Δ vs no-shock baseline, split by BTC prior =====
+    # For each shock, full-sample mean outperf for (shock_fire, prior↑) vs (no_shock, prior↑), and same for prior↓
+    es_matrix = []
+    for s in SHOCKS:
+        # Shock fires
+        fire_mask = (panel_with_prior[s] == 1)
+        fire_up = panel_with_prior[fire_mask & (panel_with_prior["btc_prior_60d"] > 0) & panel_with_prior["outperf_60"].notna()]
+        fire_dn = panel_with_prior[fire_mask & (panel_with_prior["btc_prior_60d"] <= 0) & panel_with_prior["outperf_60"].notna()]
+        # No shock (this specific shock not firing)
+        no_mask = (panel_with_prior[s] == 0)
+        no_up = panel_with_prior[no_mask & (panel_with_prior["btc_prior_60d"] > 0) & panel_with_prior["outperf_60"].notna()]
+        no_dn = panel_with_prior[no_mask & (panel_with_prior["btc_prior_60d"] <= 0) & panel_with_prior["outperf_60"].notna()]
+        def mu(s): return float(s["outperf_60"].mean()) if len(s) else None
+        delta_up = (mu(fire_up) - mu(no_up)) * 100 if (mu(fire_up) is not None and mu(no_up) is not None) else None
+        delta_dn = (mu(fire_dn) - mu(no_dn)) * 100 if (mu(fire_dn) is not None and mu(no_dn) is not None) else None
+        asymmetry = abs(delta_up - delta_dn) if (delta_up is not None and delta_dn is not None) else None
+        # Classify behavior
+        kind = None
+        if delta_up is not None and delta_dn is not None:
+            if abs(delta_up) > 5 and abs(delta_dn) > 5 and np.sign(delta_up) != np.sign(delta_dn):
+                kind = "reversal"  # shock changes direction
+            elif abs(delta_up) > 5 and abs(delta_dn) < 3:
+                kind = "trend_killer"  # only kills uptrends
+            elif abs(delta_up) < 5 and abs(delta_dn) > 5 and delta_dn > 0:
+                kind = "catalyst"  # only catalyzes from down
+            elif abs(asymmetry or 0) < 5:
+                kind = "drag"  # symmetric drag
+            else:
+                kind = "mixed"
+        es_matrix.append({
+            "shock": s,
+            "label": SHOCK_DISPLAY[s]["label"],
+            "prior_up_delta_pp": delta_up,
+            "prior_down_delta_pp": delta_dn,
+            "asymmetry_pp": asymmetry,
+            "kind": kind,
+            "n_fire_up": int(len(fire_up)), "n_fire_dn": int(len(fire_dn)),
+        })
+    out["effect_size_matrix"] = es_matrix
 
     # ===== What would flip the cell — auto-computed boundary deltas =====
     def _lookup_with_fallback(shock, vix_bin, era_name):

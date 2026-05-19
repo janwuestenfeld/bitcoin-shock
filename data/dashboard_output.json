@@ -3,6 +3,8 @@
   "current_vix": 14.329999923706055,
   "vix_bin": "calm",
   "current_era": "post_etf",
+  "btc_prior_60d": -0.19283368152588254,
+  "btc_prior_direction": "down",
   "beta_60": {
     "today": 1.9307049321522594,
     "five_day_ago": 2.0148872498499433,
@@ -28002,6 +28004,82 @@
     }
   },
   "confidence": "low",
+  "momentum_conditioned": {
+    "prior_up": {
+      "n": 1,
+      "share_positive": 1.0,
+      "mean_outperf": 0.03174442115689269
+    },
+    "prior_down": {
+      "n": 2,
+      "share_positive": 0.0,
+      "mean_outperf": -0.1272094167468008
+    },
+    "aggregate": {
+      "n": 3,
+      "share_positive": 0.3333333333333333,
+      "mean_outperf": -0.07422480411223631
+    },
+    "matched": {
+      "n": 2,
+      "share_positive": 0.0,
+      "mean_outperf": -0.1272094167468008
+    },
+    "matched_direction": "down"
+  },
+  "momentum_conditioned_confidence": "no_call",
+  "effect_size_matrix": [
+    {
+      "shock": "oil_shock",
+      "label": "Oil",
+      "prior_up_delta_pp": -17.551194007613756,
+      "prior_down_delta_pp": 0.06897132888018555,
+      "asymmetry_pp": 17.62016533649394,
+      "kind": "trend_killer",
+      "n_fire_up": 105,
+      "n_fire_dn": 160
+    },
+    {
+      "shock": "dollar_shock",
+      "label": "Dollar",
+      "prior_up_delta_pp": -11.596566655461595,
+      "prior_down_delta_pp": -0.40194985945744727,
+      "asymmetry_pp": 11.194616796004148,
+      "kind": "trend_killer",
+      "n_fire_up": 135,
+      "n_fire_dn": 154
+    },
+    {
+      "shock": "rate_shock",
+      "label": "Rates",
+      "prior_up_delta_pp": -11.115556444179955,
+      "prior_down_delta_pp": -2.3803536428866297,
+      "asymmetry_pp": 8.735202801293326,
+      "kind": "trend_killer",
+      "n_fire_up": 128,
+      "n_fire_dn": 158
+    },
+    {
+      "shock": "banking_shock",
+      "label": "Banking",
+      "prior_up_delta_pp": -16.617766398548586,
+      "prior_down_delta_pp": 7.769222629732591,
+      "asymmetry_pp": 24.386989028281178,
+      "kind": "reversal",
+      "n_fire_up": 108,
+      "n_fire_dn": 233
+    },
+    {
+      "shock": "gprd_threat_shock",
+      "label": "GPR-Threat",
+      "prior_up_delta_pp": -4.964996505362521,
+      "prior_down_delta_pp": -6.267456476968681,
+      "asymmetry_pp": 1.3024599716061598,
+      "kind": "drag",
+      "n_fire_up": 216,
+      "n_fire_dn": 197
+    }
+  ],
   "what_would_flip": [
     {
       "trigger": "VIX rises by 0.2 to 14.5",
@@ -29080,6 +29158,6 @@
       "m3_r2_pp": 6.544386044701933
     }
   },
-  "updated": "2026-05-19T17:57:40Z",
+  "updated": "2026-05-19T18:27:43Z",
   "panel_n_rows": 3017
 }
