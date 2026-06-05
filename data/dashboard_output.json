@@ -7,7 +7,7 @@
   "btc_prior_direction": "up",
   "beta_60": {
     "today": null,
-    "five_day_ago": 1.0719562773828843,
+    "five_day_ago": 1.0719562773828903,
     "delta_5d": null,
     "window_days": 60,
     "note": "60-day backward-rolling OLS \u03b2(BTC, SPY) \u2014 no look-ahead by construction"
@@ -30321,6 +30321,6 @@
       "m3_r2_pp": 6.544386044701933
     }
   },
-  "updated": "2026-06-04T07:56:17Z",
+  "updated": "2026-06-05T07:48:57Z",
   "panel_n_rows": 3123
 }
