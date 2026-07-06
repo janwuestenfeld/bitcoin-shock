@@ -23,7 +23,7 @@
         "end": "2099-12-31"
       }
     ],
-    "generated_at": "2026-07-05T09:19:44.582298Z",
+    "generated_at": "2026-07-06T10:57:22.050815Z",
     "seed": 42
   },
   "shock_incidence": {
@@ -39,7 +39,7 @@
           "n_classified": 1489,
           "n_warmup_dropped": 61,
           "walkforward_incidence": 0.10745466756212223,
-          "end_of_era_cutoff": 0.03656973446016157
+          "end_of_era_cutoff": 0.03656973446016156
         },
         "post_covid_pre_etf": {
           "n_total": 972,
