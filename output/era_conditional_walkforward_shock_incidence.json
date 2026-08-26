@@ -23,15 +23,15 @@
         "end": "2099-12-31"
       }
     ],
-    "generated_at": "2026-08-25T07:02:20.181736Z",
+    "generated_at": "2026-08-26T07:02:46.218049Z",
     "seed": 42
   },
   "shock_incidence": {
     "oil_shock": {
       "raw_col": "wti",
       "measure_kind": "abs_log_diff",
-      "walkforward_overall_incidence": 0.0983974358974359,
-      "n_classified_total": 3120,
+      "walkforward_overall_incidence": 0.09836590836270426,
+      "n_classified_total": 3121,
       "n_warmup_dropped_total": 63,
       "by_era": {
         "pre_covid": {
@@ -39,7 +39,7 @@
           "n_classified": 1489,
           "n_warmup_dropped": 61,
           "walkforward_incidence": 0.10745466756212223,
-          "end_of_era_cutoff": 0.03656973446016156
+          "end_of_era_cutoff": 0.03656973446016157
         },
         "post_covid_pre_etf": {
           "n_total": 972,
@@ -49,19 +49,19 @@
           "end_of_era_cutoff": 0.04489349343748502
         },
         "post_etf": {
-          "n_total": 661,
-          "n_classified": 661,
+          "n_total": 662,
+          "n_classified": 662,
           "n_warmup_dropped": 0,
-          "walkforward_incidence": 0.13918305597579425,
-          "end_of_era_cutoff": 0.03392259474986769
+          "walkforward_incidence": 0.13897280966767372,
+          "end_of_era_cutoff": 0.033915295396518996
         }
       }
     },
     "dollar_shock": {
       "raw_col": "usd_broad",
       "measure_kind": "abs_diff",
-      "walkforward_overall_incidence": 0.10281870595771941,
-      "n_classified_total": 3122,
+      "walkforward_overall_incidence": 0.10278578290105668,
+      "n_classified_total": 3123,
       "n_warmup_dropped_total": 61,
       "by_era": {
         "pre_covid": {
@@ -79,19 +79,19 @@
           "end_of_era_cutoff": 0.6873999999999967
         },
         "post_etf": {
-          "n_total": 661,
-          "n_classified": 661,
+          "n_total": 662,
+          "n_classified": 662,
           "n_warmup_dropped": 0,
-          "walkforward_incidence": 0.11346444780635401,
-          "end_of_era_cutoff": 0.5826500000000068
+          "walkforward_incidence": 0.11329305135951662,
+          "end_of_era_cutoff": 0.5849000000000046
         }
       }
     },
     "rate_shock": {
       "raw_col": "y10_fred",
       "measure_kind": "abs_diff",
-      "walkforward_overall_incidence": 0.09481101857783472,
-      "n_classified_total": 3122,
+      "walkforward_overall_incidence": 0.09478065962215818,
+      "n_classified_total": 3123,
       "n_warmup_dropped_total": 61,
       "by_era": {
         "pre_covid": {
@@ -109,10 +109,10 @@
           "end_of_era_cutoff": 0.10000000000000009
         },
         "post_etf": {
-          "n_total": 661,
-          "n_classified": 661,
+          "n_total": 662,
+          "n_classified": 662,
           "n_warmup_dropped": 0,
-          "walkforward_incidence": 0.060514372163388806,
+          "walkforward_incidence": 0.06042296072507553,
           "end_of_era_cutoff": 0.08000000000000007
         }
       }
@@ -120,8 +120,8 @@
     "banking_shock": {
       "raw_col": "stlfsi",
       "measure_kind": "level",
-      "walkforward_overall_incidence": 0.11655459494076209,
-      "n_classified_total": 3123,
+      "walkforward_overall_incidence": 0.11651728553137004,
+      "n_classified_total": 3124,
       "n_warmup_dropped_total": 60,
       "by_era": {
         "pre_covid": {
@@ -139,10 +139,10 @@
           "end_of_era_cutoff": 0.4198
         },
         "post_etf": {
-          "n_total": 661,
-          "n_classified": 661,
+          "n_total": 662,
+          "n_classified": 662,
           "n_warmup_dropped": 0,
-          "walkforward_incidence": 0.13767019667170954,
+          "walkforward_incidence": 0.13746223564954682,
           "end_of_era_cutoff": -0.3153
         }
       }
@@ -150,8 +150,8 @@
     "gprd_threat_shock": {
       "raw_col": "gprd_threat",
       "measure_kind": "level",
-      "walkforward_overall_incidence": 0.15113672750560359,
-      "n_classified_total": 3123,
+      "walkforward_overall_incidence": 0.15108834827144688,
+      "n_classified_total": 3124,
       "n_warmup_dropped_total": 60,
       "by_era": {
         "pre_covid": {
@@ -169,11 +169,11 @@
           "end_of_era_cutoff": 247.38201904296875
         },
         "post_etf": {
-          "n_total": 661,
-          "n_classified": 661,
+          "n_total": 662,
+          "n_classified": 662,
           "n_warmup_dropped": 0,
-          "walkforward_incidence": 0.1951588502269289,
-          "end_of_era_cutoff": 286.52582092285155
+          "walkforward_incidence": 0.19486404833836857,
+          "end_of_era_cutoff": 286.4684143066406
         }
       }
     }
