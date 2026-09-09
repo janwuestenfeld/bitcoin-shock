@@ -1,9 +1,9 @@
 {
-  "current_date": "2026-09-03",
-  "current_vix": 14.32,
-  "vix_bin": "calm",
+  "current_date": "2026-09-04",
+  "current_vix": 14.53,
+  "vix_bin": "low_stress",
   "current_era": "post_etf",
-  "btc_prior_60d": 0.2770103086955904,
+  "btc_prior_60d": 0.24379875062550527,
   "btc_prior_direction": "up",
   "beta_60": {
     "today": null,
@@ -3016,7 +3016,7 @@
   ],
   "active_shocks": {
     "oil_shock": false,
-    "dollar_shock": false,
+    "dollar_shock": true,
     "rate_shock": false,
     "banking_shock": false,
     "gprd_threat_shock": false
@@ -3030,17 +3030,17 @@
         "kind": "unsigned"
       },
       "raw_current": 0.0,
-      "cutoff_current": 0.033929894103216375,
+      "cutoff_current": 0.03392259474986769,
       "raw_60d_ago": 0.0,
       "raw_change_60d_pct": null,
       "raw_change_60d_abs": 0.0,
-      "cutoff_60d_ago": 0.033929894103216375,
+      "cutoff_60d_ago": 0.03392259474986769,
       "cutoff_change_60d_pct": 0.0,
       "active": false,
       "prior_active": false,
       "proximity": 0.0,
       "proximity_label": "0% of cutoff",
-      "days_since_last_fire": 2,
+      "days_since_last_fire": 3,
       "last_fire_date": "2026-09-01",
       "trend_20d": "falling"
     },
@@ -3051,19 +3051,19 @@
         "source": "FRED DTWEXBGS",
         "kind": "unsigned"
       },
-      "raw_current": 0.0,
-      "cutoff_current": 0.5879600000000046,
-      "raw_60d_ago": 0.20400000000000773,
-      "raw_change_60d_pct": -100.0,
-      "raw_change_60d_abs": -0.20400000000000773,
-      "cutoff_60d_ago": 0.5879600000000046,
+      "raw_current": 0.6747000000000014,
+      "cutoff_current": 0.5864300000000047,
+      "raw_60d_ago": 0.6101000000000028,
+      "raw_change_60d_pct": 10.588428126536375,
+      "raw_change_60d_abs": 0.06459999999999866,
+      "cutoff_60d_ago": 0.5864300000000047,
       "cutoff_change_60d_pct": 0.0,
-      "active": false,
+      "active": true,
       "prior_active": false,
-      "proximity": 0.0,
-      "proximity_label": "0% of cutoff",
-      "days_since_last_fire": 6,
-      "last_fire_date": "2026-08-28",
+      "proximity": 1.1505209487918353,
+      "proximity_label": "115% of cutoff",
+      "days_since_last_fire": 0,
+      "last_fire_date": "2026-09-04",
       "trend_20d": "rising"
     },
     "rate_shock": {
@@ -3073,18 +3073,18 @@
         "source": "FRED DGS10",
         "kind": "unsigned"
       },
-      "raw_current": 0.020000000000000462,
+      "raw_current": 0.010000000000000675,
       "cutoff_current": 0.08000000000000007,
-      "raw_60d_ago": 0.09999999999999964,
-      "raw_change_60d_pct": -79.99999999999947,
-      "raw_change_60d_abs": -0.07999999999999918,
+      "raw_60d_ago": 0.03000000000000025,
+      "raw_change_60d_pct": -66.6666666666647,
+      "raw_change_60d_abs": -0.019999999999999574,
       "cutoff_60d_ago": 0.08000000000000007,
       "cutoff_change_60d_pct": 0.0,
       "active": false,
       "prior_active": false,
-      "proximity": 0.25000000000000555,
-      "proximity_label": "25% of cutoff",
-      "days_since_last_fire": 71,
+      "proximity": 0.12500000000000833,
+      "proximity_label": "13% of cutoff",
+      "days_since_last_fire": 72,
       "last_fire_date": "2026-06-24",
       "trend_20d": "falling"
     },
@@ -3096,17 +3096,17 @@
         "kind": "signed"
       },
       "raw_current": -0.8681,
-      "cutoff_current": -0.333619999999999,
+      "cutoff_current": -0.3359099999999995,
       "raw_60d_ago": -0.8681,
       "raw_change_60d_pct": 0.0,
       "raw_change_60d_abs": 0.0,
       "cutoff_60d_ago": -0.3118,
-      "cutoff_change_60d_pct": -0.02181999999999895,
+      "cutoff_change_60d_pct": -0.024109999999999465,
       "active": false,
       "prior_active": false,
-      "proximity": -2.5866761499310034,
-      "proximity_label": "-2.59\u03c3 vs threshold",
-      "days_since_last_fire": 147,
+      "proximity": -2.5721789324594218,
+      "proximity_label": "-2.57\u03c3 vs threshold",
+      "days_since_last_fire": 148,
       "last_fire_date": "2026-04-09",
       "trend_20d": "falling"
     },
@@ -3117,30 +3117,24 @@
         "source": "Caldara-Iacoviello",
         "kind": "unsigned"
       },
-      "raw_current": 237.09652709960938,
-      "cutoff_current": 286.2394592285156,
-      "raw_60d_ago": 242.59849548339844,
-      "raw_change_60d_pct": -2.2679317828521173,
-      "raw_change_60d_abs": -5.5019683837890625,
-      "cutoff_60d_ago": 290.13916625976566,
-      "cutoff_change_60d_pct": -1.344081559729371,
+      "raw_current": 120.54721069335938,
+      "cutoff_current": 286.21083984375,
+      "raw_60d_ago": 216.81246948242188,
+      "raw_change_60d_pct": -44.400240917355184,
+      "raw_change_60d_abs": -96.2652587890625,
+      "cutoff_60d_ago": 290.0434753417969,
+      "cutoff_change_60d_pct": -1.3214003499062987,
       "active": false,
       "prior_active": false,
-      "proximity": 0.8283153124263221,
-      "proximity_label": "83% of cutoff",
-      "days_since_last_fire": 76,
+      "proximity": 0.42118324644576444,
+      "proximity_label": "42% of cutoff",
+      "days_since_last_fire": 77,
       "last_fire_date": "2026-06-19",
       "trend_20d": "falling"
     }
   },
   "shock_history": {
     "oil_shock": [
-      {
-        "date": "2023-09-15",
-        "raw": 0.007737,
-        "cutoff": 0.046986,
-        "active": 0
-      },
       {
         "date": "2023-09-18",
         "raw": 0.007021,
@@ -7634,15 +7628,15 @@
         "raw": 0.0,
         "cutoff": 0.03393,
         "active": 0
+      },
+      {
+        "date": "2026-09-04",
+        "raw": 0.0,
+        "cutoff": 0.033923,
+        "active": 0
       }
     ],
     "dollar_shock": [
-      {
-        "date": "2023-09-15",
-        "raw": 0.0405,
-        "cutoff": 0.68708,
-        "active": 0
-      },
       {
         "date": "2023-09-18",
         "raw": 0.0052,
@@ -12136,15 +12130,15 @@
         "raw": 0.0,
         "cutoff": 0.58796,
         "active": 0
+      },
+      {
+        "date": "2026-09-04",
+        "raw": 0.6747,
+        "cutoff": 0.58643,
+        "active": 1
       }
     ],
     "rate_shock": [
-      {
-        "date": "2023-09-15",
-        "raw": 0.04,
-        "cutoff": 0.1,
-        "active": 0
-      },
       {
         "date": "2023-09-18",
         "raw": 0.01,
@@ -16638,15 +16632,15 @@
         "raw": 0.02,
         "cutoff": 0.08,
         "active": 0
+      },
+      {
+        "date": "2026-09-04",
+        "raw": 0.01,
+        "cutoff": 0.08,
+        "active": 0
       }
     ],
     "banking_shock": [
-      {
-        "date": "2023-09-15",
-        "raw": -0.7123,
-        "cutoff": 0.4332,
-        "active": 0
-      },
       {
         "date": "2023-09-18",
         "raw": -0.7123,
@@ -21140,15 +21134,15 @@
         "raw": -0.8681,
         "cutoff": -0.33362,
         "active": 0
+      },
+      {
+        "date": "2026-09-04",
+        "raw": -0.8681,
+        "cutoff": -0.33591,
+        "active": 0
       }
     ],
     "gprd_threat_shock": [
-      {
-        "date": "2023-09-15",
-        "raw": 133.06781,
-        "cutoff": 240.872327,
-        "active": 0
-      },
       {
         "date": "2023-09-18",
         "raw": 168.299622,
@@ -25642,6 +25636,12 @@
         "raw": 237.096527,
         "cutoff": 286.239459,
         "active": 0
+      },
+      {
+        "date": "2026-09-04",
+        "raw": 120.547211,
+        "cutoff": 286.21084,
+        "active": 0
       }
     ]
   },
@@ -25961,13 +25961,13 @@
     {
       "date": "2026-09-03",
       "vix": 14.32
+    },
+    {
+      "date": "2026-09-04",
+      "vix": 14.53
     }
   ],
   "vix_history_long": [
-    {
-      "date": "2024-09-03",
-      "vix": 20.72
-    },
     {
       "date": "2024-09-04",
       "vix": 21.32
@@ -27995,50 +27995,59 @@
     {
       "date": "2026-09-03",
       "vix": 14.32
+    },
+    {
+      "date": "2026-09-04",
+      "vix": 14.53
     }
   ],
   "what_changed": [
     {
       "kind": "vix",
-      "text": "VIX 14.32 (-0.88 d/d), regime shifted from low_stress to calm"
+      "text": "VIX 14.53 (+0.21 d/d), regime shifted from calm to low_stress"
+    },
+    {
+      "kind": "shock",
+      "shock": "dollar_shock",
+      "text": "Dollar fired today (was inactive yesterday)"
     }
   ],
-  "primary_shock": "none",
-  "cell_key": "none__calm__post_etf",
-  "cell_human_label": "No shocks \u00d7 Calm VIX \u00d7 Post-ETF",
-  "cell_n": 90,
+  "primary_shock": "dollar_shock",
+  "cell_key": "dollar_shock__low_stress__post_etf",
+  "cell_human_label": "Dollar shock \u00d7 Low-stress VIX \u00d7 Post-ETF",
+  "cell_n": 29,
   "cell_tier_used": "primary",
   "cell_regime_warning": null,
   "horizons": {
     "5": {
-      "share_positive": 0.6444444444444445,
-      "mean_outperf": 0.018306149493926307,
-      "n": 90
+      "share_positive": 0.3793103448275862,
+      "mean_outperf": -0.004088140464365713,
+      "n": 29
     },
     "20": {
-      "share_positive": 0.5888888888888889,
-      "mean_outperf": 0.04300527486320928,
-      "n": 90
+      "share_positive": 0.27586206896551724,
+      "mean_outperf": -0.00680415104360185,
+      "n": 29
     },
     "60": {
-      "share_positive": 0.36666666666666664,
-      "mean_outperf": 0.0429797269262237,
-      "n": 90
+      "share_positive": 0.3448275862068966,
+      "mean_outperf": -0.006479662268186193,
+      "n": 29
     },
     "90": {
-      "share_positive": 0.37777777777777777,
-      "mean_outperf": 0.008777356775521923,
-      "n": 90
+      "share_positive": 0.41379310344827586,
+      "mean_outperf": 0.029798799837511738,
+      "n": 29
     }
   },
-  "confidence": "high",
+  "confidence": "medium",
   "regime": {
-    "label": "HIGH_BETA_BULL",
-    "display": "High-Beta Bull",
-    "trigger": "Calm VIX (<14.5) + post-ETF + BTC up + no trend-killer firing",
-    "intuition": "The paper's signature finding: post-ETF calm-regime \u03b2 rises +1.02. BTC trades as leveraged SPY with no macro headwinds. Institutional flow dominates the correlation channel.",
-    "forward_60d": "+8 to +14pp outperformance vs SPY (highest-conviction long)",
-    "class": "bull"
+    "label": "TREND_KILL",
+    "display": "Trend Kill",
+    "trigger": "BTC up + tightening shock firing (dollar)",
+    "intuition": "Oil/dollar/rates/banking shocks kill BTC uptrends (\u221211 to \u221217pp \u0394 when BTC prior up). Tightening pressure neutralizes the uptrend; sometimes reverses it.",
+    "forward_60d": "\u221210 to \u221215pp underperformance vs SPY (reduce or hedge)",
+    "class": "bear"
   },
   "shock_mechanism": {
     "oil_shock": {
@@ -28064,35 +28073,35 @@
   },
   "momentum_conditioned": {
     "prior_up": {
-      "n": 74,
-      "share_positive": 0.4864864864864865,
-      "mean_outperf": 0.12979187742869658
+      "n": 26,
+      "share_positive": 0.38461538461538464,
+      "mean_outperf": 0.002161184447803811
     },
     "prior_down": {
-      "n": 34,
-      "share_positive": 0.23529411764705882,
-      "mean_outperf": -0.05082838268348175
+      "n": 16,
+      "share_positive": 0.3125,
+      "mean_outperf": -0.02320743300518198
     },
     "aggregate": {
-      "n": 108,
-      "share_positive": 0.4074074074074074,
-      "mean_outperf": 0.07292994368967746
+      "n": 42,
+      "share_positive": 0.35714285714285715,
+      "mean_outperf": -0.007503050772381252
     },
     "matched": {
-      "n": 74,
-      "share_positive": 0.4864864864864865,
-      "mean_outperf": 0.12979187742869658
+      "n": 26,
+      "share_positive": 0.38461538461538464,
+      "mean_outperf": 0.002161184447803811
     },
     "matched_direction": "up"
   },
-  "momentum_conditioned_confidence": "high",
+  "momentum_conditioned_confidence": "medium",
   "effect_size_matrix": [
     {
       "shock": "oil_shock",
       "label": "Oil",
       "prior_up_delta_pp": -18.31013144480472,
-      "prior_down_delta_pp": 0.3241678545346842,
-      "asymmetry_pp": 18.634299299339407,
+      "prior_down_delta_pp": 0.30756545818756975,
+      "asymmetry_pp": 18.61769690299229,
       "kind": "trend_killer",
       "n_fire_up": 118,
       "n_fire_dn": 183
@@ -28101,8 +28110,8 @@
       "shock": "dollar_shock",
       "label": "Dollar",
       "prior_up_delta_pp": -10.998193704424372,
-      "prior_down_delta_pp": -0.4403258404833167,
-      "asymmetry_pp": 10.557867863941055,
+      "prior_down_delta_pp": -0.45670611118151516,
+      "asymmetry_pp": 10.541487593242856,
       "kind": "trend_killer",
       "n_fire_up": 145,
       "n_fire_dn": 173
@@ -28111,8 +28120,8 @@
       "shock": "rate_shock",
       "label": "Rates",
       "prior_up_delta_pp": -9.551756505993923,
-      "prior_down_delta_pp": -1.3429909237421485,
-      "asymmetry_pp": 8.208765582251775,
+      "prior_down_delta_pp": -1.359135768532707,
+      "asymmetry_pp": 8.192620737461215,
       "kind": "trend_killer",
       "n_fire_up": 133,
       "n_fire_dn": 162
@@ -28121,8 +28130,8 @@
       "shock": "banking_shock",
       "label": "Banking",
       "prior_up_delta_pp": -16.499847970970304,
-      "prior_down_delta_pp": 6.968179021114805,
-      "asymmetry_pp": 23.468026992085107,
+      "prior_down_delta_pp": 6.949435253830161,
+      "asymmetry_pp": 23.449283224800464,
       "kind": "reversal",
       "n_fire_up": 112,
       "n_fire_dn": 252
@@ -28131,8 +28140,8 @@
       "shock": "gprd_threat_shock",
       "label": "GPR-Threat",
       "prior_up_delta_pp": -7.20424009173278,
-      "prior_down_delta_pp": -5.830604462917723,
-      "asymmetry_pp": 1.373635628815057,
+      "prior_down_delta_pp": -5.847012873057525,
+      "asymmetry_pp": 1.3572272186752548,
       "kind": "drag",
       "n_fire_up": 236,
       "n_fire_dn": 232
@@ -28140,33 +28149,26 @@
   ],
   "what_would_flip": [
     {
-      "trigger": "VIX rises by 0.2 to 14.5",
-      "effect": "regime shifts to low_stress",
+      "trigger": "VIX rises by 5.5 to 20.0",
+      "effect": "regime shifts to mid_stress",
+      "new_share_positive": 0.375,
+      "new_n": 8,
+      "tier": "primary_momentum_conditioned"
+    },
+    {
+      "trigger": "Dollar turns off",
+      "effect": "cell shifts to none__low_stress__post_etf",
       "new_share_positive": 0.20491803278688525,
       "new_n": 122,
       "tier": "primary_momentum_conditioned"
     },
     {
-      "trigger": "VIX rises by 5.7 to 20.0",
-      "effect": "regime shifts to mid_stress",
-      "new_share_positive": 0.7241379310344828,
-      "new_n": 32,
-      "tier": "primary"
-    },
-    {
-      "trigger": "GPR-Threat fires (raw needs +17% to reach cutoff)",
-      "effect": "cell shifts to gprd_threat_shock__calm__post_etf",
-      "new_share_positive": 0.25,
-      "new_n": 11,
-      "tier": "primary"
-    },
-    {
       "trigger": "Banking shock fires (STLFSI4 needs +2.6\u03c3 to reach threshold)",
-      "effect": "safe-haven cell activates (banking_shock \u00d7 calm \u00d7 post_etf)",
-      "new_share_positive": 1.0,
-      "new_n": 5,
+      "effect": "safe-haven cell activates (banking_shock \u00d7 low_stress \u00d7 post_etf)",
+      "new_share_positive": 0.25,
+      "new_n": 8,
       "kind": "safe_haven_override",
-      "tier": "fallback_shock_era"
+      "tier": "primary_momentum_conditioned"
     }
   ],
   "blackrock_events": [
@@ -28326,14 +28328,14 @@
       "vix_bin": "calm",
       "weighted_share": 0.373015873015873,
       "total_n": 126,
-      "is_current": true
+      "is_current": false
     },
     {
       "era": "post_etf",
       "vix_bin": "low_stress",
-      "weighted_share": 0.333333333333333,
-      "total_n": 366,
-      "is_current": false
+      "weighted_share": 0.33514986376021766,
+      "total_n": 367,
+      "is_current": true
     },
     {
       "era": "post_etf",
@@ -28412,14 +28414,14 @@
       "vix_bin": "calm",
       "weighted_share": 0.4756097560975608,
       "total_n": 82,
-      "is_current": true
+      "is_current": false
     },
     {
       "era": "post_etf",
       "vix_bin": "low_stress",
       "weighted_share": 0.2870813397129186,
       "total_n": 209,
-      "is_current": false
+      "is_current": true
     },
     {
       "era": "post_etf",
@@ -28498,14 +28500,14 @@
       "vix_bin": "calm",
       "weighted_share": 0.18181818181818182,
       "total_n": 44,
-      "is_current": true
+      "is_current": false
     },
     {
       "era": "post_etf",
       "vix_bin": "low_stress",
-      "weighted_share": 0.3949044585987261,
-      "total_n": 157,
-      "is_current": false
+      "weighted_share": 0.39873417721518983,
+      "total_n": 158,
+      "is_current": true
     },
     {
       "era": "post_etf",
@@ -28584,14 +28586,14 @@
       "vix_bin": "calm",
       "weighted_share": 0.4756097560975608,
       "total_n": 82,
-      "is_current": true
+      "is_current": false
     },
     {
       "era": "post_etf",
       "vix_bin": "low_stress",
       "weighted_share": 0.2870813397129186,
       "total_n": 209,
-      "is_current": false
+      "is_current": true
     },
     {
       "era": "post_etf",
@@ -29674,9 +29676,9 @@
       "shock": "gprd_threat_shock",
       "vix_bin": "low_stress",
       "era": "post_etf",
-      "n": 179,
-      "share_positive_60d": 0.3533834586466165,
-      "mean_outperf_60d": -0.054048669068543,
+      "n": 180,
+      "share_positive_60d": 0.3582089552238806,
+      "mean_outperf_60d": -0.052013765482497754,
       "regime_warning": null,
       "prior_up": {
         "n": 49,
@@ -29924,9 +29926,9 @@
         "mean_outperf": -0.05415095238513205
       },
       "prior_down": {
-        "n": 81,
-        "share_positive": 0.3333333333333333,
-        "mean_outperf": -0.04040892884674465
+        "n": 82,
+        "share_positive": 0.34146341463414637,
+        "mean_outperf": -0.03724993689176582
       }
     },
     {
@@ -30154,9 +30156,9 @@
       "shock": "any",
       "vix_bin": "low_stress",
       "era": "post_etf",
-      "n": 232,
-      "share_positive_60d": 0.3817204301075269,
-      "mean_outperf_60d": -0.029874443873565134,
+      "n": 233,
+      "share_positive_60d": 0.3850267379679144,
+      "mean_outperf_60d": -0.02854555159904596,
       "regime_warning": null,
       "prior_up": {
         "n": 87,
@@ -30326,6 +30328,6 @@
       "m3_r2_pp": 6.544386044701933
     }
   },
-  "updated": "2026-09-08T11:08:17Z",
-  "panel_n_rows": 3192
+  "updated": "2026-09-09T11:12:41Z",
+  "panel_n_rows": 3193
 }
